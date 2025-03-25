@@ -12,19 +12,22 @@ const Home = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showType, setShowType] = useState('table');
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     setLoading(true);
     axios
-      .get('http://localhost:5555/books')
+      .get(`${API_URL}/books/${id}`)
       .then((res) => {
-        setBooks(res.data.data);
+        setBook(res.data);
         setLoading(false);
       })
       .catch((err) => {
         console.log(err);
-      })
-  }, []);
+        setLoading(false);
+      });
+  }, [API_URL, id])
+
   return (
     <div className='p-4'>
       <div className='flex justify-center items-center gap-x-4'>
