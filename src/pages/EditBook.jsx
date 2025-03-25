@@ -13,9 +13,11 @@ const EditBooks = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     setLoading(true);
-    axios.get(`http://localhost:5555/books/${id}`)
+    axios.get(`${API_URL}/books/${id}`)
     .then((res) => {
       setAuthor(res.data.author);
       setPublishYear(res.data.publishYear);
@@ -26,7 +28,8 @@ const EditBooks = () => {
       alert('An error occurred.  Please check the console.');
       console.log(err);
     })
-  }, [])
+  }, [API_URL, id])
+
   const handleEditBook = () => {
     const data = {
       title,
@@ -35,7 +38,7 @@ const EditBooks = () => {
     };
     setLoading(true);
     axios
-      .put(`http://localhost:5555/books/${id}`, data)
+      .put(`${API_URL}/books/${id}`, data)
       .then(() => {
         setLoading(false);
         enqueueSnackbar('Book edited successfully!', { variant: 'success' })
