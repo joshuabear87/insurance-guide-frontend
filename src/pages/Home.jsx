@@ -19,7 +19,7 @@ const Home = () => {
     axios
       .get(`${API_URL}/books`)
       .then((res) => {
-        setBooks(res.data);
+        setBooks(res.data.data);
         setLoading(false);
       })
       .catch((err) => {
