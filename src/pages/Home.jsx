@@ -26,7 +26,7 @@ const Home = () => {
         console.log(err);
         setLoading(false);
       });
-  }, [API_URL, id])
+  }, [API_URL])
 
   return (
     <div className='p-4'>
