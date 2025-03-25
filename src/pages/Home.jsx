@@ -17,9 +17,9 @@ const Home = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`${API_URL}/books/${id}`)
+      .get(`${API_URL}/books`)
       .then((res) => {
-        setBook(res.data);
+        setBooks(res.data);
         setLoading(false);
       })
       .catch((err) => {
