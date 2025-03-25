@@ -8,11 +8,12 @@ const ShowBook = () => {
   const [book, setBook] = useState({});
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`http://localhost:5555/books/${id}`)
+      .get(`${API_URL}/books/${id}`)
       .then((res) => {
         setBook(res.data);
         setLoading(false);
@@ -21,7 +22,7 @@ const ShowBook = () => {
         console.log(err);
         setLoading(false);
       });
-  }, [])
+  }, [API_URL, id])
 
   return (
     <div className='p-4'>
