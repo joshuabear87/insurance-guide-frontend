@@ -22,44 +22,61 @@ const ShowBook = () => {
         console.log(err);
         setLoading(false);
       });
-  }, [API_URL, id])
+  }, [API_URL, id]);
 
   return (
-    <div className='p-4'>
+    <div className="container-fluid py-5 bg-parchment min-vh-100">
       <BackButton />
-      <h1 className='text-3xl my-4'>Show Book</h1>
+      <h1 className="text-center mb-4" style={{ color: '#6c4c2b' }}>Show Book</h1>
+
       {loading ? (
         <Spinner />
       ) : (
-        <div className='flex flex-col border-2 border-sky-400 rounded-xl w-fit p-4'>
-          <div className='my-4'>
-            <span className='text-xl mr-4 text-gray-500' >Id</span>
-            <span>{book._id}</span>
-          </div>
-          <div className='my-4'>
-            <span className='text-xl mr-4 text-gray-500' >Title</span>
-            <span>{book.title}</span>
-          </div>
-          <div className='my-4'>
-            <span className='text-xl mr-4 text-gray-500' >Author</span>
-            <span>{book.author}</span>
-          </div>
-          <div className='my-4'>
-            <span className='text-xl mr-4 text-gray-500' >Publish Year</span>
-            <span>{book.publishYear}</span>
-          </div>
-          <div className='my-4'>
-            <span className='text-xl mr-4 text-gray-500' >Create Time</span>
-            <span>{new Date(book.createdAt).toString()}</span>
-          </div>
-          <div className='my-4'>
-            <span className='text-xl mr-4 text-gray-500' >Last Updated</span>
-            <span>{new Date(book.updatedAt).toString()}</span>
+        <div className="d-flex justify-content-center">
+          <div
+            className="card border-0 shadow-sm rounded-4 p-4"
+            style={{
+              backgroundColor: '#fefcf6',
+              maxWidth: '500px',
+              width: '100%',
+            }}
+          >
+            <div className="mb-3">
+              <h6 className="text-muted">ID</h6>
+              <p className="text-dark">{book._id}</p>
+            </div>
+
+            <div className="mb-3">
+              <h6 className="text-muted">Title</h6>
+              <p className="text-dark">{book.title}</p>
+            </div>
+
+            <div className="mb-3">
+              <h6 className="text-muted">Author</h6>
+              <p className="text-dark">{book.author}</p>
+            </div>
+
+            <div className="mb-3">
+              <h6 className="text-muted">Publish Year</h6>
+              <span className="badge text-bg-danger-subtle text-dark px-3 py-2 rounded-pill">
+                {book.publishYear}
+              </span>
+            </div>
+
+            <div className="mb-3">
+              <h6 className="text-muted">Created At</h6>
+              <p className="text-dark">{new Date(book.createdAt).toLocaleString()}</p>
+            </div>
+
+            <div>
+              <h6 className="text-muted">Last Updated</h6>
+              <p className="text-dark">{new Date(book.updatedAt).toLocaleString()}</p>
+            </div>
           </div>
         </div>
-      )}  
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default ShowBook
+export default ShowBook;

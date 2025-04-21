@@ -6,6 +6,7 @@ import EditBook from './pages/EditBook';
 import Home from './pages/Home';
 import ShowBook from './pages/ShowBook';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 const App = () => {
   return (

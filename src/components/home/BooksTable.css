@@ -1,0 +1,74 @@
+/* Subtle, parchment-inspired colors */
+.table-header {
+  background-color: #E8DDC4 !important; /* Parchment Header */
+}
+
+.bg-bamboo-light {
+  background-color: #F6F0E0; /* Light parchment tone */
+}
+
+.bg-bamboo-verylight {
+  background-color: #FCFAF5; /* Very light parchment */
+}
+
+/* Hover effect */
+.table-row-hover:hover {
+  background-color: #F1E8D0 !important; /* Slightly darker parchment for hover */
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Table styling */
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.table td,
+.table th {
+  vertical-align: middle;
+  padding: 12px 15px;
+}
+
+.table th {
+  text-align: center;
+  font-weight: bold;
+  color: #2C2C2C; /* Ink */
+}
+
+.table th,
+.table td {
+  border: 1px solid #e0e0e0; /* Light gray borders */
+}
+
+/* Responsive fix for horizontal overflow */
+.table-responsive {
+  overflow-x: auto;
+  width: 100%;
+}
+
+/* Remove default Bootstrap gutter overflow */
+.row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.col {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+/* Prevent overall page horizontal scroll */
+body {
+  overflow-x: hidden;
+}
+
+/* Responsive table adjustments */
+@media (max-width: 768px) {
+  .table th,
+  .table td {
+    padding: 8px;
+  }
+}
