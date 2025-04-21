@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Spinner from '../components/Spinner';
+import Spinner from '../components/Spinner'
 import BooksCard from '../components/home/BooksCard';
 import BooksTable from '../components/home/BooksTable';
 import Navbar from './NavBar';
@@ -29,8 +29,9 @@ const Home = () => {
     <div className="container-fluid min-vh-100 bg-parchment text-ink font-japanese p-4">
       <Navbar showType={showType} setShowType={setShowType} />
       <div className="mt-4">
+        {/* Conditional rendering based on loading state */}
         {loading ? (
-          <Spinner />
+          <Spinner />  
         ) : showType === 'table' ? (
           <BooksTable books={books} />
         ) : (
