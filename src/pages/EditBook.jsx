@@ -6,9 +6,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
 const EditBooks = () => {
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [publishYear, setPublishYear] = useState('');
+  const [financialClass, setFinancialClass] = useState('');
+  const [descriptiveName, setDescriptiveName] = useState('');
+  const [payerName, setPayerName] = useState('');
+  const [payerCode, setPayerCode] = useState('');
+  const [planName, setPlanName] = useState('');
+  const [planCode, setPlanCode] = useState('');
+  const [samcContracted, setSamcContracted] = useState(false);
+  const [samfContracted, setSamfContracted] = useState(false);
+  const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -21,9 +27,16 @@ const EditBooks = () => {
       setLoading(true);
       try {
         const res = await axios.get(`${API_URL}/books/${id}`);
-        setTitle(res.data.title);
-        setAuthor(res.data.author);
-        setPublishYear(res.data.publishYear);
+        const book = res.data;
+        setFinancialClass(book.financialClass || '');
+        setDescriptiveName(book.descriptiveName || '');
+        setPayerName(book.payerName || '');
+        setPayerCode(book.payerCode || '');
+        setPlanName(book.planName || '');
+        setPlanCode(book.planCode || '');
+        setSamcContracted(book.samcContracted || false);
+        setSamfContracted(book.samfContracted || false);
+        setNotes(book.notes || '');
         setLoading(false);
       } catch (err) {
         console.error('Error fetching book:', err);
@@ -36,7 +49,17 @@ const EditBooks = () => {
   }, [API_URL, id, enqueueSnackbar]);
 
   const handleEditBook = async () => {
-    const data = { title, author, publishYear };
+    const data = {
+      financialClass,
+      descriptiveName,
+      payerName,
+      payerCode,
+      planName,
+      planCode,
+      samcContracted,
+      samfContracted,
+      notes,
+    };
     setLoading(true);
     try {
       await axios.put(`${API_URL}/books/${id}`, data);
@@ -60,36 +83,102 @@ const EditBooks = () => {
       <div className="d-flex justify-content-center">
         <div
           className="card border-0 shadow-sm rounded-4 p-4"
-          style={{ backgroundColor: '#fefcf6', maxWidth: '500px', width: '100%' }}
+          style={{ backgroundColor: '#fefcf6', maxWidth: '600px', width: '100%' }}
         >
           <div className="mb-3">
-            <label className="form-label text-muted">Title</label>
+            <label className="form-label text-muted">Financial Class</label>
             <input
               type="text"
               className="form-control"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              value={financialClass}
+              onChange={(e) => setFinancialClass(e.target.value)}
             />
           </div>
 
           <div className="mb-3">
-            <label className="form-label text-muted">Author</label>
+            <label className="form-label text-muted">Descriptive Name</label>
             <input
               type="text"
               className="form-control"
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
+              value={descriptiveName}
+              onChange={(e) => setDescriptiveName(e.target.value)}
             />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label text-muted">Payer Name</label>
+            <input
+              type="text"
+              className="form-control"
+              value={payerName}
+              onChange={(e) => setPayerName(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label text-muted">Payer Code</label>
+            <input
+              type="text"
+              className="form-control"
+              value={payerCode}
+              onChange={(e) => setPayerCode(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label text-muted">Plan Name</label>
+            <input
+              type="text"
+              className="form-control"
+              value={planName}
+              onChange={(e) => setPlanName(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label text-muted">Plan Code</label>
+            <input
+              type="text"
+              className="form-control"
+              value={planCode}
+              onChange={(e) => setPlanCode(e.target.value)}
+            />
+          </div>
+
+          <div className="form-check mb-3">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="samcContracted"
+              checked={samcContracted}
+              onChange={(e) => setSamcContracted(e.target.checked)}
+            />
+            <label className="form-check-label text-muted" htmlFor="samcContracted">
+              SAMC Contracted
+            </label>
+          </div>
+
+          <div className="form-check mb-3">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="samfContracted"
+              checked={samfContracted}
+              onChange={(e) => setSamfContracted(e.target.checked)}
+            />
+            <label className="form-check-label text-muted" htmlFor="samfContracted">
+              SAMF Contracted
+            </label>
           </div>
 
           <div className="mb-4">
-            <label className="form-label text-muted">Publish Year</label>
-            <input
-              type="number"
+            <label className="form-label text-muted">Notes</label>
+            <textarea
               className="form-control"
-              value={publishYear}
-              onChange={(e) => setPublishYear(e.target.value)}
-            />
+              rows="3"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+            ></textarea>
           </div>
 
           <button

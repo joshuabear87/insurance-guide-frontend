@@ -1,148 +1,217 @@
-/* index.css — Bootstrap Custom Overrides for Yomimono Theme */
+* {
+  font-family: 'Open Sans', sans-serif !important;
+}
 
-/* Font & Base Styles */
 body {
-  background-color: #F6EDD9; /* parchment */
-  color: #2C2C2C; /* ink */
-  font-family: 'Noto Serif JP', serif;
-  font-size: 16px;
-  margin: 0;
-  padding: 0;
+  background-color: #f5f5f5;
+  font-family: 'Helvetica Neue', sans-serif;
+  color: #333;
 }
 
-/* Headings */
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  color: #2C2C2C;
+/***** NavBar and Buttons ******/
+
+.navbar {
+  color: #005b7f;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Buttons */
-.btn-scrollEdge {
-  background-color: #C2B28F;
+.btn-gray {
+  color: grey !important;
+}
+
+.btn-gray:hover {
+  color: rgb(155, 155, 155) !important;
+}
+
+.hamburger:hover {
+  color: #006480 !important;
+  font-weight: bold !important;
+}
+
+.hamburger {
+  background-color: #fff !important;
+  border-color: #007b9e !important;
+  color: #007b9e !important;
+}
+
+.btn-blue {
+  background-color: #fff;
+  border-color: #fff;
+  border: none;
   color: white;
+  text-align: left !important;
+  width: 100%;
+  padding-left: 40px !important;
+  border-radius: 0px;
+  border-left: none !important; 
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+  font-weight: bold !important;
 }
 
-.btn-scrollEdge:hover {
-  background-color: #b4a580;
+.btn-blue:hover {
+  background-color: #fff !important;
+  border-color: #ffffff !important;
+  color: #005b7f !important;
+  border-left: 3px solid #005b7f !important;
+  border-radius: 0px;
+}
+
+.btn-green {
+  background-color: #fff;
+  border-color: #fff;
+  border: none;
   color: white;
+  text-align: left !important;
+  width: 100%;
+  padding-left: 40px !important;
+  border-radius: 0px;
+  border-left: none !important; 
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
 }
 
-.btn-sealRed {
-  background-color: #8B1E1E;
+.btn-green:hover {
+  background-color: #fff !important;
+  border-color: #ffffff !important;
+  color: #007f4e !important;
+  border-left: 3px solid #007f4e !important;
+  border-radius: 0px;
+}
+
+.btn-request {
+  background-color: #fff;
+  border-color: #fff;
+  border: none;
   color: white;
+  text-align: left !important;
+  width: 100%;
+  padding-left: 40px !important;
+  border-radius: 0px;
+  border-left: none !important; 
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important; 
 }
 
-.btn-sealRed:hover {
-  background-color: #731818;
+.btn-request:hover {
+  background-color: #fff !important;
+  border-color: #ffffff !important;
+  color: #005b7f !important;
+  border-left: 3px solid #005b7f !important;
+  border-radius: 0px;
+}
+
+.rounded-pill {
+  border-radius: 50rem;
+}
+
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1050;
+    display: none;
+  }
+
+  .sidebar-overlay.active {
+    display: block;
+  }
+
+  .sidebar-content {
+    position: absolute;
+    text-align: left;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 350px;
+    background-color: #fff;
+    padding-top: 24px;
+    padding-left: 0px;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.25);
+    animation: slideIn 0.7s ease-out;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0%);
+    }
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #b8b8b8 !important;
+    margin: 0.5rem 0;
+    width: 100%;
+  }
+  
+  /***** Search Bar and Card/Table Buttons *****/
+
+  .toggle-btn {
+    width: 70px;
+    height: 50px;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.375rem;
+  }
+  
+  .toggle-btn.btn-primary {
+    background-color: #cfe9ff;
+    border-color: #91c9f7;
+    color: #000;
+  }
+  
+  .toggle-btn.btn-secondary {
+    background-color: #e0e0e0;
+    border-color: #bdbdbd;
+    color: #333;
+  }
+  
+  .search-bar {
+    background-color: #f5f5f5;
+    border-color: #ccc;
+    box-shadow: none;
+    margin-left: 60px;
+    height: 50px;
+  }
+
+/***** BACK BUTTON *****/
+
+.btn-back {
+  background-color: #005b7f;
   color: white;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.btn-bamboo {
-  background-color: #F0E6CB; /* updated from green to parchment */
-  color: #2C2C2C;
+.btn-back:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-.btn-bamboo:hover {
-  background-color: #e3d6b7; /* slightly deeper parchment tone */
-  color: #2C2C2C;
+.btn-back:active {
+  background-color: #91c9f7;
+  transform: translateY(1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* Utility Backgrounds */
-.bg-parchment {
-  background-color: #F6EDD9;
+.btn-back:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(0, 91, 127, 0.25);
 }
 
-.bg-scrollEdge {
-  background-color: #C2B28F;
-}
-
-.bg-sealRed {
-  background-color: #8B1E1E;
-}
-
-.bg-bamboo {
-  background-color: #fdf8ed; /* light parchment */
-}
-
-.bg-bambooDark {
-  background-color: #e8dec0; /* darker parchment */
-}
-
-.bg-bambooLight {
-  background-color: #f9f4e3; /* parchment-tinted ivory */
-}
-
-.bg-bambooVeryLight {
-  background-color: #fefcf6; /* softest parchment tone */
-}
-
-/* Text Colors */
-.text-scrollEdge {
-  color: #C2B28F;
-}
-
-.text-sealRed {
-  color: #8B1E1E;
-}
-
-.text-accentGold {
-  color: #b59a5e;
-}
-
-.text-bamboo {
-  color: #a89773; /* muted parchment-gray */
-}
-
-.text-ink {
-  color: #2C2C2C;
-}
-
-/* Borders */
-.border-scrollEdge {
-  border-color: #C2B28F !important;
-}
-
-.border-sealRed {
-  border-color: #8B1E1E !important;
-}
-
-/* Drop Shadows */
-.drop-shadow-md {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Rounded corners */
-.rounded-lg {
-  border-radius: 8px;
-}
-
-/* Transitions */
-.transition-all {
-  transition: all 0.3s ease-in-out;
-}
-
-/* Hover effect: Changes the background color smoothly */
-.hoverable-row:hover {
-  background-color: #f1e9d4; /* parchment hover */
-  transition: background-color 0.3s ease;
-}
-
-/* Hover effect for icons */
-.hoverable-icon {
-  transition: color 0.2s ease;
-}
-
-.hoverable-icon:hover {
-  color: #a89773 !important; /* parchment-based hover */
-}
-
-/* Book Card */
-.book-card {
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  background-color: #fefcf6;
-}
-
-.book-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-}

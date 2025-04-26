@@ -37,40 +37,87 @@ const ShowBook = () => {
             className="card border-0 shadow-sm rounded-4 p-4"
             style={{
               backgroundColor: '#fefcf6',
-              maxWidth: '500px',
+              maxWidth: '600px',
               width: '100%',
             }}
           >
+            {/* Images Section */}
+            {book.image && (
+              <div className="mb-4 text-center">
+                <img
+                  src={book.image}
+                  alt="Primary"
+                  className="img-fluid rounded-4 shadow-sm mb-3"
+                  style={{ maxHeight: '300px', objectFit: 'cover' }}
+                />
+              </div>
+            )}
+            {book.image2 && (
+              <div className="mb-4 text-center">
+                <img
+                  src={book.image2}
+                  alt="Secondary"
+                  className="img-fluid rounded-4 shadow-sm"
+                  style={{ maxHeight: '300px', objectFit: 'cover' }}
+                />
+              </div>
+            )}
+
+            {/* Fields Section */}
             <div className="mb-3">
-              <h6 className="text-muted">ID</h6>
-              <p className="text-dark">{book._id}</p>
+              <h6 className="text-muted">Financial Class</h6>
+              <p className="text-dark">{book.financialClass}</p>
             </div>
 
             <div className="mb-3">
-              <h6 className="text-muted">Title</h6>
-              <p className="text-dark">{book.title}</p>
+              <h6 className="text-muted">Descriptive Name</h6>
+              <p className="text-dark">{book.descriptiveName}</p>
             </div>
 
             <div className="mb-3">
-              <h6 className="text-muted">Author</h6>
-              <p className="text-dark">{book.author}</p>
+              <h6 className="text-muted">Payer Name</h6>
+              <p className="text-dark">{book.payerName}</p>
             </div>
 
             <div className="mb-3">
-              <h6 className="text-muted">Publish Year</h6>
-              <span className="badge text-bg-danger-subtle text-dark px-3 py-2 rounded-pill">
-                {book.publishYear}
-              </span>
+              <h6 className="text-muted">Payer Code</h6>
+              <p className="text-dark">{book.payerCode}</p>
             </div>
 
+            <div className="mb-3">
+              <h6 className="text-muted">Plan Name</h6>
+              <p className="text-dark">{book.planName}</p>
+            </div>
+
+            <div className="mb-3">
+              <h6 className="text-muted">Plan Code</h6>
+              <p className="text-dark">{book.planCode}</p>
+            </div>
+
+            <div className="mb-3">
+              <h6 className="text-muted">SAMC Contracted</h6>
+              <p className="text-dark">{book.samcContracted ? 'Yes' : 'No'}</p>
+            </div>
+
+            <div className="mb-3">
+              <h6 className="text-muted">SAMF Contracted</h6>
+              <p className="text-dark">{book.samfContracted ? 'Yes' : 'No'}</p>
+            </div>
+
+            <div className="mb-3">
+              <h6 className="text-muted">Notes</h6>
+              <p className="text-dark">{book.notes || 'No notes available.'}</p>
+            </div>
+
+            {/* Meta info */}
             <div className="mb-3">
               <h6 className="text-muted">Created At</h6>
-              <p className="text-dark">{new Date(book.createdAt).toLocaleString()}</p>
+              <p className="text-dark">{book.createdAt ? new Date(book.createdAt).toLocaleString() : 'N/A'}</p>
             </div>
 
             <div>
               <h6 className="text-muted">Last Updated</h6>
-              <p className="text-dark">{new Date(book.updatedAt).toLocaleString()}</p>
+              <p className="text-dark">{book.updatedAt ? new Date(book.updatedAt).toLocaleString() : 'N/A'}</p>
             </div>
           </div>
         </div>

@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AiOutlineEye, AiOutlineEdit } from 'react-icons/ai';
-import { BiUserCircle } from 'react-icons/bi';
 import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineDelete } from 'react-icons/md';
-import { PiBookOpenTextLight } from 'react-icons/pi';
 
 const BooksCard = ({ books }) => {
   const [selectedBook, setSelectedBook] = useState(null);
@@ -21,34 +19,40 @@ const BooksCard = ({ books }) => {
         <div className="row g-4">
           {books.map((book, index) => (
             <div key={book._id} className="col-12 col-sm-6 col-lg-4">
-              <div
-                className={`card h-100 border-0 rounded-4 p-3 book-card shadow-sm ${index % 2 === 0 ? 'bg-parchment' : 'bg-bambooVeryLight'}`}
-              >
+              <div className="card h-100 border-0 rounded-4 p-3 shadow-sm">
                 <div>
-                  <h5 className="fw-semibold text-scrollEdge d-flex align-items-center mb-3">
-                    <PiBookOpenTextLight className="me-2 text-warning" />
-                    {book.title}
-                  </h5>
-                  <p className="mb-1 d-flex align-items-center text-dark">
-                    <BiUserCircle className="me-2" />
-                    {book.author}
-                  </p>
-                  <p className="text-muted">Published: {book.publishYear}</p>
+                  <h5 className="fw-semibold mb-3">{book.descriptiveName}</h5>
+                  
+                  <p className="mb-1"><strong>Financial Class:</strong> {book.financialClass}</p>
+                  <p className="mb-1"><strong>Payer Code:</strong> {book.payerCode}</p>
+                  <p className="mb-1"><strong>Payer Name:</strong> {book.payerName}</p>
+                  <p className="mb-1"><strong>Plan Code:</strong> {book.planCode}</p>
+                  <p className="mb-1"><strong>Plan Name:</strong> {book.planName}</p>
+                  <p className="mb-1"><strong>SAMC Contracted:</strong> {book.samcContracted}</p>
+                  <p className="mb-1"><strong>SAMF Contracted:</strong> {book.samfContracted}</p>
+                  <p className="mb-2"><strong>Notes:</strong> {book.notes}</p>
+
+                  {book.image && (
+                    <div className="text-center mb-3">
+                      <img src={book.image} alt="Book" className="img-fluid rounded" />
+                    </div>
+                  )}
                 </div>
+
                 <div className="d-flex justify-content-end gap-3 fs-5 mt-3">
                   <button
-                    className="btn p-0 border-0 bg-transparent text-primary hoverable-icon"
+                    className="btn p-0 border-0 bg-transparent"
                     onClick={() => setSelectedBook(book)}
                   >
                     <AiOutlineEye />
                   </button>
-                  <Link to={`/books/details/${book._id}`} className="text-success hoverable-icon">
+                  <Link to={`/books/details/${book._id}`} className="text-decoration-none">
                     <BsInfoCircle />
                   </Link>
-                  <Link to={`/books/edit/${book._id}`} className="text-warning hoverable-icon">
+                  <Link to={`/books/edit/${book._id}`} className="text-decoration-none">
                     <AiOutlineEdit />
                   </Link>
-                  <Link to={`/books/delete/${book._id}`} className="text-danger hoverable-icon">
+                  <Link to={`/books/delete/${book._id}`} className="text-decoration-none">
                     <MdOutlineDelete />
                   </Link>
                 </div>
@@ -74,29 +78,27 @@ const BooksCard = ({ books }) => {
           onClick={handleBackdropClick}
         >
           <div
-            className="p-4 rounded-4 shadow-lg"
+            className="p-4 rounded-4 shadow-lg bg-white text-dark"
             style={{
-              backgroundColor: '#fefcf6',
-              color: '#3f2b1c',
               maxWidth: '500px',
               width: '90%',
-              border: '3px solid #e1bba5',
             }}
           >
-            <h4 className="fw-bold text-scrollEdge mb-3">{selectedBook.title}</h4>
-            <p className="mb-2">
-              <strong>Author:</strong> {selectedBook.author}
-            </p>
-            <p className="mb-3">
-              <strong>Published:</strong> {selectedBook.publishYear}
-            </p>
-            <hr />
-            <p className="mb-2">
-              {selectedBook.description || 'No description available.'}
-            </p>
-            <p className="text-muted">
-              {selectedBook.additionalInfo || 'No additional information.'}
-            </p>
+            <h4 className="fw-bold mb-3">{selectedBook.descriptiveName}</h4>
+            <p><strong>Financial Class:</strong> {selectedBook.financialClass}</p>
+            <p><strong>Payer Code:</strong> {selectedBook.payerCode}</p>
+            <p><strong>Payer Name:</strong> {selectedBook.payerName}</p>
+            <p><strong>Plan Code:</strong> {selectedBook.planCode}</p>
+            <p><strong>Plan Name:</strong> {selectedBook.planName}</p>
+            <p><strong>SAMC Contracted:</strong> {selectedBook.samcContracted}</p>
+            <p><strong>SAMF Contracted:</strong> {selectedBook.samfContracted}</p>
+            <p><strong>Notes:</strong> {selectedBook.notes}</p>
+
+            {selectedBook.image && (
+              <div className="text-center mt-3">
+                <img src={selectedBook.image} alt="Book" className="img-fluid rounded" />
+              </div>
+            )}
           </div>
         </div>
       )}

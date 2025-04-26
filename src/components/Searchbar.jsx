@@ -1,0 +1,39 @@
+import React from 'react'
+
+
+const Searchbar = ({ showType, setShowType, searchQuery, setSearchQuery }) => {
+    return (
+        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 my-4">
+            {/* Left-aligned buttons */}
+            <div className="btn-group">
+                <button
+                    onClick={() => setShowType('table')}
+                    className={`toggle-btn btn ${showType === 'table' ? 'btn-primary' : 'btn-secondary'
+                        }`}
+                >
+                    📋
+                </button>
+                <button
+                    onClick={() => setShowType('card')}
+                    className={`toggle-btn btn ${showType === 'card' ? 'btn-primary' : 'btn-secondary'
+                        }`}
+                >
+                    🗂️
+                </button>
+            </div>
+
+            {/* Centered search bar */}
+            <div className="flex-grow-1 d-flex justify-content-center">
+                <input
+                    type="text"
+                    placeholder="Search insurance plans..."
+                    className="form-control search-bar w-100"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </div>
+        </div>
+    )
+}
+
+export default Searchbar
