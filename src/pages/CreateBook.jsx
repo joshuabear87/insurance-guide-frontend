@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import API from '../axios';
 import axios from 'axios';
 import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
+import ImageUploader from '../components/ImageUploader';
 
-const CreateBooks = () => {
+const CreateInsurancePlan = () => {
   const [financialClass, setFinancialClass] = useState('');
   const [descriptiveName, setDescriptiveName] = useState('');
   const [payerName, setPayerName] = useState('');
@@ -16,171 +18,189 @@ const CreateBooks = () => {
   const [samfContracted, setSamfContracted] = useState(false);
   const [notes, setNotes] = useState('');
   const [image, setImage] = useState('');
+  const [secondaryImage, setSecondaryImage] = useState('');
+  const [imagePublicId, setImagePublicId] = useState('');
+  const [secondaryImagePublicId, setSecondaryImagePublicId] = useState('');
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleSaveBook = async () => {
     const data = {
       financialClass,
       descriptiveName,
       payerName,
-      payerCode,
+      payerCode: Number(payerCode),
       planName,
-      planCode,
+      planCode: Number(planCode),
       samcContracted,
       samfContracted,
       notes,
-      image
+      image,
+      secondaryImage,
+      imagePublicId,
+      secondaryImagePublicId,
     };
+
     setLoading(true);
     try {
-      await axios.post(`${API_URL}/books`, data);
-      setLoading(false);
-      enqueueSnackbar('Book created successfully!', { variant: 'success' });
+      await API.post('/books', data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      enqueueSnackbar('Insurance plan created successfully!', { variant: 'success' });
       navigate('/');
     } catch (err) {
+      enqueueSnackbar('Error creating insurance plan!', { variant: 'error' });
+    } finally {
       setLoading(false);
-      enqueueSnackbar('Error creating book!', { variant: 'error' });
-      console.error(err);
     }
   };
 
+  const handleImageUpload = async (file, isSecondary, setProgress) => {
+    if (!file) return null;
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'insurance-card');
+
+    try {
+      setLoading(true);
+      const res = await axios.post('https://api.cloudinary.com/v1_1/dxrxo2wrs/image/upload', formData, {
+        onUploadProgress: (e) => {
+          if (setProgress) {
+            const percent = Math.round((e.loaded * 100) / e.total);
+            setProgress(percent);
+          }
+        }
+      });
+      if (isSecondary) {
+        setSecondaryImage(res.data.secure_url);
+        setSecondaryImagePublicId(res.data.public_id);
+      } else {
+        setImage(res.data.secure_url);
+        setImagePublicId(res.data.public_id);
+      }
+      enqueueSnackbar('Image uploaded successfully!', { variant: 'success' });
+      return res.data.secure_url;
+    } catch (err) {
+      enqueueSnackbar('Image upload failed!', { variant: 'error' });
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleReset = () => {
+    setFinancialClass('');
+    setDescriptiveName('');
+    setPayerName('');
+    setPayerCode('');
+    setPlanName('');
+    setPlanCode('');
+    setSamcContracted(false);
+    setSamfContracted(false);
+    setNotes('');
+    setImage('');
+    setSecondaryImage('');
+    setImagePublicId('');
+    setSecondaryImagePublicId('');
+  };
+
   return (
-    <div className="container-fluid py-5 bg-parchment min-vh-100">
+    <div className="container-fluid py-5 min-vh-100 bg-grey">
       <BackButton />
-      <h1 className="text-center mb-4" style={{ color: '#6c4c2b' }}>Create Book</h1>
-
       {loading && <Spinner />}
-
       <div className="d-flex justify-content-center">
-        <div
-          className="card border-0 shadow-sm rounded-4 p-4"
-          style={{ backgroundColor: '#fefcf6', maxWidth: '500px', width: '100%' }}
-        >
-          {/* Financial Class */}
+        <div className="card border-0 w-75 shadow-sm rounded-4 p-4">
+          <h1 className="text-center mb-4 text-blue">Create Insurance Plan</h1>
+          <hr className="divider" />
+          
           <div className="mb-3">
             <label className="form-label text-muted">Financial Class</label>
-            <input
-              type="text"
-              className="form-control"
-              value={financialClass}
-              onChange={(e) => setFinancialClass(e.target.value)}
-            />
+            <select className="form-select" value={financialClass} onChange={(e) => setFinancialClass(e.target.value)}>
+              <option value="">Select a Financial Class</option>
+              <option value="Commercial">Commercial</option>
+              <option value="Medicare">Medicare</option>
+              <option value="Medi-Cal">Medi-Cal</option>
+            </select>
           </div>
 
-          {/* Descriptive Name */}
           <div className="mb-3">
             <label className="form-label text-muted">Descriptive Name</label>
-            <input
-              type="text"
-              className="form-control"
-              value={descriptiveName}
-              onChange={(e) => setDescriptiveName(e.target.value)}
-            />
+            <input type="text" className="form-control" value={descriptiveName} onChange={(e) => setDescriptiveName(e.target.value)} />
           </div>
 
-          {/* Payer Name */}
-          <div className="mb-3">
-            <label className="form-label text-muted">Payer Name</label>
-            <input
-              type="text"
-              className="form-control"
-              value={payerName}
-              onChange={(e) => setPayerName(e.target.value)}
-            />
-          </div>
-
-          {/* Payer Code */}
           <div className="mb-3">
             <label className="form-label text-muted">Payer Code</label>
-            <input
-              type="text"
-              className="form-control"
-              value={payerCode}
-              onChange={(e) => setPayerCode(e.target.value)}
-            />
+            <input type="text" className="form-control" value={payerCode} onChange={(e) => setPayerCode(e.target.value)} />
           </div>
 
-          {/* Plan Name */}
           <div className="mb-3">
-            <label className="form-label text-muted">Plan Name</label>
-            <input
-              type="text"
-              className="form-control"
-              value={planName}
-              onChange={(e) => setPlanName(e.target.value)}
-            />
+            <label className="form-label text-muted">Payer Name</label>
+            <input type="text" className="form-control" value={payerName} onChange={(e) => setPayerName(e.target.value)} />
           </div>
 
-          {/* Plan Code */}
           <div className="mb-3">
             <label className="form-label text-muted">Plan Code</label>
-            <input
-              type="text"
-              className="form-control"
-              value={planCode}
-              onChange={(e) => setPlanCode(e.target.value)}
-            />
+            <input type="text" className="form-control" value={planCode} onChange={(e) => setPlanCode(e.target.value)} />
           </div>
 
-          {/* SAMC Contracted */}
-          <div className="mb-3 form-check">
-            <input
-              type="checkbox"
-              className="form-check-input"
-              checked={samcContracted}
-              onChange={() => setSamcContracted(!samcContracted)}
-            />
-            <label className="form-check-label text-muted">SAMC Contracted</label>
+          <div className="mb-3">
+            <label className="form-label text-muted">Plan Name</label>
+            <input type="text" className="form-control" value={planName} onChange={(e) => setPlanName(e.target.value)} />
           </div>
 
-          {/* SAMF Contracted */}
-          <div className="mb-3 form-check">
-            <input
-              type="checkbox"
-              className="form-check-input"
-              checked={samfContracted}
-              onChange={() => setSamfContracted(!samfContracted)}
-            />
-            <label className="form-check-label text-muted">SAMF Contracted</label>
+          <div className="mb-3">
+            <label className="form-label text-muted">SAMC Contracted</label>
+            <select className="form-select" value={samcContracted ? 'Yes' : 'No'} onChange={(e) => setSamcContracted(e.target.value === 'Yes')}>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+              <option value="Must call to confirm">Must call to confirm</option>
+            </select>
           </div>
 
-          {/* Notes */}
+          <div className="mb-3">
+            <label className="form-label text-muted">SAMF Contracted</label>
+            <select className="form-select" value={samfContracted ? 'Yes' : 'No'} onChange={(e) => setSamfContracted(e.target.value === 'Yes')}>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+              <option value="Must call to confirm">Must call to confirm</option>
+            </select>
+          </div>
+
           <div className="mb-3">
             <label className="form-label text-muted">Notes</label>
-            <textarea
-              className="form-control"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-            ></textarea>
+            <textarea className="form-control" value={notes} onChange={(e) => setNotes(e.target.value)}></textarea>
           </div>
 
-          {/* Image URL */}
-          <div className="mb-3">
-            <label className="form-label text-muted">Image URL</label>
-            <input
-              type="text"
-              className="form-control"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-            />
+          {/* Front and Back Images on Same Row */}
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <label className="form-label text-muted">Insurance Card (front)</label>
+              <ImageUploader onUpload={handleImageUpload} isSecondary={false} existingImage={image} />
+            </div>
+            <div className="col-md-6 mb-3">
+              <label className="form-label text-muted">Insurance Card (back)</label>
+              <ImageUploader onUpload={handleImageUpload} isSecondary={true} existingImage={secondaryImage} />
+            </div>
           </div>
 
-          {/* Save Button */}
-          <button
-            className="btn btn-outline-dark w-100"
-            style={{ backgroundColor: '#e1bba5', color: '#3f2b1c' }}
-            onClick={handleSaveBook}
-          >
-            Save
-          </button>
+          <hr className="divider mb-5" />
+          <div className="d-flex justify-content-between">
+            <button className="btn btn-secondary" type="button" onClick={handleReset}>
+              Reset
+            </button>
+            <button className="btn btn-update" onClick={handleSaveBook}>
+              Save
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default CreateBooks;
+export default CreateInsurancePlan;
