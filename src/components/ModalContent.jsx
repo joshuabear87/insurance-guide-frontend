@@ -1,9 +1,10 @@
 import { AiOutlineClose } from 'react-icons/ai';
-import { PiBookOpenTextLight } from 'react-icons/pi';
+import { Link } from 'react-router-dom';
+import ContractStatusBadge from './ContractStatusBadge'; // <-- Don't forget to import it!
 
 const ModalContent = ({ book, onClose }) => {
   return (
-    <div className="bg-white rounded sha p-4 position-relative">
+    <div className="bg-white rounded shadow p-4 position-relative">
       {/* Close Button */}
       <AiOutlineClose
         className="position-absolute top-0 end-0 m-3 text-danger"
@@ -12,55 +13,73 @@ const ModalContent = ({ book, onClose }) => {
         onClick={onClose}
       />
 
+      {/* Centered Title and Financial Class */}
+      <div className="text-center mb-4">
+        <div className="d-flex justify-content-center align-items-center gap-2 mb-2">
+          <h3 className="fw-bold mb-0 modal-main-header">{book.descriptiveName}</h3>
+        </div>
+        <div className="text-muted" style={{ fontSize: '0.9rem' }}>
+          {book.financialClass}
+        </div>
+      </div>
+      <hr className='divider' />
+
+      {/* Two Column Info */}
+      <div className="row mb-4">
+        <div className="col-md-6 my-2">
+          <p><span className="fw-bold">Payer Name:</span> {book.payerName}</p>
+        </div>
+        <div className="col-md-6 my-2">
+          <p><span className="fw-bold">Payer Code:</span> {book.payerCode}</p>
+        </div>
+        <div className="col-md-6 my-2">
+          <p><span className="fw-bold">Plan Name:</span> {book.planName}</p>
+        </div>
+        <div className="col-md-6 my-2">
+          <p><span className="fw-bold">Plan Code:</span> {book.planCode}</p>
+        </div>
+        <div className="col-md-6 my-2">
+          <p className="mb-1"><span className="fw-bold">SAMC Contracted:</span></p>
+          <ContractStatusBadge status={book.samcContracted} />
+        </div>
+        <div className="col-md-6 my-2">
+          <p className="mb-1"><span className="fw-bold">SAMF Contracted:</span></p>
+          <ContractStatusBadge status={book.samfContracted} />
+        </div>
+      </div>
+
+      {/* Notes Centered */}
+      <div className="text-start mb-4 notes-border p-2">
+        <h6 className="fw-bold">Notes:</h6>
+        <p className="text-dark">{book.notes || 'No notes available.'}</p>
+      </div>
+
+
       {/* Images Section */}
-      <div className="d-flex flex-column flex-md-row gap-3 mb-4">
+      <div className="d-flex justify-content-center gap-3 flex-wrap my-3">
         {book.image && (
-          <img 
-            src={book.image} 
-            alt="Primary Book Image" 
-            className="img-fluid rounded"
-            style={{ maxHeight: '300px', objectFit: 'cover', width: '100%' }}
+          <img
+            src={book.image}
+            alt="Primary Book Image"
+            className="img-fluid rounded shadow"
+            style={{ maxHeight: '200px', objectFit: 'cover', width: '45%' }}
           />
         )}
         {book.secondaryImage && (
-          <img 
-            src={book.secondaryImage} 
-            alt="Secondary Book Image" 
-            className="img-fluid rounded"
-            style={{ maxHeight: '300px', objectFit: 'cover', width: '100%' }}
+          <img
+            src={book.secondaryImage}
+            alt="Secondary Book Image"
+            className="img-fluid rounded shadow"
+            style={{ maxHeight: '200px', objectFit: 'cover', width: '45%' }}
           />
         )}
       </div>
-
-      {/* Main Title with Book Icon */}
-      <div className="d-flex align-items-center gap-2 mb-3">
-        <PiBookOpenTextLight className="text-danger" size={24} />
-        <h4 className="fw-bold mb-0">{book.descriptiveName}</h4>
+      {/* See More Button */}
+      <div className="text-center mb-2">
+        <Link to={`/books/details/${book._id}`} className="btn btn-login">
+          See More
+        </Link>
       </div>
-
-      {/* Financial Class */}
-      <p><strong>Financial Class:</strong> {book.financialClass}</p>
-
-      {/* Payer Code */}
-      <p><strong>Payer Code:</strong> {book.payerCode}</p>
-
-      {/* Payer Name */}
-      <p><strong>Payer Name:</strong> {book.payerName}</p>
-
-      {/* Plan Code */}
-      <p><strong>Plan Code:</strong> {book.planCode}</p>
-
-      {/* Plan Name */}
-      <p><strong>Plan Name:</strong> {book.planName}</p>
-
-      {/* SAMC Contracted */}
-      <p><strong>SAMC Contracted:</strong> {book.samcContracted ? 'Yes' : 'No'}</p>
-
-      {/* SAMF Contracted */}
-      <p><strong>SAMF Contracted:</strong> {book.samfContracted ? 'Yes' : 'No'}</p>
-
-      {/* Notes */}
-      <p><strong>Notes:</strong> {book.notes || 'No notes available.'}</p>
     </div>
   );
 };
