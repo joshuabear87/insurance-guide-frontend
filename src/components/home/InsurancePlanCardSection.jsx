@@ -4,7 +4,7 @@ import { AiOutlineEye, AiOutlineEdit } from 'react-icons/ai';
 import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineDelete } from 'react-icons/md';
 
-const BooksCard = ({ books }) => {
+const InsurancePlanCardSection = ({ books }) => {
   const [selectedBook, setSelectedBook] = useState(null);
 
   const handleBackdropClick = (e) => {
@@ -106,4 +106,4 @@ const BooksCard = ({ books }) => {
   );
 };
 
-export default BooksCard;
+export default InsurancePlanCardSection;

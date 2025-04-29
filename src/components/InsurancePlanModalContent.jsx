@@ -2,7 +2,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import ContractStatusBadge from './ContractStatusBadge'; // <-- Don't forget to import it!
 
-const ModalContent = ({ book, onClose }) => {
+const InsurancePlanModalContent = ({ book, onClose }) => {
   return (
     <div className="bg-white rounded shadow p-4 position-relative">
       {/* Close Button */}
@@ -84,4 +84,4 @@ const ModalContent = ({ book, onClose }) => {
   );
 };
 
-export default ModalContent;
+export default InsurancePlanModalContent;

@@ -6,8 +6,9 @@ import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
 import PlanPortalLinks from '../components/forms/PlanPortalLinksForm';
 import PlanPhoneNumbers from '../components/forms/PlanPhoneNumbersForm';
-import PlanImageUploads from '../components/forms/PlanImageUploaders';
+import PlanImageUploads from '../components/forms/PlanImageUploads';
 import PlanAddressSection from '../components/forms/PlanAddressNotesForm';
+import PlanBasicInfoForm from '../components/forms/PlanBasicInfoForm';
 
 const CreateInsurancePlan = () => {
   const [formData, setFormData] = useState({
@@ -38,6 +39,38 @@ const CreateInsurancePlan = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
+  const handleImageUpload = async (file, isSecondary = false) => {
+    if (!file) return;
+
+    const formDataCloudinary = new FormData();
+    formDataCloudinary.append('file', file);
+    formDataCloudinary.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+
+    try {
+      const res = await fetch('https://api.cloudinary.com/v1_1/dxrxo2wrs/image/upload', {
+        method: 'POST',
+        body: formDataCloudinary,
+      });
+      const data = await res.json();
+      console.log('UPLOAD RESULT', data);
+      if (isSecondary) {
+        setFormData((prev) => ({
+          ...prev,
+          secondaryImage: data.secure_url,
+          secondaryImagePublicId: data.public_id,
+        }));
+      } else {
+        setFormData((prev) => ({
+          ...prev,
+          image: data.secure_url,
+          imagePublicId: data.public_id,
+        }));
+      }
+    } catch (error) {
+      console.error('Cloudinary upload error:', error);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === 'ipaPayerId' || name === 'payerId') {
@@ -47,7 +80,7 @@ const CreateInsurancePlan = () => {
     }
   };
 
-  const handleSaveBook = async () => {
+  const handleSavePlan = async () => {
     const newPlan = {
       ...formData,
       payerCode: Number(formData.payerCode),
@@ -60,6 +93,7 @@ const CreateInsurancePlan = () => {
 
     try {
       setLoading(true);
+      console.log('Saving plan with data', newPlan);
       await API.post('/books', newPlan);
       enqueueSnackbar('Insurance plan created successfully!', { variant: 'success' });
       navigate('/');
@@ -106,17 +140,18 @@ const CreateInsurancePlan = () => {
           <h1 className="text-center mb-4 text-blue">Create Insurance Plan</h1>
           <hr className="divider" />
 
+          <PlanBasicInfoForm formData={formData} handleChange={handleChange} />
           <PlanAddressSection formData={formData} handleChange={handleChange} />
           <PlanPortalLinks formData={formData} setFormData={setFormData} />
           <PlanPhoneNumbers formData={formData} setFormData={setFormData} />
-          <PlanImageUploads formData={formData} setFormData={setFormData} setLoading={setLoading} />
+          <PlanImageUploads formData={formData} setFormData={setFormData} handleImageUpload={handleImageUpload} />
 
           <hr className="divider my-4" />
           <div className="d-flex justify-content-between">
             <button className="btn btn-secondary" type="button" onClick={handleReset}>
               Reset
             </button>
-            <button className="btn btn-primary" type="button" onClick={handleSaveBook}>
+            <button className="btn btn-primary" type="button" onClick={handleSavePlan}>
               Save
             </button>
           </div>

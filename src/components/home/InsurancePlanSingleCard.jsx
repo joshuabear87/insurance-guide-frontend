@@ -4,9 +4,9 @@ import { BsInfoCircle } from 'react-icons/bs';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { MdOutlineDelete } from 'react-icons/md';
 import { FaRegEye } from 'react-icons/fa';
-import BookModal from './BookModal';
+import InsurancePlanModal from '../InsurancePlanModal';
 
-const BookSingleCard = ({ book, index }) => {
+const InsurancePlanSingleCard = ({ book, index }) => {
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -49,9 +49,9 @@ const BookSingleCard = ({ book, index }) => {
         </div>
       </div>
 
-      {showModal && <BookModal book={book} onClose={() => setShowModal(false)} />}
+      {showModal && <InsurancePlanModal book={book} onClose={() => setShowModal(false)} />}
     </>
   );
 };
 
-export default BookSingleCard;
+export default InsurancePlanSingleCard;

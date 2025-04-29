@@ -5,7 +5,7 @@ import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
 import ContractStatusBadge from '../components/ContractStatusBadge';
 
-const ShowBook = () => {
+const ViewInsurancePlan = () => {
   const [book, setBook] = useState({});
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
@@ -182,4 +182,4 @@ const ShowBook = () => {
   );
 };
 
-export default ShowBook;
+export default ViewInsurancePlan;

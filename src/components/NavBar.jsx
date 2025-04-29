@@ -3,6 +3,7 @@ import { FaBars } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import API from '../axios';
+import styles from '../styles/NavBar.module.css'
 
 const NavBar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -57,14 +58,14 @@ const NavBar = () => {
 
   return (
 <>
-  <nav className="navbar fixed-top py-3 px-5">
+  <nav className={`navbar fixed-top py-3 px-5 ${styles.navbar}`}>
     <div className="container-fluid d-flex justify-content-between align-items-center">
       <div>
         <h1 className="p">Saint Agnes Medical Center</h1>
         <h4 className="mb-0">Insurance Coding Guide (pilot)</h4>
       </div>
       <button
-        className="btn hamburger"
+        className={`btn ${styles.hamburger}`}
         onClick={toggleSidebar}
         aria-label="Toggle sidebar"
       >

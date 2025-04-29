@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { MdOutlineDelete } from 'react-icons/md';
-import ContractStatusBadge from '../../components/ContractStatusBadge';
-import ModalContent from '../ModalContent';
+import ContractStatusBadge from '../ContractStatusBadge';
+import InsurancePlanModalContent from '../InsurancePlanModalContent';
 
-const BooksTable = ({ books }) => {
+const InsurancePlanTable = ({ books }) => {
   const isAuthenticated = !!localStorage.getItem('accessToken');
   const [sortConfig, setSortConfig] = useState({ key: '', direction: '' });
   const [selectedBook, setSelectedBook] = useState(null);
@@ -122,7 +122,7 @@ const BooksTable = ({ books }) => {
       style={{ maxWidth: '700px', width: '100%', overflowY: 'auto', maxHeight: '90vh' }}
       onClick={(e) => e.stopPropagation()}
     >
-      <ModalContent book={selectedBook} onClose={handleBackdropClick} />
+      <InsurancePlanModalContent book={selectedBook} onClose={handleBackdropClick} />
     </div>
   </div>
 )}
@@ -131,4 +131,4 @@ const BooksTable = ({ books }) => {
   );
 };
 
-export default BooksTable;
+export default InsurancePlanTable;

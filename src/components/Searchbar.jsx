@@ -2,7 +2,7 @@ import React from 'react';
 
 const Searchbar = ({ showType, setShowType, searchQuery, setSearchQuery }) => {
   return (
-    <div className="d-flex align-items-center justify-content-between gap-3 my-4">
+    <div className="d-flex align-items-center justify-content-between gap-3">
       {/* Left-aligned buttons */}
       <div className="btn-group">
         <button

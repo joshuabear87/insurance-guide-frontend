@@ -22,7 +22,7 @@ const PlanBasicInfoForm = ({ formData, handleChange }) => {
 
   return (
     <>
-      <h5 className="text-center my-4 btn-blue">Basic Payer and Coding Information</h5>
+      <h5 className="text-center my-4">Basic Payer and Coding Information</h5>
 
       <div className="row g-3">
         {fields.map(([label, name, type, options], index) => (

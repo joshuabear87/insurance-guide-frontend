@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import styles from './ImageUploader.module.css';
+import styles from '../styles/ImageUploader.module.css';
 
 const ImageUploader = ({ onUpload, isSecondary, existingImage }) => {
   const fileInputRef = useRef(null);

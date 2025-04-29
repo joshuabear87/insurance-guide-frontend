@@ -3,14 +3,15 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import API from '../axios';
 import Spinner from '../components/Spinner';
-import '../styles/Auth.css';
+import '../styles/_auth.css';
 
-const RegisterScreen = () => {
+const RegistrationPage = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
   const [formData, setFormData] = useState({
     username: '',
+    facilityName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -63,6 +64,18 @@ const RegisterScreen = () => {
               required
             />
           </div>
+
+          <div className="mb-3">
+  <label className="form-label fw-bold">Facility Name</label>
+  <input
+    type="text"
+    className="form-control"
+    value={formData.facilityName}
+    onChange={(e) => setFacilityName(e.target.value)}
+    placeholder="Enter your facility or organization"
+    required
+  />
+</div>
 
           <div className="mb-3">
             <label className="form-label fw-bold">Email</label>
@@ -120,4 +133,4 @@ const RegisterScreen = () => {
   );
 };
 
-export default RegisterScreen;
+export default RegistrationPage;

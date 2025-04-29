@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import API from '../axios';
@@ -21,7 +21,7 @@ const LoginPage = () => {
     setLoading(true);
     try {
       const { data } = await API.post('/auth/login', { email, password });
-      login(data.accessToken, data.refreshToken, { id: data._id, username: data.username, email: data.email, role: data.role }); // ✅ Use your context login()
+      login({ accessToken: data.accessToken, refreshToken: data.refreshToken });
       enqueueSnackbar('Login successful!', { variant: 'success' });
       navigate('/');
     } catch (error) {
@@ -81,10 +81,19 @@ const LoginPage = () => {
           </div>
         </form>
 
-        <div className="text-center mt-2">
-          <a href="/forgot-password" className="text-primary" style={{ color: '#007b9e' }}>
+        {/* Forgot password link */}
+        <div className="text-center mt-3">
+          <Link to="/forgot-password" className="text-primary" style={{ textDecoration: 'none' }}>
             Forgot Password?
-          </a>
+          </Link>
+        </div>
+
+        {/* New registration section */}
+        <div className="text-center mt-3">
+          <small className="text-muted">No account? No problem!</small><br />
+          <Link to="/register" className="btn btn-outline-primary btn-sm mt-2">
+            Register Here
+          </Link>
         </div>
       </div>
     </div>

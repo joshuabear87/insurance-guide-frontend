@@ -1,11 +1,29 @@
 import React from 'react';
 
-const PlanPhoneNumbers = ({ phoneNumbers, handlePhoneNumberChange, addPhoneNumber, removePhoneNumber }) => {
+const PlanPhoneNumbers = ({ formData, setFormData }) => {
+  const handlePhoneNumberChange = (index, field, value) => {
+    const updatedPhoneNumbers = [...formData.phoneNumbers];
+    updatedPhoneNumbers[index][field] = value;
+    setFormData({ ...formData, phoneNumbers: updatedPhoneNumbers });
+  };
+
+  const addPhoneNumber = () => {
+    setFormData({ 
+      ...formData, 
+      phoneNumbers: [...formData.phoneNumbers, { title: '', number: '' }]
+    });
+  };
+
+  const removePhoneNumber = (index) => {
+    const updatedPhoneNumbers = formData.phoneNumbers.filter((_, i) => i !== index);
+    setFormData({ ...formData, phoneNumbers: updatedPhoneNumbers });
+  };
+
   return (
     <div className="col-12">
-      <h5 className="text-center my-4 btn-blue">Phone Numbers</h5>
+      <h5 className="text-center my-4">Phone Numbers</h5>
 
-      {phoneNumbers.map((phone, index) => (
+      {formData.phoneNumbers.map((phone, index) => (
         <div key={index} className="d-flex mb-2 align-items-center gap-2">
           <input
             type="text"

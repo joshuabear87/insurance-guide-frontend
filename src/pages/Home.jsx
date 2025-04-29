@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import API from '../axios';
 import Spinner from '../components/Spinner';
-import BooksCard from '../components/home/BooksCard';
-import BooksTable from '../components/home/BooksTable';
-import Navbar from '../components/NavBar';
 import Searchbar from '../components/Searchbar';
+import InsurancePlanTable from '../components/home/InsurancePlanTable';
+import InsurancePlanCardSection from '../components/home/InsurancePlanCardSection';
 
 const Home = () => {
   const [books, setBooks] = useState([]);
@@ -20,7 +19,7 @@ const Home = () => {
       } catch (err) {
         console.error('Error fetching books:', err);
       } finally {
-        setTimeout(() => setLoading(false), 500); // Only delay hiding the spinner, not fetching!
+        setTimeout(() => setLoading(false), 500);
       }
     };
     fetchBooks();
@@ -35,14 +34,13 @@ const Home = () => {
   }, [books, searchQuery]);
 
   return (
-    <div className="container-fluid min-vh-100 bg-light page-container">
-      <Navbar />
+      <>
       <Searchbar
         showType={showType}
         setShowType={setShowType}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-      />
+        />
 
       <div>
         {loading ? (
@@ -50,12 +48,12 @@ const Home = () => {
             <Spinner />
           </div>
         ) : showType === 'table' ? (
-          <BooksTable books={filteredBooks} />
+          <InsurancePlanTable books={filteredBooks} />
         ) : (
-          <BooksCard books={filteredBooks} />
+          <InsurancePlanCardSection books={filteredBooks} />
         )}
       </div>
-    </div>
+        </>
   );
 };
 

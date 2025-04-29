@@ -4,11 +4,20 @@ import { jwtDecode } from 'jwt-decode';
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const accessToken = localStorage.getItem('accessToken');
 
-  if (!accessToken) {
+  if (!accessToken || typeof accessToken !== 'string' || accessToken.split('.').length !== 3) {
     return <Navigate to="/login" replace />;
   }
 
-  const decoded = jwtDecode(accessToken);
+  let decoded;
+  try {
+    decoded = jwtDecode(accessToken);
+  } catch (error) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (decoded.exp && decoded.exp * 1000 < Date.now()) {
+    return <Navigate to="/login" replace />;
+  }
 
   if (adminOnly && !decoded.isAdmin) {
     return <Navigate to="/" replace />;

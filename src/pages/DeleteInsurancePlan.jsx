@@ -5,7 +5,7 @@ import API from '../axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
-const DeleteBook = () => {
+const DeleteInsurancePlan = () => {
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -105,4 +105,4 @@ const DeleteBook = () => {
   );
 };
 
-export default DeleteBook;
+export default DeleteInsurancePlan;
