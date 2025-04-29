@@ -1,10 +1,16 @@
-import React from 'react';
 import { Navigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
-const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = !!localStorage.getItem('token');
+const ProtectedRoute = ({ children, adminOnly = false }) => {
+  const accessToken = localStorage.getItem('accessToken');
 
-  if (!isAuthenticated) {
+  if (!accessToken) {
+    return <Navigate to="/login" replace />;
+  }
+
+  const decoded = jwtDecode(accessToken);
+
+  if (adminOnly && !decoded.isAdmin) {
     return <Navigate to="/" replace />;
   }
 

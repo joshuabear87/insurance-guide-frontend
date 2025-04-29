@@ -6,7 +6,7 @@ import ContractStatusBadge from '../../components/ContractStatusBadge';
 import ModalContent from '../ModalContent';
 
 const BooksTable = ({ books }) => {
-  const isAuthenticated = !!localStorage.getItem('token');
+  const isAuthenticated = !!localStorage.getItem('accessToken');
   const [sortConfig, setSortConfig] = useState({ key: '', direction: '' });
   const [selectedBook, setSelectedBook] = useState(null);
 

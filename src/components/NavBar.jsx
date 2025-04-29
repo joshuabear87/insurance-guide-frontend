@@ -9,14 +9,14 @@ const NavBar = () => {
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('accessToken'));
   const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      API.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      API.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
     }
   }, []);
 
@@ -33,9 +33,9 @@ const NavBar = () => {
         { username, password },
         { headers: { 'Content-Type': 'application/json' } }
       );
-      const { token } = response.data;
-      localStorage.setItem('token', token);
-      API.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      const { accessToken } = response.data;
+      localStorage.setItem('accessToken', accessToken);
+      API.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
       setIsAuthenticated(true);
       setShowLoginForm(false);
       closeSidebar();
@@ -47,7 +47,7 @@ const NavBar = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('accessToken');
     setIsAuthenticated(false);
     setShowLoginForm(false);
     closeSidebar();
