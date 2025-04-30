@@ -1,6 +1,17 @@
 import React from 'react';
 
-const PlanBasicInfoForm = ({ formData, handleChange }) => {
+const PlanBasicInfoForm = ({ formData, handleChange, showValidationError }) => {
+  const requiredFields = [
+    'financialClass',
+    'descriptiveName',
+    'payerName',
+    'payerCode',
+    'planName',
+    'planCode',
+    'samcContracted',
+    'samfContracted',
+  ];
+
   const fields = [
     ['Financial Class', 'financialClass', 'select', ['Commercial', 'Medicare', 'Medi-Cal']],
     ['Descriptive Name', 'descriptiveName'],
@@ -10,27 +21,26 @@ const PlanBasicInfoForm = ({ formData, handleChange }) => {
     ['Plan Code', 'planCode'],
   ];
 
-  const textareas = [
-    ['Prefixes', 'prefix'],
-    ['Eligibility and Coding Notes', 'notes'],
+  const contractOptions = [
+    ['Is SAMC Contracted?', 'samcContracted', ['Contracted', 'Not Contracted', 'Must call to confirm']],
+    ['Is SAMF Contracted?', 'samfContracted', ['Contracted', 'Not Contracted', 'Must call to confirm']],
   ];
 
-  const contractOptions = [
-    ['SAMC Contracted', 'samcContracted', ['Contracted', 'Not Contracted', 'Must call to confirm']],
-    ['SAMF Contracted', 'samfContracted', ['Contracted', 'Not Contracted', 'Must call to confirm']],
-  ];
+  const isInvalid = (name) =>
+    showValidationError && requiredFields.includes(name) && !formData[name];
 
   return (
-    <>
-      <h5 className="text-center my-4">Basic Payer and Coding Information</h5>
-
-      <div className="row g-3">
+    <div className='p-2'>
+      <div className="row g-3 shadow-sm mb-4 pb-4 px-2 bg-light">
         {fields.map(([label, name, type, options], index) => (
           <div className="col-md-6" key={index}>
-            <label className="form-label">{label}</label>
+            <label className="form-label">
+              {label} {requiredFields.includes(name) && <span className="text-danger">*</span>}
+            </label>
+
             {type === 'select' ? (
               <select
-                className="form-select"
+                className={`form-select ${isInvalid(name) ? 'is-invalid' : ''}`}
                 name={name}
                 value={formData[name]}
                 onChange={handleChange}
@@ -44,34 +54,32 @@ const PlanBasicInfoForm = ({ formData, handleChange }) => {
               </select>
             ) : (
               <input
-                type="text"
-                className="form-control"
+                type={['payerCode', 'planCode'].includes(name) ? 'number' : 'text'}
                 name={name}
                 value={formData[name]}
+                min="0"
+                className={`form-control ${isInvalid(name) ? 'is-invalid' : ''}`}
                 onChange={handleChange}
+                onKeyDown={(e) => {
+                  if (
+                    ['payerCode', 'planCode'].includes(name) &&
+                    ['e', 'E', '+', '-', '.'].includes(e.key)
+                  ) {
+                    e.preventDefault();
+                  }
+                }}
               />
             )}
           </div>
         ))}
 
-        {textareas.map(([label, name], index) => (
-          <div className="col-12" key={index}>
-            <label className="form-label">{label}</label>
-            <textarea
-              className="form-control"
-              rows="2"
-              name={name}
-              value={formData[name]}
-              onChange={handleChange}
-            />
-          </div>
-        ))}
-
         {contractOptions.map(([label, name, options], index) => (
           <div className="col-md-6" key={index}>
-            <label className="form-label">{label}</label>
+            <label className="form-label">
+              {label} {requiredFields.includes(name) && <span className="text-danger">*</span>}
+            </label>
             <select
-              className="form-select"
+              className={`form-select ${isInvalid(name) ? 'is-invalid' : ''}`}
               name={name}
               value={formData[name]}
               onChange={handleChange}
@@ -86,7 +94,7 @@ const PlanBasicInfoForm = ({ formData, handleChange }) => {
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

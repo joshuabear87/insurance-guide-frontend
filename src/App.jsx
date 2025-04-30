@@ -10,9 +10,10 @@ import RegistrationPage from './pages/RegistrationPage';
 import ViewInsurancePlan from './pages/ViewInsurancePlan';
 import CreateInsurancePlan from './pages/CreateInsurancePlan';
 import EditInsurancePlan from './pages/EditInsurancePlan';
-import DeleteInsurancePlan from './pages/DeleteInsurancePlan';
 import Layout from './components/Layout';
 import LayoutNoNav from './components/LayoutNoNav';
+import InsurancePlanFiltered from './pages/InsurancePlanFiltered';
+import PrefixesPage from './pages/PrefixesPage'
 
 const App = () => {
   return (
@@ -22,11 +23,17 @@ const App = () => {
       <Route path="/forgot-password" element={<LayoutNoNav><ForgotPasswordPage /></LayoutNoNav>} />
       {/* <Route path="/my-account" element={<ProtectedRoute><MyAccount /></ProtectedRoute>} /> */}
       <Route path="/admin" element={<ProtectedRoute adminOnly={true}><LayoutNoNav><AdminDashboard /></LayoutNoNav></ProtectedRoute>} />
+      
       <Route path="/" element={<ProtectedRoute><Layout><Home /></Layout></ProtectedRoute>} />
+      <Route path="/plans" element={<Layout><InsurancePlanFiltered /></Layout>} />
+      <Route path="/plans/commercial" element={<Layout><InsurancePlanFiltered filter="Commercial" /></Layout>} />
+      <Route path="/plans/medicare" element={<Layout><InsurancePlanFiltered filter="Medicare" /></Layout>} />
+      <Route path="/plans/medi-cal" element={<Layout><InsurancePlanFiltered filter="Medi-Cal"/></Layout>} />
+      <Route path="/prefixes" element={<Layout><PrefixesPage /></Layout>} />
+
       <Route path="/books/details/:id" element={<ProtectedRoute><ViewInsurancePlan /></ProtectedRoute>} />
       <Route path="/books/create" element={<ProtectedRoute><CreateInsurancePlan /></ProtectedRoute>} />
       <Route path="/books/edit/:id" element={<ProtectedRoute><EditInsurancePlan /></ProtectedRoute>}/>
-      <Route path="/books/delete/:id" element={<ProtectedRoute><DeleteInsurancePlan /></ProtectedRoute>}/>
     </Routes>
   );
 };

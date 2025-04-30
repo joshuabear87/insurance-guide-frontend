@@ -99,15 +99,15 @@ const NavBar = () => {
 
       <div className="d-flex flex-column align-items-start">
         <hr className="divider" />
-        <Link to="/" className="w-100">
+        <Link to="/plans" className="w-100">
           <button className="btn btn-blue w-100">All Insurances</button>
         </Link>
         <hr className="divider" />
-        <button className="btn btn-blue w-100">Commercial Insurances</button>
+        <Link to="/plans/commercial" className="btn btn-blue w-100">Commercial Insurances</Link>
         <hr className="divider" />
-        <button className="btn btn-blue w-100">Medicare Insurances</button>
+        <Link to="/plans/medicare" className="btn btn-blue w-100">Medicare Insurances</Link>
         <hr className="divider" />
-        <button className="btn btn-blue w-100">Medi-Cal Insurances</button>
+        <Link to="/plans/medi-cal" className="btn btn-blue w-100">Medi-Cal Insurances</Link>
         <hr className="divider" />
         {isAuthenticated && (
           <>

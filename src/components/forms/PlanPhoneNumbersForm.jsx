@@ -24,11 +24,11 @@ const PlanPhoneNumbers = ({ formData, setFormData }) => {
       <h5 className="text-center my-4">Phone Numbers</h5>
 
       {formData.phoneNumbers.map((phone, index) => (
-        <div key={index} className="d-flex mb-2 align-items-center gap-2">
+        <div key={index} className="d-flex m-2 align-items-center gap-2">
           <input
             type="text"
             className="form-control"
-            placeholder="Title"
+            placeholder="Contact name..."
             value={phone.title}
             onChange={(e) => handlePhoneNumberChange(index, 'title', e.target.value)}
           />
@@ -41,7 +41,7 @@ const PlanPhoneNumbers = ({ formData, setFormData }) => {
           />
           <button
             type="button"
-            className="btn btn-danger btn-sm"
+            className="btn btn-delete btn-sm"
             onClick={() => removePhoneNumber(index)}
           >
             ✖
@@ -49,7 +49,7 @@ const PlanPhoneNumbers = ({ formData, setFormData }) => {
         </div>
       ))}
 
-      <button type="button" className="btn btn-primary btn-sm mt-2" onClick={addPhoneNumber}>
+      <button type="button" className="btn btn-login btn-sm m-2" onClick={addPhoneNumber}>
         + Add Phone Number
       </button>
     </div>

@@ -75,7 +75,7 @@ const LoginPage = () => {
           </div>
 
           <div className="d-grid">
-            <button className="btn btn-primary" type="submit" disabled={loading}>
+            <button className="btn btn-login" type="submit" disabled={loading}>
               {loading ? <Spinner size="sm" /> : 'Login'}
             </button>
           </div>
