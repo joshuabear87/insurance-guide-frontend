@@ -2,12 +2,15 @@ import React, { useState, useEffect, useMemo } from 'react';
 import API from '../axios';
 import Spinner from '../components/Spinner';
 import InsurancePlanModalContent from '../components/InsurancePlanModalContent';
-import { useNavigate, useLocation } from 'react-router-dom';
 import PlanFilterPills from '../components/PlanFilterPills';
-import Searchbar from '../components/Searchbar';
-import columnConfig from '../components/utils/columnConfig';
+import BlueCardSearchbar from '../components/BlueCardSearchbar';
+import BlueCardCardView from '../components/home/BlueCardCardView';
+import blueCardColumnConfig from '../components/utils/blueCardColumnConfig';
+import { Link } from 'react-router-dom';
+import { AiOutlineEdit } from 'react-icons/ai';
 
-const getNestedValue = (obj, path) => path.split('.').reduce((acc, key) => acc?.[key], obj);
+const getNestedValue = (obj, path) =>
+  path.split('.').reduce((acc, key) => acc?.[key], obj);
 
 const BlueCardPrefixesPage = () => {
   const [prefixRows, setPrefixRows] = useState([]);
@@ -16,22 +19,22 @@ const BlueCardPrefixesPage = () => {
   const [sortDirection, setSortDirection] = useState('asc');
   const [selectedBook, setSelectedBook] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showType, setShowType] = useState('table');
   const [columnSettingsOpen, setColumnSettingsOpen] = useState(false);
+
+  const isAuthenticated = !!localStorage.getItem('accessToken');
+
   const [visibleColumns, setVisibleColumns] = useState(() => {
     const saved = localStorage.getItem('visibleBlueCardColumns');
-    if (saved) return JSON.parse(saved);
-    const defaults = {
-      prefix: true,
-      planName: true,
-      planCode: true,
-      descriptiveName: true,
-      phoneNumbers: true,
-      image: true,
-    };
-    return defaults;
+    const initial = {};
+    blueCardColumnConfig.forEach((col) => {
+      initial[col.key] = col.key === 'prefix' ? true : saved ? JSON.parse(saved)[col.key] ?? true : true;
+    });
+    return initial;
   });
 
   const toggleColumn = (key) => {
+    if (key === 'prefix') return; // Prefix always shown
     const updated = { ...visibleColumns, [key]: !visibleColumns[key] };
     setVisibleColumns(updated);
     localStorage.setItem('visibleBlueCardColumns', JSON.stringify(updated));
@@ -42,17 +45,24 @@ const BlueCardPrefixesPage = () => {
       prefix: true,
       planName: true,
       planCode: true,
-      descriptiveName: true,
-      phoneNumbers: true,
+      samcContracted: true,
+      samfContracted: true,
+      authorizationNotes: true,
+      notes: true,
       image: true,
     };
+    blueCardColumnConfig.forEach((col) => {
+      if (!defaults.hasOwnProperty(col.key)) {
+        defaults[col.key] = false;
+      }
+    });
     setVisibleColumns(defaults);
     localStorage.setItem('visibleBlueCardColumns', JSON.stringify(defaults));
   };
 
   const restoreAllColumns = () => {
     const allVisible = {};
-    columnConfig.forEach((col) => {
+    blueCardColumnConfig.forEach((col) => {
       allVisible[col.key] = true;
     });
     setVisibleColumns(allVisible);
@@ -65,22 +75,16 @@ const BlueCardPrefixesPage = () => {
         const res = await API.get('/books');
         const plans = res.data.data;
         const rows = [];
-
         plans.forEach((plan) => {
           const prefixes = plan.prefixes || [];
           prefixes.forEach((p) => {
             rows.push({
+              ...plan,
               prefix: p.value,
-              planName: plan.planName,
-              planCode: plan.planCode,
-              descriptiveName: plan.descriptiveName,
-              phoneNumbers: plan.phoneNumbers,
-              image: plan.image,
               book: plan,
             });
           });
         });
-
         setPrefixRows(rows);
       } catch (err) {
         console.error('Failed to load plans:', err);
@@ -88,7 +92,6 @@ const BlueCardPrefixesPage = () => {
         setLoading(false);
       }
     };
-
     fetchPlans();
   }, []);
 
@@ -103,11 +106,11 @@ const BlueCardPrefixesPage = () => {
 
   const filteredRows = useMemo(() => {
     return prefixRows
-      .filter((row) => {
-        return Object.values(row).some((value) =>
+      .filter((row) =>
+        Object.values(row).some((value) =>
           String(value).toLowerCase().includes(searchQuery.toLowerCase())
-        );
-      })
+        )
+      )
       .sort((a, b) => {
         const aVal = getNestedValue(a, sortColumn) ?? '';
         const bVal = getNestedValue(b, sortColumn) ?? '';
@@ -117,16 +120,21 @@ const BlueCardPrefixesPage = () => {
       });
   }, [prefixRows, sortColumn, sortDirection, searchQuery]);
 
+  const orderedKeys = [
+    ...(isAuthenticated ? [] : ['prefix']),
+    ...blueCardColumnConfig.map((c) => c.key).filter((key) => key !== 'prefix'),
+  ];
+
   return (
     <>
       <PlanFilterPills />
 
-      <Searchbar
-        showType="table"
-        setShowType={() => {}}
+      <BlueCardSearchbar
+        showType={showType}
+        setShowType={setShowType}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        columnConfig={columnConfig}
+        columnConfig={blueCardColumnConfig}
         visibleColumns={visibleColumns}
         toggleColumn={toggleColumn}
         columnSettingsOpen={columnSettingsOpen}
@@ -139,20 +147,35 @@ const BlueCardPrefixesPage = () => {
         <div className="d-flex justify-content-center py-5">
           <Spinner />
         </div>
-      ) : (
+      ) : showType === 'table' ? (
         <div className="table-responsive" style={{ fontSize: '0.75rem' }}>
           <table className="table table-bordered table-hover align-middle">
             <thead>
               <tr>
-                {[
-                  { key: 'prefix', label: 'Prefix' },
-                  { key: 'planName', label: 'Plan Name' },
-                  { key: 'planCode', label: 'Plan Code' },
-                  { key: 'descriptiveName', label: 'Descriptive Name' },
-                  { key: 'phoneNumbers', label: 'Phone Numbers' },
-                  { key: 'image', label: 'Card' },
-                ].map(({ key, label }) => (
-                  visibleColumns[key] && (
+                {isAuthenticated && (
+                  <th
+                    style={{
+                      backgroundColor: '#005b7f',
+                      color: 'white',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    Operations
+                  </th>
+                )}
+                <th
+                  style={{
+                    backgroundColor: '#005b7f',
+                    color: 'white',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  Prefix
+                </th>
+                {orderedKeys.map((key) => {
+                  const col = blueCardColumnConfig.find((c) => c.key === key);
+                  if (!col || !visibleColumns[key]) return null;
+                  return (
                     <th
                       key={key}
                       onClick={() => handleSort(key)}
@@ -164,10 +187,11 @@ const BlueCardPrefixesPage = () => {
                         whiteSpace: 'nowrap',
                       }}
                     >
-                      {label} {sortColumn === key && (sortDirection === 'asc' ? '↑' : '↓')}
+                      {col.label}{' '}
+                      {sortColumn === key && (sortDirection === 'asc' ? '↑' : '↓')}
                     </th>
-                  )
-                ))}
+                  );
+                })}
               </tr>
             </thead>
             <tbody>
@@ -177,39 +201,42 @@ const BlueCardPrefixesPage = () => {
                   onClick={() => setSelectedBook(row.book)}
                   style={{ cursor: 'pointer' }}
                 >
-                  {visibleColumns.prefix && <td>{row.prefix}</td>}
-                  {visibleColumns.planName && <td>{row.planName}</td>}
-                  {visibleColumns.planCode && <td>{row.planCode}</td>}
-                  {visibleColumns.descriptiveName && <td>{row.descriptiveName}</td>}
-                  {visibleColumns.phoneNumbers && (
-                    <td>
-                      <ul className="list-unstyled mb-0">
-                        {row.phoneNumbers?.map((p, idx) => (
-                          <li key={idx}>
-                            <strong>{p.title}:</strong> {p.number}
-                          </li>
-                        )) || 'N/A'}
-                      </ul>
+                  {isAuthenticated && (
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <Link to={`/books/edit/${row.book._id}`}>
+                        <AiOutlineEdit className="fs-5 text-primary" />
+                      </Link>
                     </td>
                   )}
-                  {visibleColumns.image && (
-                    <td>
-                      {row.image ? (
-                        <img src={row.image} alt="card" style={{ width: '60px' }} />
-                      ) : (
-                        'N/A'
-                      )}
-                    </td>
-                  )}
+                  <td>{row.prefix}</td>
+                  {orderedKeys.map((key) => {
+                    const col = blueCardColumnConfig.find((c) => c.key === key);
+                    if (!col || !visibleColumns[key]) return null;
+                    const value = getNestedValue(row, key);
+                    return (
+                      <td key={key}>
+                        {col.render ? col.render(value) : value || 'N/A'}
+                      </td>
+                    );
+                  })}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+      ) : (
+        <BlueCardCardView
+          rows={filteredRows}
+          visibleColumns={visibleColumns}
+          onSelect={(book) => setSelectedBook(book)}
+        />
       )}
 
       {selectedBook && (
-        <InsurancePlanModalContent book={selectedBook} onClose={() => setSelectedBook(null)} />
+        <InsurancePlanModalContent
+          book={selectedBook}
+          onClose={() => setSelectedBook(null)}
+        />
       )}
     </>
   );

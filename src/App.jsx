@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
@@ -21,7 +21,7 @@ const App = () => {
       <Route path="/forgot-password" element={<LayoutNoNav><ForgotPasswordPage /></LayoutNoNav>} />
       <Route path="/admin" element={<ProtectedRoute adminOnly={true}><LayoutNoNav><AdminDashboard /></LayoutNoNav></ProtectedRoute>} />
       
-      <Route path="/" element={<ProtectedRoute><Layout><Home /></Layout></ProtectedRoute>} />
+      <Route path="/" element={<Navigate to="/plans" />} />
       <Route path="/plans" element={<ProtectedRoute><Layout><Home /></Layout></ProtectedRoute>} />
       <Route path="/plans/commercial" element={<ProtectedRoute><Layout><Home /></Layout></ProtectedRoute>} />
       <Route path="/plans/medicare" element={<ProtectedRoute><Layout><Home /></Layout></ProtectedRoute>} />

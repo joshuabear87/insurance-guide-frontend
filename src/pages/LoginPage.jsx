@@ -1,20 +1,25 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import API from '../axios';
-import Spinner from '../components/Spinner';
 import { AuthContext } from '../context/AuthContexts';
+import LoginForm from '../components/forms/LoginForm';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showCard, setShowCard] = useState(false); // 👈 For fade-in
 
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { login } = useContext(AuthContext);
+
+  useEffect(() => {
+    // Trigger fade-in on mount
+    setTimeout(() => setShowCard(true), 100);
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -31,69 +36,91 @@ const LoginPage = () => {
     }
   };
 
-  const toggleShowPassword = () => {
-    setShowPassword(prev => !prev);
-  };
+  const toggleShowPassword = () => setShowPassword((prev) => !prev);
 
   return (
-    <div className="container-fluid min-vh-100 d-flex justify-content-center align-items-center bg-light">
-      <div className="card p-4 shadow rounded-4" style={{ maxWidth: '400px', width: '100%' }}>
-        <h2 className="text-center mb-4 fw-bold">Login</h2>
+    <div
+      className="m-0 p-0"
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        height: '100dvh',
+        width: '100vw',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'row',
+      }}
+    >
+      {/* Left Side: Desktop Branding */}
+      <div
+        className="d-none d-lg-flex align-items-center justify-content-center bg-light"
+        style={{ flex: 2 }}
+      >
+        <div className="text-center px-4">
+          <h1 className="fw-bold text-blue" style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}>
+            Hoken Hub
+          </h1>
+          <p className="lead text-muted" style={{ fontSize: 'clamp(1rem, 2vw, 1.5rem)' }}>
+            Simplifying Coverage. Empowering Care.
+          </p>
+        </div>
+      </div>
 
-        <form onSubmit={handleLogin}>
-          <div className="mb-3">
-            <label className="form-label fw-bold">Email</label>
-            <input
-              type="email"
-              className="form-control"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              required
-            />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label fw-bold">Password</label>
-            <div className="input-group">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                className="form-control"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                required
-              />
-              <span
-                className="input-group-text"
-                style={{ cursor: 'pointer' }}
-                onClick={toggleShowPassword}
-              >
-                {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-              </span>
-            </div>
-          </div>
-
-          <div className="d-grid">
-            <button className="btn btn-login" type="submit" disabled={loading}>
-              {loading ? <Spinner size="sm" /> : 'Login'}
-            </button>
-          </div>
-        </form>
-
-        {/* Forgot password link */}
-        <div className="text-center mt-3">
-          <Link to="/forgot-password" className="text-primary" style={{ textDecoration: 'none' }}>
-            Forgot Password?
-          </Link>
+      {/* Right Side: Login */}
+      <div
+        className="d-flex flex-column bg-white justify-content-center align-items-center"
+        style={{
+          flex: 1,
+          height: '100%',
+          padding: '2rem 1rem',
+          borderLeft: '1px solid #dee2e6',
+          overflowY: 'auto',
+        }}
+      >
+        {/* Mobile Title */}
+        <div className="d-lg-none text-center mt-5 pt-5 mb-3">
+                    <h1 className="fw-bold text-blue" style={{ fontSize: '2rem' }}>Hoken Hub</h1>
+          <p className="text-muted mb-0" style={{ fontSize: '1rem' }}>
+            Simplifying Coverage. Empowering Care.
+          </p>
         </div>
 
-        {/* New registration section */}
-        <div className="text-center mt-3">
-          <small className="text-muted">No account? No problem!</small><br />
-          <Link to="/register" className="btn btn-outline-primary btn-sm mt-2">
-            Register Here
-          </Link>
+        {/* Mobile Card */}
+        <div
+          className={`w-100 d-lg-none ${showCard ? 'fade-in' : 'invisible'}`}
+          style={{
+            maxWidth: '400px',
+            paddingTop: '2rem',
+            transition: 'opacity 0.5s ease-in-out',
+          }}
+        >
+          <div className="card shadow-lg border-0 p-4">
+            <LoginForm
+              email={email}
+              setEmail={setEmail}
+              password={password}
+              setPassword={setPassword}
+              showPassword={showPassword}
+              toggleShowPassword={toggleShowPassword}
+              loading={loading}
+              handleLogin={handleLogin}
+            />
+          </div>
+        </div>
+
+        {/* Desktop Form */}
+        <div className="d-none d-lg-block w-100" style={{ maxWidth: '400px' }}>
+          <LoginForm
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            showPassword={showPassword}
+            toggleShowPassword={toggleShowPassword}
+            loading={loading}
+            handleLogin={handleLogin}
+          />
         </div>
       </div>
     </div>

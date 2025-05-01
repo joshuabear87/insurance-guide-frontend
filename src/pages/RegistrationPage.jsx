@@ -48,7 +48,7 @@ const RegistrationPage = () => {
   return (
     <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
       <div className="card p-4 shadow rounded-4" style={{ maxWidth: '400px', width: '100%' }}>
-        <h2 className="text-center mb-4 fw-bold text-primary">Create an Account</h2>
+        <h2 className="text-center mb-4 fw-bold text-blue">Create an Account</h2>
 
         {error && <div className="alert alert-danger">{error}</div>}
 
@@ -114,7 +114,7 @@ const RegistrationPage = () => {
           </div>
 
           <div className="d-grid">
-            <button type="submit" className="btn btn-primary" disabled={loading}>
+            <button type="submit" className="btn btn-login" disabled={loading}>
               {loading ? <Spinner size="sm" /> : 'Register'}
             </button>
           </div>

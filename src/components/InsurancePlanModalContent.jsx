@@ -1,7 +1,10 @@
-import React from 'react';
+// 🔵 InsurancePlanModalContent.jsx (with click-to-enlarge image modal)
+import React, { useState } from 'react';
 import ContractStatusBadge from './ContractStatusBadge';
 
 const InsurancePlanModalContent = ({ book, onClose }) => {
+  const [enlargedImage, setEnlargedImage] = useState(null);
+
   const formatAddress = (addr) => {
     if (!addr || typeof addr !== 'object') return 'None entered...';
     const { street, street2, city, state, zip } = addr;
@@ -15,7 +18,10 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
       className="modal-backdrop d-flex justify-content-center align-items-center"
       style={{
         position: 'fixed',
-        top: 0, left: 0, right: 0, bottom: 0,
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         backgroundColor: 'rgba(0,0,0,0.5)',
         zIndex: 1050,
         padding: '1rem',
@@ -27,17 +33,14 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
         style={{ maxWidth: '1200px', width: '100%', overflowY: 'auto', maxHeight: '90vh' }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="text-white py-3 px-4" style={{ backgroundColor: '#005b7f' }}>
           <h2 className="text-center m-0">{book.descriptiveName}</h2>
           <h4 className="text-center fs-6 m-1">{book.financialClass}</h4>
         </div>
 
-        {/* Content */}
         <div className="p-4">
           <div className="bg-light shadow-sm p-4">
             <div className="row">
-              {/* LEFT COLUMN */}
               <div className="col-md-6 border-end pe-4">
                 <h6 className="fw-bold text-blue text-center">Insurance Card Examples</h6>
                 <div className="d-flex flex-wrap justify-content-center gap-4">
@@ -48,7 +51,8 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
                         src={book.image}
                         alt="Front"
                         className="img-fluid shadow-md"
-                        style={{ maxHeight: '300px', objectFit: 'cover', width: '100%' }}
+                        style={{ maxHeight: '300px', objectFit: 'cover', width: '100%', cursor: 'zoom-in' }}
+                        onClick={() => setEnlargedImage(book.image)}
                       />
                     </div>
                   )}
@@ -59,35 +63,31 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
                         src={book.secondaryImage}
                         alt="Back"
                         className="img-fluid shadow-md"
-                        style={{ maxHeight: '300px', objectFit: 'cover', width: '100%' }}
+                        style={{ maxHeight: '300px', objectFit: 'cover', width: '100%', cursor: 'zoom-in' }}
+                        onClick={() => setEnlargedImage(book.secondaryImage)}
                       />
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* RIGHT COLUMN */}
               <div className="col-md-6 ps-4">
                 <h6 className="fw-bold text-blue">Plan Details</h6>
-                {[
-  ['Payer Name', book.payerName],
-  ['Payer Code', book.payerCode],
-  ['Plan Name', book.planName],
-  ['Plan Code', book.planCode],
-].map(([label, value], i) => (
-  <p key={i}>
-    <strong>{label}:</strong> {value || 'N/A'}
-  </p>
-))}
-
-<div>
-  <strong>SAMC Contracted?</strong>{' '}
-  <ContractStatusBadge status={book.samcContracted} />
-</div>
-<div className="mt-1">
-  <strong>SAMF Contracted?</strong>{' '}
-  <ContractStatusBadge status={book.samfContracted} />
-</div>
+                {[['Payer Name', book.payerName], ['Payer Code', book.payerCode], ['Plan Name', book.planName], ['Plan Code', book.planCode]].map(
+                  ([label, value], i) => (
+                    <p key={i}>
+                      <strong>{label}:</strong> {value || 'N/A'}
+                    </p>
+                  )
+                )}
+                <div>
+                  <strong>SAMC Contracted?</strong>{' '}
+                  <ContractStatusBadge status={book.samcContracted} />
+                </div>
+                <div className="mt-1">
+                  <strong>SAMF Contracted?</strong>{' '}
+                  <ContractStatusBadge status={book.samfContracted} />
+                </div>
                 <hr className="my-3" />
 
                 <h6 className="fw-bold">Web Portal Links</h6>
@@ -158,13 +158,13 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
             <div className="row mt-4 gx-4">
               <div className="col-md-6">
                 <div className="bg-light p-3 shadow-sm h-100">
-                  <h6 className="fw-bold text-primary mb-2">Eligibility and Coding Notes</h6>
+                  <h6 className="fw-bold text-blue mb-2">Eligibility and Coding Notes</h6>
                   <p className="mb-0">{book.notes || 'N/A'}</p>
                 </div>
               </div>
               <div className="col-md-6">
                 <div className="bg-light p-3 shadow-sm h-100">
-                  <h6 className="fw-bold text-primary mb-2">Authorization Notes</h6>
+                  <h6 className="fw-bold text-blue mb-2">Authorization Notes</h6>
                   <p className="mb-0">{book.authorizationNotes || 'N/A'}</p>
                 </div>
               </div>
@@ -187,6 +187,27 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
             </div>
           </div>
         </div>
+
+        {enlargedImage && (
+          <div
+            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+            style={{ backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 9999 }}
+            onClick={() => setEnlargedImage(null)}
+          >
+            <img
+              src={enlargedImage}
+              alt="Enlarged"
+              className="img-fluid"
+              style={{
+                maxHeight: '90vh',
+                maxWidth: '90vw',
+                borderRadius: '8px',
+                boxShadow: '0 0 20px rgba(0,0,0,0.5)',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

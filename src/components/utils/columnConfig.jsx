@@ -22,15 +22,17 @@ const columnConfig = [
     { key: 'providerAddress.zip', label: 'Provider ZIP' },
     {
       key: 'image',
-      label: 'Image',
-      render: (val) => val ? <img src={val} alt="card" style={{ width: 60 }} /> : 'N/A',
+      label: 'Front',
+      render: (val) =>
+        val ? <img src={val} alt="card" style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }} /> : 'N/A',
     },
     {
       key: 'secondaryImage',
-      label: 'Secondary',
-      render: (val) => val ? <img src={val} alt="card" style={{ width: 60 }} /> : 'N/A',
+      label: 'Back',
+      render: (val) =>
+        val ? <img src={val} alt="card" style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }} /> : 'N/A',
     },
-  ];
+      ];
   
   export default columnConfig;
   
