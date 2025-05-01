@@ -23,7 +23,7 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
       onClick={onClose}
     >
       <div
-        className="rounded-4 shadow-lg bg-white text-dark"
+        className="rounded-2 shadow-lg bg-white text-dark"
         style={{ maxWidth: '1200px', width: '100%', overflowY: 'auto', maxHeight: '90vh' }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -70,17 +70,24 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
               <div className="col-md-6 ps-4">
                 <h6 className="fw-bold text-blue">Plan Details</h6>
                 {[
-                  ['Payer Name', book.payerName],
-                  ['Payer Code', book.payerCode],
-                  ['Plan Name', book.planName],
-                  ['Plan Code', book.planCode],
-                  ['SAMC Contracted?', <ContractStatusBadge status={book.samcContracted} />],
-                  ['SAMF Contracted?', <ContractStatusBadge status={book.samfContracted} />],
-                ].map(([label, value], i) => (
-                  <p key={i}>
-                    <strong>{label}:</strong> {value || 'N/A'}
-                  </p>
-                ))}
+  ['Payer Name', book.payerName],
+  ['Payer Code', book.payerCode],
+  ['Plan Name', book.planName],
+  ['Plan Code', book.planCode],
+].map(([label, value], i) => (
+  <p key={i}>
+    <strong>{label}:</strong> {value || 'N/A'}
+  </p>
+))}
+
+<div>
+  <strong>SAMC Contracted?</strong>{' '}
+  <ContractStatusBadge status={book.samcContracted} />
+</div>
+<div className="mt-1">
+  <strong>SAMF Contracted?</strong>{' '}
+  <ContractStatusBadge status={book.samfContracted} />
+</div>
                 <hr className="my-3" />
 
                 <h6 className="fw-bold">Web Portal Links</h6>

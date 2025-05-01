@@ -58,11 +58,11 @@ const NavBar = () => {
 
   return (
 <>
-  <nav className={`navbar fixed-top py-3 px-5 ${styles.navbar}`}>
+  <nav className={`navbar fixed-top py-3 px-3 ${styles.navbar}`}>
     <div className="container-fluid d-flex justify-content-between align-items-center">
     <div className="text-truncate">
-  <h1 className="p mb-1">Hoken Hub</h1>
-  <h4 className="mb-0">Insurance Coding Guide (pilot)</h4>
+  <h1 className="p mb-1 text-blue">Hoken Hub</h1>
+  <h4 className="mb-0 text-blue">Insurance Coding Guide (pilot)</h4>
 </div>
 
       <button

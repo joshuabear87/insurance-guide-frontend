@@ -187,7 +187,7 @@ const CreateInsurancePlan = () => {
   };
 
   return (
-    <div className="container-fluid min-vh-100 py-5 bg-grey">
+    <div className="container-fluid min-vh-100 py-5 bg-light">
       <BackButton />
       <div className="d-flex justify-content-center">
         {loading && <Spinner />}

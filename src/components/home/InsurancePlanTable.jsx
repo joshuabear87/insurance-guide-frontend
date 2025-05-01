@@ -1,134 +1,105 @@
-// InsurancePlanTable.jsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AiOutlineEdit } from 'react-icons/ai';
-import ContractStatusBadge from '../ContractStatusBadge';
 import InsurancePlanModalContent from '../InsurancePlanModalContent';
+import columnConfig from '../utils/columnConfig';
 
-const columnConfig = [
-  { key: 'financialClass', label: 'Financial Class' },
-  { key: 'descriptiveName', label: 'Descriptive Name' },
-  { key: 'payerName', label: 'Payer Name' },
-  { key: 'payerCode', label: 'Payer Code' },
-  { key: 'planName', label: 'Plan Name' },
-  { key: 'planCode', label: 'Plan Code' },
-  { key: 'samcContracted', label: 'SAMC', component: ContractStatusBadge },
-  { key: 'samfContracted', label: 'SAMF', component: ContractStatusBadge },
-  { key: 'prefixes', label: 'Prefixes', render: (val) => val?.map(p => p.value).join(', ') },
-  { key: 'ipaPayerId', label: 'IPA Payer ID' },
-  { key: 'payerId', label: 'Payer ID' },
-  { key: 'authorizationNotes', label: 'Auth Notes', truncate: true },
-  { key: 'notes', label: 'Notes', truncate: true },
-  { key: 'facilityAddress.street', label: 'Facility Street' },
-  { key: 'facilityAddress.city', label: 'Facility City' },
-  { key: 'facilityAddress.state', label: 'Facility State' },
-  { key: 'facilityAddress.zip', label: 'Facility ZIP' },
-  { key: 'providerAddress.street', label: 'Provider Street' },
-  { key: 'providerAddress.city', label: 'Provider City' },
-  { key: 'providerAddress.state', label: 'Provider State' },
-  { key: 'providerAddress.zip', label: 'Provider ZIP' },
-  { key: 'image', label: 'Image', render: (val) => val ? <img src={val} alt="card" style={{ width: 60 }} /> : 'N/A' },
-  { key: 'secondaryImage', label: 'Secondary', render: (val) => val ? <img src={val} alt="card" style={{ width: 60 }} /> : 'N/A' },
-];
+// Helper to access nested fields
+const getNestedValue = (obj, path) =>
+  path.split('.').reduce((acc, key) => acc?.[key], obj);
 
-const getNestedValue = (obj, path) => path.split('.').reduce((acc, key) => acc?.[key], obj);
-
-const InsurancePlanTable = ({ books }) => {
+const InsurancePlanTable = ({ books, visibleColumns }) => {
   const isAuthenticated = !!localStorage.getItem('accessToken');
-  const [visibleColumns, setVisibleColumns] = useState(() => {
-    const saved = localStorage.getItem('visiblePlanColumns');
-    if (saved) return JSON.parse(saved);
-    const initial = {};
-    columnConfig.forEach(col => initial[col.key] = true);
-    return initial;
-  });
-
   const [selectedBook, setSelectedBook] = useState(null);
-  const [columnSettingsOpen, setColumnSettingsOpen] = useState(false);
-  const settingsRef = useRef(null);
-  const buttonRef = useRef(null);
-  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortDirection, setSortDirection] = useState('asc');
 
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (
-        settingsRef.current &&
-        !settingsRef.current.contains(e.target) &&
-        !buttonRef.current.contains(e.target)
-      ) {
-        setColumnSettingsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const toggleColumn = (key) => {
-    const updated = { ...visibleColumns, [key]: !visibleColumns[key] };
-    setVisibleColumns(updated);
-    localStorage.setItem('visiblePlanColumns', JSON.stringify(updated));
+  const handleSort = (key) => {
+    if (sortColumn === key) {
+      setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortColumn(key);
+      setSortDirection('asc');
+    }
   };
 
-  const handleSettingsToggle = () => {
-    const rect = buttonRef.current.getBoundingClientRect();
-    setDropdownPos({
-      top: rect.bottom + window.scrollY + 4,
-      left: rect.right + window.scrollX - 260, // align left by subtracting width
-    });
-    setColumnSettingsOpen(prev => !prev);
-  };
+  const sortedBooks = [...books].sort((a, b) => {
+    if (!sortColumn) return 0;
+
+    const aVal = getNestedValue(a, sortColumn) ?? '';
+    const bVal = getNestedValue(b, sortColumn) ?? '';
+
+    if (typeof aVal === 'number' && typeof bVal === 'number') {
+      return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+    }
+
+    return sortDirection === 'asc'
+      ? String(aVal).localeCompare(String(bVal))
+      : String(bVal).localeCompare(String(aVal));
+  });
 
   return (
     <>
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <div className="flex-grow-1" />
-        <div>
-          <button
-            ref={buttonRef}
-            className="btn btn-sm m-2 p-0 fs-4"
-            onClick={handleSettingsToggle}
-          >
-            ⚙️
-          </button>
-        </div>
-      </div>
-
       <div className="table-responsive">
-        <table className="table table-bordered table-hover align-middle responsive-table">
-          <thead className="table-primary">
+      <table
+  className="table table-bordered table-hover align-middle responsive-table"
+  style={{ fontSize: '0.75rem' }}
+>          <thead className="table-primary">
             <tr>
               {columnConfig.map(({ key, label }) =>
-                visibleColumns[key] && (
-                  <th key={key} className="text-nowrap">{label}</th>
-                )
+                visibleColumns[key] ? (
+                  <th
+  key={key}
+  className="text-nowrap"
+  onClick={() => handleSort(key)}
+  style={{
+    backgroundColor: '#005b7f',
+    color: 'white',
+    cursor: 'pointer',
+    userSelect: 'none',
+  }}
+>
+
+                    {label}{' '}
+                    {sortColumn === key && (sortDirection === 'asc' ? '↑' : '↓')}
+                  </th>
+                ) : null
               )}
               {isAuthenticated && <th>Operations</th>}
             </tr>
           </thead>
           <tbody>
-            {books.map((book) => (
-              <tr key={book._id} onClick={() => setSelectedBook(book)} style={{ cursor: 'pointer' }}>
-                {columnConfig.map(({ key, render, component: Comp, truncate }) =>
-                  visibleColumns[key] && (
+            {sortedBooks.map((book) => (
+              <tr
+                key={book._id}
+                onClick={() => setSelectedBook(book)}
+                style={{ cursor: 'pointer' }}
+              >
+                {columnConfig.map(({ key, render, component: Comp, truncate }) => {
+                  if (!visibleColumns[key]) return null;
+                  const value = getNestedValue(book, key);
+
+                  return (
                     <td
                       key={key}
-                      title={truncate ? getNestedValue(book, key) : ''}
+                      title={truncate ? value : ''}
                       className={truncate ? 'text-truncate' : ''}
                       style={{
-                        maxWidth: truncate ? '180px' : 'auto',
                         whiteSpace: truncate ? 'nowrap' : 'normal',
-                        overflow: 'hidden',
+                        overflow: truncate ? 'hidden' : 'visible',
                         textOverflow: truncate ? 'ellipsis' : 'unset',
+                        maxWidth: truncate ? '200px' : undefined, // ✅ restrict width only if truncated
                       }}
                     >
                       {render
-                        ? render(getNestedValue(book, key))
+                        ? render(value)
                         : Comp
-                          ? <Comp status={getNestedValue(book, key)} />
-                          : getNestedValue(book, key) || 'N/A'}
+                        ? <Comp status={value} />
+                        : value || 'N/A'}
                     </td>
-                  )
-                )}
+                  );
+                })}
+
                 {isAuthenticated && (
                   <td onClick={(e) => e.stopPropagation()}>
                     <Link to={`/books/edit/${book._id}`}>
@@ -142,43 +113,12 @@ const InsurancePlanTable = ({ books }) => {
         </table>
       </div>
 
-      {/* Floating Column Dropdown */}
-      {columnSettingsOpen && (
-        <div
-          ref={settingsRef}
-          className="bg-white shadow p-3 border rounded"
-          style={{
-            position: 'fixed',
-            top: dropdownPos.top,
-            left: dropdownPos.left,
-            zIndex: 9999,
-            minWidth: '240px',
-            maxHeight: '50vh',
-            overflowY: 'auto',
-          }}
-        >
-          {columnConfig.map(({ key, label }) => (
-            <div key={key} className="form-check">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id={key}
-                checked={visibleColumns[key]}
-                onChange={() => toggleColumn(key)}
-              />
-              <label className="form-check-label" htmlFor={key}>{label}</label>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Modal */}
       {selectedBook && (
-  <InsurancePlanModalContent
-    book={selectedBook}
-    onClose={() => setSelectedBook(null)}
-  />
-)}
+        <InsurancePlanModalContent
+          book={selectedBook}
+          onClose={() => setSelectedBook(null)}
+        />
+      )}
     </>
   );
 };
