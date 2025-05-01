@@ -139,8 +139,10 @@ const CreateInsurancePlan = () => {
       portalLinks: formData.portalLinks.filter((link) => link.title && link.url),
       phoneNumbers: formData.phoneNumbers.filter((phone) => phone.title && phone.number),
       prefixes: formData.prefixes
-        .filter((val) => /^[A-Z0-9]{3}$/i.test(val))
-        .map((val) => ({ value: val })),
+      .map((val) => val?.trim().toUpperCase())
+      .filter((val) => /^[A-Z0-9]{3}$/.test(val))
+      .map((val) => ({ value: val })),
+    
     };
 
     try {

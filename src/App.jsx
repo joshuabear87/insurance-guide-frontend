@@ -7,7 +7,6 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 // import MyAccount from './pages/MyAccount';
 import AdminDashboard from './pages/AdminDashboard';
 import RegistrationPage from './pages/RegistrationPage';
-import ViewInsurancePlan from './pages/ViewInsurancePlan';
 import CreateInsurancePlan from './pages/CreateInsurancePlan';
 import EditInsurancePlan from './pages/EditInsurancePlan';
 import Layout from './components/Layout';
@@ -31,7 +30,6 @@ const App = () => {
       <Route path="/plans/medi-cal" element={<Layout><InsurancePlanFiltered filter="Medi-Cal"/></Layout>} />
       <Route path="/prefixes" element={<Layout><PrefixesPage /></Layout>} />
 
-      <Route path="/books/details/:id" element={<ProtectedRoute><ViewInsurancePlan /></ProtectedRoute>} />
       <Route path="/books/create" element={<ProtectedRoute><CreateInsurancePlan /></ProtectedRoute>} />
       <Route path="/books/edit/:id" element={<ProtectedRoute><EditInsurancePlan /></ProtectedRoute>}/>
     </Routes>

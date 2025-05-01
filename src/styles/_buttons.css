@@ -248,3 +248,14 @@
   outline: none;
   box-shadow: 0 0 0 0.2rem rgba(0, 91, 127, 0.25);
 }
+
+.clickable-image {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  border-radius: 5%;
+}
+
+.clickable-image:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 12px rgba(0, 91, 127, 0.4);
+}

@@ -3,7 +3,7 @@ import API from '../axios';
 import Spinner from '../components/Spinner';
 import Searchbar from '../components/Searchbar';
 import InsurancePlanTable from '../components/home/InsurancePlanTable';
-import InsurancePlanCardSection from '../components/home/InsurancePlanCardSection';
+import InsurancePlanCardView from '../components/home/InsurancePlanCardVIew';
 
 const Home = () => {
   const [books, setBooks] = useState([]);
@@ -43,15 +43,15 @@ const Home = () => {
         />
 
       <div>
-        {loading ? (
-          <div className="d-flex justify-content-center py-5">
-            <Spinner />
-          </div>
-        ) : showType === 'table' ? (
-          <InsurancePlanTable books={filteredBooks} />
-        ) : (
-          <InsurancePlanCardSection books={filteredBooks} />
-        )}
+      {loading ? (
+  <div className="d-flex justify-content-center py-5">
+    <Spinner />
+  </div>
+) : showType === 'table' ? (
+  <InsurancePlanTable books={filteredBooks} />
+) : (
+  <InsurancePlanCardView books={filteredBooks} />
+)}
       </div>
         </>
   );

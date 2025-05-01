@@ -16,3 +16,37 @@
     border-color: #007b9e !important;
     color: #007b9e !important;
   }
+
+  .navbar h1 {
+    font-size: 2rem;
+    line-height: 1.2;
+    margin-bottom: 0;
+  }
+  
+  .navbar h4 {
+    font-size: 1.2rem;
+    line-height: 1.2;
+  }
+  
+  /* Smaller devices (below 768px) */
+  @media (max-width: 768px) {
+    .navbar h1 {
+      font-size: 1.3rem;
+    }
+  
+    .navbar h4 {
+      font-size: 1rem;
+    }
+  }
+  
+  /* Extra small devices (below 576px) */
+  @media (max-width: 576px) {
+    .navbar h1 {
+      font-size: 1rem;
+    }
+  
+    .navbar h4 {
+      font-size: 0.9rem;
+    }
+  }
+  
