@@ -7,8 +7,24 @@ const blueCardColumnConfig = [
   { key: 'payerCode', label: 'Payer Code' },
   { key: 'planName', label: 'Plan Name', truncate: false },
   { key: 'planCode', label: 'Plan Code' },
-  { key: 'samcContracted', label: 'SAMC Contracted' },
-  { key: 'samfContracted', label: 'SAMF Contracted' },
+  {
+    key: 'samcContracted',
+    label: 'SAMC Contracted',
+    render: (val) => (
+      <span style={{ color: val?.toLowerCase() === 'contracted' ? 'green' : 'red', fontWeight: 'bold' }}>
+        {val || 'N/A'}
+      </span>
+    ),
+  },
+  {
+    key: 'samfContracted',
+    label: 'SAMF Contracted',
+    render: (val) => (
+      <span style={{ color: val?.toLowerCase() === 'contracted' ? 'green' : 'red', fontWeight: 'bold' }}>
+        {val || 'N/A'}
+      </span>
+    ),
+  },
 
   {
     key: 'prefixes',
@@ -52,7 +68,7 @@ const blueCardColumnConfig = [
         <img
           src={val}
           alt="card"
-          style={{ width: '100%', maxHeight: '220px', objectFit: 'contain' }}
+          style={{ width: '100%', maxHeight: '150px', objectFit: 'contain' }}
         />
       ) : (
         'N/A'

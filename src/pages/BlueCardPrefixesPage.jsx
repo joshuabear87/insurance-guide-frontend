@@ -34,7 +34,7 @@ const BlueCardPrefixesPage = () => {
   });
 
   const toggleColumn = (key) => {
-    if (key === 'prefix') return; // Prefix always shown
+    if (key === 'prefix') return;
     const updated = { ...visibleColumns, [key]: !visibleColumns[key] };
     setVisibleColumns(updated);
     localStorage.setItem('visibleBlueCardColumns', JSON.stringify(updated));
@@ -122,7 +122,28 @@ const BlueCardPrefixesPage = () => {
 
   const orderedKeys = [
     ...(isAuthenticated ? [] : ['prefix']),
-    ...blueCardColumnConfig.map((c) => c.key).filter((key) => key !== 'prefix'),
+    'financialClass',
+    'descriptiveName',
+    'payerName',
+    'payerCode',
+    'planName',
+    'planCode',
+    'samcContracted',
+    'samfContracted',
+    'authorizationNotes',
+    'notes',
+    'image',
+    'secondaryImage',
+    'payerId',
+    'ipaPayerId',
+    'facilityAddress.street',
+    'facilityAddress.city',
+    'facilityAddress.state',
+    'facilityAddress.zip',
+    'providerAddress.street',
+    'providerAddress.city',
+    'providerAddress.state',
+    'providerAddress.zip',
   ];
 
   return (
@@ -208,14 +229,24 @@ const BlueCardPrefixesPage = () => {
                       </Link>
                     </td>
                   )}
-                  <td>{row.prefix}</td>
+                  <td style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '180px' }}>{row.prefix}</td>
                   {orderedKeys.map((key) => {
                     const col = blueCardColumnConfig.find((c) => c.key === key);
                     if (!col || !visibleColumns[key]) return null;
                     const value = getNestedValue(row, key);
+                    const content = col.render ? col.render(value) : value || 'N/A';
                     return (
-                      <td key={key}>
-                        {col.render ? col.render(value) : value || 'N/A'}
+                      <td
+                        key={key}
+                        title={typeof content === 'string' ? content : ''}
+                        style={{
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          maxWidth: key === 'image' || key === 'secondaryImage' ? '50px' : '50px',
+                        }}
+                      >
+                        {content}
                       </td>
                     );
                   })}

@@ -53,7 +53,6 @@ const Home = () => {
     setToastType(type);
     setShowToast(true);
     setAnimateToast(true);
-
     setTimeout(() => setAnimateToast(false), 2600);
     setTimeout(() => setShowToast(false), 3000);
   };
@@ -70,22 +69,41 @@ const Home = () => {
     }
   };
 
-  const resetColumns = () => {
-    const defaultTable = {};
+  const resetColumns = (type) => {
+    const defaultTable = {
+      descriptiveName: true,
+      financialClass: true,
+      prefix: true,
+      planName: true,
+      planCode: true,
+      samcContracted: true,
+      samfContracted: true,
+      image: true,
+      secondaryImage: true,
+    };
+
     const defaultCard = {
       descriptiveName: true,
       financialClass: true,
+      prefix: true,
       planName: true,
       planCode: true,
-      prefixes: true,
+      samcContracted: true,
+      samfContracted: true,
       image: true,
+      secondaryImage: true,
     };
 
     columnConfig.forEach(col => {
-      defaultTable[col.key] = true;
+      if (!defaultTable.hasOwnProperty(col.key)) {
+        defaultTable[col.key] = false;
+      }
+      if (!defaultCard.hasOwnProperty(col.key)) {
+        defaultCard[col.key] = false;
+      }
     });
 
-    if (showType === 'table') {
+    if (type === 'table') {
       setTableColumns(defaultTable);
       localStorage.setItem('visibleTableColumns', JSON.stringify(defaultTable));
     } else {
@@ -93,7 +111,7 @@ const Home = () => {
       localStorage.setItem('visibleCardColumns', JSON.stringify(defaultCard));
     }
 
-    showToastMessage(`${showType === 'table' ? 'Table' : 'Card'} view reset to default`, 'info');
+    showToastMessage(`${type === 'table' ? 'Table' : 'Card'} view reset to default`, 'info');
   };
 
   const restoreAllColumns = () => {

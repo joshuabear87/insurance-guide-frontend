@@ -42,14 +42,14 @@ const InsurancePlanCardView = ({ books, visibleColumns }) => {
                 {visibleColumns.prefixes && (
                   <p><strong>Prefixes:</strong> {book.prefixes?.map(p => p.value).join(', ') || 'N/A'}</p>
                 )}
-                {visibleColumns.ipaPayerId && <p><strong>IPA Payer ID:</strong> {book.ipaPayerId}</p>}
-                {visibleColumns.payerId && <p><strong>Payer ID:</strong> {book.payerId}</p>}
-                {visibleColumns.authorizationNotes && (
-                  <p><strong>Auth Notes:</strong> {book.authorizationNotes || 'N/A'}</p>
-                )}
                 {visibleColumns.notes && (
                   <p><strong>Notes:</strong> {book.notes || 'N/A'}</p>
                 )}
+                {visibleColumns.authorizationNotes && (
+                  <p><strong>Auth Notes:</strong> {book.authorizationNotes || 'N/A'}</p>
+                )}
+                {visibleColumns.payerId && <p><strong>Payer ID:</strong> {book.payerId}</p>}
+                {visibleColumns.ipaPayerId && <p><strong>IPA Payer ID:</strong> {book.ipaPayerId}</p>}
 
                 {/* Addresses */}
                 {visibleColumns['facilityAddress.street'] && (

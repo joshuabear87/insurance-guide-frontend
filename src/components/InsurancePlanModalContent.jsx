@@ -1,6 +1,5 @@
 // 🔵 InsurancePlanModalContent.jsx (with click-to-enlarge image modal)
 import React, { useState } from 'react';
-import ContractStatusBadge from './ContractStatusBadge';
 
 const InsurancePlanModalContent = ({ book, onClose }) => {
   const [enlargedImage, setEnlargedImage] = useState(null);
@@ -82,11 +81,9 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
                 )}
                 <div>
                   <strong>SAMC Contracted?</strong>{' '}
-                  <ContractStatusBadge status={book.samcContracted} />
                 </div>
                 <div className="mt-1">
                   <strong>SAMF Contracted?</strong>{' '}
-                  <ContractStatusBadge status={book.samfContracted} />
                 </div>
                 <hr className="my-3" />
 

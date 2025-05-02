@@ -42,7 +42,6 @@ const Searchbar = ({
 
   return (
     <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-      {/* Left: View Toggle Buttons */}
       <div className="btn-group btn-group-sm" role="group">
         <button
           onClick={() => setShowType('table')}
@@ -54,7 +53,6 @@ const Searchbar = ({
             borderRadius: '6px 0 0 6px',
             fontSize: '0.75rem',
           }}
-          title="Table view"
         >
           📋 Table
         </button>
@@ -68,13 +66,11 @@ const Searchbar = ({
             borderRadius: '0 6px 6px 0',
             fontSize: '0.75rem',
           }}
-          title="Card view"
         >
           🗂️ Cards
         </button>
       </div>
 
-      {/* Right: Search and ⚙️ Button */}
       <div className="d-flex align-items-center gap-2 position-relative">
         <input
           type="text"
@@ -105,7 +101,6 @@ const Searchbar = ({
           ⚙️
         </button>
 
-        {/* Dropdown: inside relative container for correct positioning */}
         {dropdownVisible && (
           <div
             ref={settingsRef}
@@ -131,11 +126,11 @@ const Searchbar = ({
                 <input
                   type="checkbox"
                   className="form-check-input"
-                  id={key}
+                  id={`column-toggle-${key}`}
                   checked={visibleColumns[key]}
                   onChange={() => toggleColumn(key)}
                 />
-                <label className="form-check-label" htmlFor={key}>
+                <label className="form-check-label" htmlFor={`column-toggle-${key}`}>
                   {label}
                 </label>
               </div>
@@ -144,12 +139,14 @@ const Searchbar = ({
             <hr />
 
             <button
+              type="button"
               className="btn btn-outline-info btn-sm w-100 mb-2"
-              onClick={resetColumns}
+              onClick={() => resetColumns(showType)}
             >
               🔄 Reset to Default
             </button>
             <button
+              type="button"
               className="btn btn-outline-success btn-sm w-100"
               onClick={restoreAllColumns}
             >

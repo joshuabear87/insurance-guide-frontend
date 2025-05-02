@@ -39,7 +39,10 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
   return (
     <>
       <div className="table-responsive">
-        <table className="table table-bordered table-hover align-middle responsive-table" style={{ fontSize: '0.75rem' }}>
+        <table
+          className="table table-bordered table-hover align-middle responsive-table"
+          style={{ fontSize: '0.75rem', tableLayout: 'auto' }}
+        >
           <thead className="table-primary">
             <tr>
               {isAuthenticated && (
@@ -48,6 +51,10 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
                     backgroundColor: '#005b7f',
                     color: 'white',
                     userSelect: 'none',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    maxWidth: '180px',
                   }}
                 >
                   Operations
@@ -57,13 +64,16 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
                 visibleColumns[key] ? (
                   <th
                     key={key}
-                    className="text-nowrap"
                     onClick={() => handleSort(key)}
                     style={{
                       backgroundColor: '#005b7f',
                       color: 'white',
                       cursor: 'pointer',
                       userSelect: 'none',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      maxWidth: '180px',
                     }}
                   >
                     {label} {sortColumn === key && (sortDirection === 'asc' ? '↑' : '↓')}
@@ -80,25 +90,32 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
                 style={{ cursor: 'pointer' }}
               >
                 {isAuthenticated && (
-                  <td onClick={(e) => e.stopPropagation()}>
+                  <td
+                    onClick={(e) => e.stopPropagation()}
+                    style={{
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      maxWidth: '180px',
+                    }}
+                  >
                     <Link to={`/books/edit/${book._id}`}>
                       <AiOutlineEdit className="fs-5 text-primary" />
                     </Link>
                   </td>
                 )}
-                {columnConfig.map(({ key, render, component: Comp, truncate }) => {
+                {columnConfig.map(({ key, render, component: Comp }) => {
                   if (!visibleColumns[key]) return null;
                   const value = getNestedValue(book, key);
                   return (
                     <td
                       key={key}
-                      title={truncate ? value : ''}
-                      className={truncate ? 'text-truncate' : ''}
+                      title={value != null ? String(value) : ''}
                       style={{
-                        whiteSpace: truncate ? 'nowrap' : 'normal',
-                        overflow: truncate ? 'hidden' : 'visible',
-                        textOverflow: truncate ? 'ellipsis' : 'unset',
-                        maxWidth: truncate ? '200px' : undefined,
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        maxWidth: '180px',
                       }}
                     >
                       {render

@@ -58,10 +58,10 @@ const LoginPage = () => {
         style={{ flex: 2 }}
       >
         <div className="text-center px-4">
-          <h1 className="fw-bold text-blue" style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}>
+          <h1 className="fw-bold text-blue animate-title" style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}>
             Hoken Hub
           </h1>
-          <p className="lead text-muted" style={{ fontSize: 'clamp(1rem, 2vw, 1.5rem)' }}>
+          <p className="lead text-muted animate-subtitle" style={{ fontSize: 'clamp(1rem, 2vw, 1.5rem)' }}>
             Simplifying Coverage. Empowering Care.
           </p>
         </div>
@@ -80,8 +80,8 @@ const LoginPage = () => {
       >
         {/* Mobile Title */}
         <div className="d-lg-none text-center mt-5 pt-5 mb-3">
-                    <h1 className="fw-bold text-blue" style={{ fontSize: '2rem' }}>Hoken Hub</h1>
-          <p className="text-muted mb-0" style={{ fontSize: '1rem' }}>
+                    <h1 className="fw-bold text-blue animate-title" style={{ fontSize: '2rem' }}>Hoken Hub</h1>
+          <p className="text-muted mb-0 animate-subtitle" style={{ fontSize: '1rem' }}>
             Simplifying Coverage. Empowering Care.
           </p>
         </div>
@@ -98,6 +98,7 @@ const LoginPage = () => {
           <div className="card shadow-lg border-0 p-4">
             <LoginForm
               email={email}
+              variant="mobile"
               setEmail={setEmail}
               password={password}
               setPassword={setPassword}
@@ -113,6 +114,7 @@ const LoginPage = () => {
         <div className="d-none d-lg-block w-100" style={{ maxWidth: '400px' }}>
           <LoginForm
             email={email}
+            variant="desktop"
             setEmail={setEmail}
             password={password}
             setPassword={setPassword}
