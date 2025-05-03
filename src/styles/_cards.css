@@ -1,0 +1,15 @@
+/* CARD FORMATTING */
+
+.card-title {
+    color: #005b7f !important;
+    font-size: 1.5rem;
+}
+
+.card-subtitle {
+    font-size: 0.85rem
+}
+
+.card-content {
+    font-size: 0.9rem;
+}
+

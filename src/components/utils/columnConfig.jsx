@@ -5,6 +5,7 @@ const columnConfig = [
   { key: 'payerCode', label: 'Payer Code' },
   { key: 'planName', label: 'Plan Name' },
   { key: 'planCode', label: 'Plan Code' },
+
   {
     key: 'samcContracted',
     label: 'SAMC Contracted',
@@ -15,7 +16,7 @@ const columnConfig = [
           fontWeight: 'bold',
         }}
       >
-        {val || 'N/A'}
+        {val || '-'}
       </span>
     ),
   },
@@ -29,20 +30,23 @@ const columnConfig = [
           fontWeight: 'bold',
         }}
       >
-        {val || 'N/A'}
+        {val || '-'}
       </span>
     ),
   },
+
   {
     key: 'prefixes',
     label: 'Prefixes',
-    render: (val) => val?.map((p) => p.value).join(', '),
+    render: (val) =>
+      val?.length > 0 ? val.map((p) => p.value).join(', ') : '-',
   },
+
   {
     key: 'notes',
     label: 'Notes',
     render: (val) => {
-      const text = val || 'N/A';
+      const text = val || '-';
       return (
         <div
           style={{
@@ -52,7 +56,7 @@ const columnConfig = [
             textOverflow: 'ellipsis',
           }}
           title={text}
-          >
+        >
           {text}
         </div>
       );
@@ -62,7 +66,7 @@ const columnConfig = [
     key: 'authorizationNotes',
     label: 'Auth Notes',
     render: (val) => {
-      const text = val || 'N/A';
+      const text = val || '-';
       return (
         <div
           style={{
@@ -72,12 +76,98 @@ const columnConfig = [
             textOverflow: 'ellipsis',
           }}
           title={text}
-          >
+        >
           {text}
         </div>
       );
     },
   },
+
+  {
+    key: 'portalLinks',
+    label: 'Portal Links',
+    render: (links) =>
+      links?.length > 0 ? (
+        <ul className="mb-0 ps-3">
+          {links.map((link, i) => (
+            <li key={i}>
+              <a href={link.url} target="_blank" rel="noopener noreferrer">
+                {link.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        '-'
+      ),
+  },
+
+  {
+    key: 'phoneNumbers',
+    label: 'Phone Numbers',
+    render: (phones) =>
+      phones?.length > 0 ? (
+        <ul className="mb-0 ps-3">
+          {phones.map((phone, i) => (
+            <li key={i}>
+              {phone.title}: {phone.number}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        '-'
+      ),
+  },
+
+  {
+    key: 'facilityAddress',
+    label: 'Facility Address',
+    render: (addr) => {
+      if (!addr || typeof addr !== 'object') return '-';
+
+      const { street, street2, city, state, zip } = addr;
+      const parts = [];
+
+      if (street) parts.push(street.trim());
+      if (street2) parts.push(street2.trim());
+
+      if (city || state || zip) {
+        const location = [city?.trim(), state?.trim(), zip?.trim()]
+          .filter(Boolean)
+          .join(' ');
+        parts.push(location);
+      }
+
+      return parts.length > 0 ? parts.join(', ') : '-';
+    },
+  },
+
+  {
+    key: 'providerAddress',
+    label: 'Provider Address',
+    render: (addr) => {
+      if (!addr || typeof addr !== 'object') return '-';
+
+      const { street, street2, city, state, zip } = addr;
+      const parts = [];
+
+      if (street) parts.push(street.trim());
+      if (street2) parts.push(street2.trim());
+
+      if (city || state || zip) {
+        const location = [city?.trim(), state?.trim(), zip?.trim()]
+          .filter(Boolean)
+          .join(' ');
+        parts.push(location);
+      }
+
+      return parts.length > 0 ? parts.join(', ') : '-';
+    },
+  },
+
+  { key: 'payerId', label: 'Payer ID' },
+  { key: 'ipaPayerId', label: 'IPA Payer ID' },
+
   {
     key: 'image',
     label: 'Card Front',
@@ -89,7 +179,7 @@ const columnConfig = [
           style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }}
         />
       ) : (
-        'N/A'
+        '-'
       ),
   },
   {
@@ -103,19 +193,9 @@ const columnConfig = [
           style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }}
         />
       ) : (
-        'N/A'
+        '-'
       ),
   },
-  { key: 'payerId', label: 'Payer ID' },
-  { key: 'ipaPayerId', label: 'IPA Payer ID' },
-  { key: 'facilityAddress.street', label: 'Facility Street' },
-  { key: 'facilityAddress.city', label: 'Facility City' },
-  { key: 'facilityAddress.state', label: 'Facility State' },
-  { key: 'facilityAddress.zip', label: 'Facility ZIP' },
-  { key: 'providerAddress.street', label: 'Provider Street' },
-  { key: 'providerAddress.city', label: 'Provider City' },
-  { key: 'providerAddress.state', label: 'Provider State' },
-  { key: 'providerAddress.zip', label: 'Provider ZIP' },
 ];
 
 export default columnConfig;

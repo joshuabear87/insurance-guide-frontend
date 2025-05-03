@@ -1,18 +1,19 @@
 const blueCardColumnConfig = [
-  { key: 'prefix', label: 'Prefix' }, // Always visible, not toggleable
+  { key: 'prefix', label: 'Prefix' }, // Always visible
 
   { key: 'financialClass', label: 'Financial Class' },
   { key: 'descriptiveName', label: 'Descriptive Name' },
-  { key: 'payerName', label: 'Payer Name', truncate: false },
+  { key: 'payerName', label: 'Payer Name' },
   { key: 'payerCode', label: 'Payer Code' },
-  { key: 'planName', label: 'Plan Name', truncate: false },
+  { key: 'planName', label: 'Plan Name' },
   { key: 'planCode', label: 'Plan Code' },
+
   {
     key: 'samcContracted',
     label: 'SAMC Contracted',
     render: (val) => (
       <span style={{ color: val?.toLowerCase() === 'contracted' ? 'green' : 'red', fontWeight: 'bold' }}>
-        {val || 'N/A'}
+        {val || '-'}
       </span>
     ),
   },
@@ -21,7 +22,7 @@ const blueCardColumnConfig = [
     label: 'SAMF Contracted',
     render: (val) => (
       <span style={{ color: val?.toLowerCase() === 'contracted' ? 'green' : 'red', fontWeight: 'bold' }}>
-        {val || 'N/A'}
+        {val || '-'}
       </span>
     ),
   },
@@ -29,22 +30,92 @@ const blueCardColumnConfig = [
   {
     key: 'prefixes',
     label: 'All Prefixes',
-    render: (val) => val?.map((p) => p.value).join(', '),
+    render: (val) => val?.length > 0 ? val.map((p) => p.value).join(', ') : '-',
   },
-  { key: 'ipaPayerId', label: 'IPA Payer ID' },
-  { key: 'payerId', label: 'Payer ID' },
-  { key: 'authorizationNotes', label: 'Authorization Notes', truncate: true },
-  { key: 'notes', label: 'Notes', truncate: true },
 
-  { key: 'facilityAddress.street', label: 'Facility Street' },
-  { key: 'facilityAddress.city', label: 'Facility City' },
-  { key: 'facilityAddress.state', label: 'Facility State' },
-  { key: 'facilityAddress.zip', label: 'Facility ZIP' },
+  {
+    key: 'portalLinks',
+    label: 'Portal Links',
+    render: (links) =>
+      links?.length > 0 ? (
+        <ul className="mb-0 ps-3">
+          {links.map((link, i) => (
+            <li key={i}>
+              <a href={link.url} target="_blank" rel="noopener noreferrer">
+                {link.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        '-'
+      ),
+  },
 
-  { key: 'providerAddress.street', label: 'Provider Street' },
-  { key: 'providerAddress.city', label: 'Provider City' },
-  { key: 'providerAddress.state', label: 'Provider State' },
-  { key: 'providerAddress.zip', label: 'Provider ZIP' },
+  {
+    key: 'phoneNumbers',
+    label: 'Phone Numbers',
+    render: (phones) =>
+      phones?.length > 0 ? (
+        <ul className="mb-0 ps-3">
+          {phones.map((phone, i) => (
+            <li key={i}>
+              {phone.title}: {phone.number}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        '-'
+      ),
+  },
+
+  {
+    key: 'authorizationNotes',
+    label: 'Authorization Notes',
+    render: (val) => val || '-',
+  },
+  {
+    key: 'notes',
+    label: 'Notes',
+    render: (val) => val || '-',
+  },
+
+  {
+    key: 'facilityAddress',
+    label: 'Facility Address',
+    render: (addr) => {
+      if (!addr || typeof addr !== 'object') return '-';
+      const { street, street2, city, state, zip } = addr;
+      const parts = [];
+      if (street) parts.push(street.trim());
+      if (street2) parts.push(street2.trim());
+      if (city || state || zip) {
+        const loc = [city?.trim(), state?.trim(), zip?.trim()].filter(Boolean).join(' ');
+        parts.push(loc);
+      }
+      return parts.length > 0 ? parts.join(', ') : '-';
+    },
+  },
+
+  {
+    key: 'providerAddress',
+    label: 'Provider Address',
+    render: (addr) => {
+      if (!addr || typeof addr !== 'object') return '-';
+      const { street, street2, city, state, zip } = addr;
+      const parts = [];
+      if (street) parts.push(street.trim());
+      if (street2) parts.push(street2.trim());
+      if (city || state || zip) {
+        const loc = [city?.trim(), state?.trim(), zip?.trim()].filter(Boolean).join(' ');
+        parts.push(loc);
+      }
+      return parts.length > 0 ? parts.join(', ') : '-';
+    },
+  },
+
+  { key: 'payerId', label: 'Payer ID', render: (val) => val || '-' },
+  { key: 'ipaPayerId', label: 'IPA Payer ID', render: (val) => val || '-' },
 
   {
     key: 'image',
@@ -57,7 +128,7 @@ const blueCardColumnConfig = [
           style={{ width: '100%', maxHeight: '220px', objectFit: 'contain' }}
         />
       ) : (
-        'N/A'
+        '-'
       ),
   },
   {
@@ -71,7 +142,7 @@ const blueCardColumnConfig = [
           style={{ width: '100%', maxHeight: '150px', objectFit: 'contain' }}
         />
       ) : (
-        'N/A'
+        '-'
       ),
   },
 ];

@@ -66,16 +66,17 @@ const RegistrationPage = () => {
           </div>
 
           <div className="mb-3">
-  <label className="form-label fw-bold">Facility Name</label>
-  <input
-    type="text"
-    className="form-control"
-    value={formData.facilityName}
-    onChange={(e) => setFacilityName(e.target.value)}
-    placeholder="Enter your facility or organization"
-    required
-  />
-</div>
+            <label className="form-label fw-bold">Facility Name</label>
+            <input
+              type="text"
+              className="form-control"
+              name="facilityName"
+              value={formData.facilityName}
+              onChange={handleChange}
+              placeholder="Enter your facility or organization"
+              required
+            />
+          </div>
 
           <div className="mb-3">
             <label className="form-label fw-bold">Email</label>

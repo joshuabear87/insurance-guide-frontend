@@ -6,16 +6,6 @@
     color: rgb(155, 155, 155) !important;
   }
   
-  .hamburger:hover {
-    color: #006480 !important;
-    font-weight: bold !important;
-  }
-  
-  .hamburger {
-    background-color: #fff !important;
-    border-color: #005b7f !important;
-    color: #005b7f !important;
-  }
   
   .btn-blue {
     background-color: #fff;

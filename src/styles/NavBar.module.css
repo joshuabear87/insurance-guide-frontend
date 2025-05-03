@@ -6,18 +6,28 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   }
 
-  .hamburger:hover {
-    color: #006480 !important;
-    font-weight: bold !important;
+  .hamburger {
+    background-color: white;
+    border: none;
+    color: #005b7f !important;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    cursor: pointer;
   }
   
-  .hamburger {
-    background-color: #fff !important;
-    border-color: #007b9e !important;
-    color: #007b9e !important;
+  .hamburger:hover {
+    background-color: #f1f9fc; /* soft blue-white blend */
+    box-shadow: 0 4px 10px rgba(0, 91, 127, 0.2);
+    transform: translateY(-1px);
   }
-
-  .navbar h1 {
+  
+  .hamburger:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+    .navbar h1 {
     font-size: 2rem;
     line-height: 1.2;
     margin-bottom: 0;

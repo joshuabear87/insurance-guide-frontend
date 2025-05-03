@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import InsurancePlanModalContent from '../InsurancePlanModalContent';
-
-const getNestedValue = (obj, path) =>
-  path.split('.').reduce((acc, key) => acc?.[key], obj);
+import { isAdmin } from '../utils/auth';
+import EditButton from '../EditButton';
+import { getNestedValue, formatAddress, formatLabel } from '../../components/utils/helpers';
 
 const InsurancePlanCardView = ({ books, visibleColumns }) => {
   const [selectedBook, setSelectedBook] = useState(null);
+  const admin = isAdmin();
 
   return (
     <>
@@ -14,78 +15,116 @@ const InsurancePlanCardView = ({ books, visibleColumns }) => {
           {books.map((book) => (
             <div key={book._id} className="col-12 col-sm-6 col-lg-4">
               <div
-                className="card h-100 border-0 shadow-sm p-3 responsive-card"
+                className="card h-100 border-0 shadow-sm p-3 responsive-card position-relative"
                 onClick={() => setSelectedBook(book)}
                 style={{ cursor: 'pointer' }}
               >
-                {/* Header */}
-                {visibleColumns.descriptiveName && (
-                  <h5 className="text-center fw-bold mb-1">{book.descriptiveName}</h5>
-                )}
-                {visibleColumns.financialClass && (
-                  <p className="text-center text-muted mb-3" style={{ fontSize: '0.85rem' }}>
-                    {book.financialClass}
-                  </p>
+                {admin && (
+                  <EditButton id={book._id} onClick={(e) => e.stopPropagation()} />
                 )}
 
-                {/* Core Details */}
-                {visibleColumns.planName && <p><strong>Plan Name:</strong> {book.planName}</p>}
-                {visibleColumns.planCode && <p><strong>Plan Code:</strong> {book.planCode}</p>}
-                {visibleColumns.payerName && <p><strong>Payer Name:</strong> {book.payerName}</p>}
-                {visibleColumns.payerCode && <p><strong>Payer Code:</strong> {book.payerCode}</p>}
-                {visibleColumns.samcContracted && (
-                  <p><strong>SAMC Contracted:</strong> {book.samcContracted}</p>
-                )}
-                {visibleColumns.samfContracted && (
-                  <p><strong>SAMF Contracted:</strong> {book.samfContracted}</p>
-                )}
-                {visibleColumns.prefixes && (
-                  <p><strong>Prefixes:</strong> {book.prefixes?.map(p => p.value).join(', ') || 'N/A'}</p>
-                )}
-                {visibleColumns.notes && (
-                  <p><strong>Notes:</strong> {book.notes || 'N/A'}</p>
-                )}
-                {visibleColumns.authorizationNotes && (
-                  <p><strong>Auth Notes:</strong> {book.authorizationNotes || 'N/A'}</p>
-                )}
-                {visibleColumns.payerId && <p><strong>Payer ID:</strong> {book.payerId}</p>}
-                {visibleColumns.ipaPayerId && <p><strong>IPA Payer ID:</strong> {book.ipaPayerId}</p>}
+                {Object.entries(visibleColumns).map(([key, isVisible]) => {
+                  if (!isVisible || key.includes('.') || key === 'image' || key === 'secondaryImage') return null;
 
-                {/* Addresses */}
-                {visibleColumns['facilityAddress.street'] && (
-                  <p><strong>Facility Street:</strong> {book.facilityAddress?.street || 'N/A'}</p>
-                )}
-                {visibleColumns['facilityAddress.city'] && (
-                  <p><strong>Facility City:</strong> {book.facilityAddress?.city || 'N/A'}</p>
-                )}
-                {visibleColumns['facilityAddress.state'] && (
-                  <p><strong>Facility State:</strong> {book.facilityAddress?.state || 'N/A'}</p>
-                )}
-                {visibleColumns['facilityAddress.zip'] && (
-                  <p><strong>Facility ZIP:</strong> {book.facilityAddress?.zip || 'N/A'}</p>
-                )}
-                {visibleColumns['providerAddress.street'] && (
-                  <p><strong>Provider Street:</strong> {book.providerAddress?.street || 'N/A'}</p>
-                )}
-                {visibleColumns['providerAddress.city'] && (
-                  <p><strong>Provider City:</strong> {book.providerAddress?.city || 'N/A'}</p>
-                )}
-                {visibleColumns['providerAddress.state'] && (
-                  <p><strong>Provider State:</strong> {book.providerAddress?.state || 'N/A'}</p>
-                )}
-                {visibleColumns['providerAddress.zip'] && (
-                  <p><strong>Provider ZIP:</strong> {book.providerAddress?.zip || 'N/A'}</p>
-                )}
+                  if (key === 'facilityAddress' || key === 'providerAddress') {
+                    return (
+                      <p key={key} className="card-content">
+                        <strong>{formatLabel(key)}:</strong>{' '}
+                        {formatAddress(book[key])}
+                      </p>
+                    );
+                  }
 
-                {/* Images */}
+                  const value = getNestedValue(book, key);
+
+                  if (key === 'descriptiveName') {
+                    return (
+                      <h5 key={key} className="text-center fw-bold mb-1 card-title">
+                        {value || '-'}
+                      </h5>
+                    );
+                  }
+
+                  if (key === 'financialClass') {
+                    return (
+                      <p key={key} className="text-center text-muted mb-3 card-subtitle">
+                        {value || '-'}
+                      </p>
+                    );
+                  }
+
+                  if (key === 'prefixes') {
+                    return (
+                      <p key={key} className="card-content">
+                        <strong>{formatLabel(key)}:</strong>{' '}
+                        {value?.length > 0 ? value.map((p) => p.value).join(', ') : '-'}
+                      </p>
+                    );
+                  }
+
+                  if (key === 'portalLinks') {
+                    return (
+                      <div key={key} className="card-content">
+                        <strong>{formatLabel(key)}:</strong>
+                        {value?.length > 0 ? (
+                          <ul className="ms-3 mb-2">
+                            {value.map((link, index) => (
+                              <li key={index}>
+                                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                                  {link.title}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <span> - </span>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  if (key === 'phoneNumbers') {
+                    return (
+                      <div key={key} className="card-content">
+                        <strong>{formatLabel(key)}:</strong>
+                        {value?.length > 0 ? (
+                          <ul className="ms-3 mb-2">
+                            {value.map((phone, index) => (
+                              <li key={index}>
+                                {phone.title}: {phone.number}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <span> - </span>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <p key={key} className="card-content">
+                      <strong>{formatLabel(key)}:</strong> {value || '-'}
+                    </p>
+                  );
+                })}
+
                 {visibleColumns.image && book.image && (
                   <div className="text-center mb-2">
-                    <img src={book.image} alt="Front" style={{ maxWidth: '100%', maxHeight: '150px' }} />
+                    <img
+                      src={book.image}
+                      alt="Front"
+                      style={{ maxWidth: '100%', maxHeight: '150px' }}
+                    />
                   </div>
                 )}
                 {visibleColumns.secondaryImage && book.secondaryImage && (
                   <div className="text-center">
-                    <img src={book.secondaryImage} alt="Back" style={{ maxWidth: '100%', maxHeight: '150px' }} />
+                    <img
+                      src={book.secondaryImage}
+                      alt="Back"
+                      style={{ maxWidth: '100%', maxHeight: '150px' }}
+                    />
                   </div>
                 )}
               </div>

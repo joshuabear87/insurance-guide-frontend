@@ -8,7 +8,7 @@ import InsurancePlanCardView from '../components/home/InsurancePlanCardVIew';
 import columnConfig from '../components/utils/columnConfig';
 import PlanFilterPills from '../components/PlanFilterPills';
 
-const Home = () => {
+const InsurancePlanMainPage = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showType, setShowType] = useState('table');
@@ -153,13 +153,35 @@ const Home = () => {
         if (currentFilter === 'Commercial') return book.financialClass === 'Commercial';
         return true;
       })
-      .filter((book) =>
-        Object.values(book).some((value) =>
-          String(value).toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      );
+      .filter((book) => {
+        const search = searchQuery.toLowerCase();
+  
+        // Combine basic fields
+        const valuesToSearch = [
+          ...Object.values(book).map((v) => String(v).toLowerCase()),
+          book.facilityAddress?.street?.toLowerCase() || '',
+          book.facilityAddress?.city?.toLowerCase() || '',
+          book.facilityAddress?.state?.toLowerCase() || '',
+          book.facilityAddress?.zip?.toLowerCase() || '',
+          book.providerAddress?.street?.toLowerCase() || '',
+          book.providerAddress?.city?.toLowerCase() || '',
+          book.providerAddress?.state?.toLowerCase() || '',
+          book.providerAddress?.zip?.toLowerCase() || '',
+          ...(book.prefixes || []).map((p) => p.value?.toLowerCase() || ''),
+          ...(book.portalLinks || []).flatMap((l) => [
+            l.title?.toLowerCase() || '',
+            l.url?.toLowerCase() || '',
+          ]),
+          ...(book.phoneNumbers || []).flatMap((p) => [
+            p.title?.toLowerCase() || '',
+            p.number?.toLowerCase() || '',
+          ]),
+        ];
+  
+        return valuesToSearch.some((value) => value.includes(search));
+      });
   }, [books, searchQuery, currentFilter]);
-
+  
   return (
     <>
       <PlanFilterPills />
@@ -224,4 +246,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default InsurancePlanMainPage;

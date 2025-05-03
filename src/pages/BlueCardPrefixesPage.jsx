@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import API from '../axios';
 import Spinner from '../components/Spinner';
 import InsurancePlanModalContent from '../components/InsurancePlanModalContent';
@@ -6,8 +6,7 @@ import PlanFilterPills from '../components/PlanFilterPills';
 import BlueCardSearchbar from '../components/BlueCardSearchbar';
 import BlueCardCardView from '../components/home/BlueCardCardView';
 import blueCardColumnConfig from '../components/utils/blueCardColumnConfig';
-import { Link } from 'react-router-dom';
-import { AiOutlineEdit } from 'react-icons/ai';
+import BlueCardTableView from '../components/home/BlueCardTableVIew';
 
 const getNestedValue = (obj, path) =>
   path.split('.').reduce((acc, key) => acc?.[key], obj);
@@ -120,32 +119,6 @@ const BlueCardPrefixesPage = () => {
       });
   }, [prefixRows, sortColumn, sortDirection, searchQuery]);
 
-  const orderedKeys = [
-    ...(isAuthenticated ? [] : ['prefix']),
-    'financialClass',
-    'descriptiveName',
-    'payerName',
-    'payerCode',
-    'planName',
-    'planCode',
-    'samcContracted',
-    'samfContracted',
-    'authorizationNotes',
-    'notes',
-    'image',
-    'secondaryImage',
-    'payerId',
-    'ipaPayerId',
-    'facilityAddress.street',
-    'facilityAddress.city',
-    'facilityAddress.state',
-    'facilityAddress.zip',
-    'providerAddress.street',
-    'providerAddress.city',
-    'providerAddress.state',
-    'providerAddress.zip',
-  ];
-
   return (
     <>
       <PlanFilterPills />
@@ -169,92 +142,15 @@ const BlueCardPrefixesPage = () => {
           <Spinner />
         </div>
       ) : showType === 'table' ? (
-        <div className="table-responsive" style={{ fontSize: '0.75rem' }}>
-          <table className="table table-bordered table-hover align-middle">
-            <thead>
-              <tr>
-                {isAuthenticated && (
-                  <th
-                    style={{
-                      backgroundColor: '#005b7f',
-                      color: 'white',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    Operations
-                  </th>
-                )}
-                <th
-                  style={{
-                    backgroundColor: '#005b7f',
-                    color: 'white',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  Prefix
-                </th>
-                {orderedKeys.map((key) => {
-                  const col = blueCardColumnConfig.find((c) => c.key === key);
-                  if (!col || !visibleColumns[key]) return null;
-                  return (
-                    <th
-                      key={key}
-                      onClick={() => handleSort(key)}
-                      style={{
-                        backgroundColor: '#005b7f',
-                        color: 'white',
-                        cursor: 'pointer',
-                        userSelect: 'none',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {col.label}{' '}
-                      {sortColumn === key && (sortDirection === 'asc' ? '↑' : '↓')}
-                    </th>
-                  );
-                })}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredRows.map((row, i) => (
-                <tr
-                  key={`${row.prefix}-${i}`}
-                  onClick={() => setSelectedBook(row.book)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {isAuthenticated && (
-                    <td onClick={(e) => e.stopPropagation()}>
-                      <Link to={`/books/edit/${row.book._id}`}>
-                        <AiOutlineEdit className="fs-5 text-primary" />
-                      </Link>
-                    </td>
-                  )}
-                  <td style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '180px' }}>{row.prefix}</td>
-                  {orderedKeys.map((key) => {
-                    const col = blueCardColumnConfig.find((c) => c.key === key);
-                    if (!col || !visibleColumns[key]) return null;
-                    const value = getNestedValue(row, key);
-                    const content = col.render ? col.render(value) : value || 'N/A';
-                    return (
-                      <td
-                        key={key}
-                        title={typeof content === 'string' ? content : ''}
-                        style={{
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          maxWidth: key === 'image' || key === 'secondaryImage' ? '50px' : '50px',
-                        }}
-                      >
-                        {content}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+<BlueCardTableView
+  rows={filteredRows}
+  sortColumn={sortColumn}
+  sortDirection={sortDirection}
+  handleSort={handleSort}
+  visibleColumns={visibleColumns}
+  isAuthenticated={isAuthenticated}
+  onSelect={(book) => setSelectedBook(book)}
+/>
       ) : (
         <BlueCardCardView
           rows={filteredRows}

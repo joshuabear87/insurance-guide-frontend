@@ -3,15 +3,14 @@ import { Link } from 'react-router-dom';
 import { AiOutlineEdit } from 'react-icons/ai';
 import InsurancePlanModalContent from '../InsurancePlanModalContent';
 import columnConfig from '../utils/columnConfig';
-
-const getNestedValue = (obj, path) =>
-  path.split('.').reduce((acc, key) => acc?.[key], obj);
+import { isAdmin } from '../utils/auth';
+import { getNestedValue } from '../../components/utils/helpers';
 
 const InsurancePlanTable = ({ books, visibleColumns }) => {
-  const isAuthenticated = !!localStorage.getItem('accessToken');
   const [selectedBook, setSelectedBook] = useState(null);
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState('asc');
+  const admin = isAdmin();
 
   const handleSort = (key) => {
     if (sortColumn === key) {
@@ -45,18 +44,8 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
         >
           <thead className="table-primary">
             <tr>
-              {isAuthenticated && (
-                <th
-                  style={{
-                    backgroundColor: '#005b7f',
-                    color: 'white',
-                    userSelect: 'none',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    maxWidth: '180px',
-                  }}
-                >
+              {admin && (
+                <th style={{ backgroundColor: '#005b7f', color: 'white' }}>
                   Operations
                 </th>
               )}
@@ -89,16 +78,8 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
                 onClick={() => setSelectedBook(book)}
                 style={{ cursor: 'pointer' }}
               >
-                {isAuthenticated && (
-                  <td
-                    onClick={(e) => e.stopPropagation()}
-                    style={{
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      maxWidth: '180px',
-                    }}
-                  >
+                {admin && (
+                  <td onClick={(e) => e.stopPropagation()}>
                     <Link to={`/books/edit/${book._id}`}>
                       <AiOutlineEdit className="fs-5 text-primary" />
                     </Link>
@@ -107,10 +88,19 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
                 {columnConfig.map(({ key, render, component: Comp }) => {
                   if (!visibleColumns[key]) return null;
                   const value = getNestedValue(book, key);
+
+                  const rendered = render
+                    ? render(value)
+                    : Comp
+                    ? <Comp status={value} />
+                    : value || '-';
+
+                  const isObject = typeof value === 'object' && value !== null;
+
                   return (
                     <td
                       key={key}
-                      title={value != null ? String(value) : ''}
+                      title={!isObject ? String(value) : ''}
                       style={{
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
@@ -118,11 +108,7 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
                         maxWidth: '180px',
                       }}
                     >
-                      {render
-                        ? render(value)
-                        : Comp
-                        ? <Comp status={value} />
-                        : value || 'N/A'}
+                      {rendered}
                     </td>
                   );
                 })}
