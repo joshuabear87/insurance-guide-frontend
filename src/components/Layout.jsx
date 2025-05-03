@@ -5,7 +5,7 @@ import Footer from './Footer';
 const Layout = ({ children }) => {
   const navbarRef = useRef(null);
   const [topPadding, setTopPadding] = useState(100); // fallback if ref fails
-  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     document.body.classList.toggle('bg-dark', darkMode);

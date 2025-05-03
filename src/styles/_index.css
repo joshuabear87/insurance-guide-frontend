@@ -16,6 +16,10 @@ body {
   color: #005b7f;
 }
 
+.bg-blue {
+  background-color: #005b7f16 !important; 
+}
+
 .bg-grey {
   background-color: #ccc;
 }

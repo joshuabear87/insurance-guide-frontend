@@ -46,8 +46,6 @@ const BlueCardPrefixesPage = () => {
       planCode: true,
       samcContracted: true,
       samfContracted: true,
-      authorizationNotes: true,
-      notes: true,
       image: true,
     };
     blueCardColumnConfig.forEach((col) => {

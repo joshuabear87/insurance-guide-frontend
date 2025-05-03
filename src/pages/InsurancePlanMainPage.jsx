@@ -91,7 +91,6 @@ const InsurancePlanMainPage = () => {
       samcContracted: true,
       samfContracted: true,
       image: true,
-      secondaryImage: true,
     };
 
     columnConfig.forEach(col => {
