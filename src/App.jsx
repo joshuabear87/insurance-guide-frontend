@@ -11,6 +11,9 @@ import EditInsurancePlan from './pages/EditInsurancePlan';
 import Layout from './components/Layout';
 import LayoutNoNav from './components/LayoutNoNav';
 import BlueCardPrefixesPage from './pages/BlueCardPrefixesPage';
+import AllPortalLinksPage from './pages/AllPortalLinksPage';
+import AllPhoneNumbersPage from './pages/AllPhoneNumbersPage';
+import PrintableInsurancePlanPage from './pages/PrintableInsurancePlanPage';
 
 const App = () => {
   return (
@@ -18,7 +21,7 @@ const App = () => {
       <Route path="/login" element={<LayoutNoNav><LoginPage /></LayoutNoNav>} />
       <Route path="/register" element={<LayoutNoNav><RegistrationPage /></LayoutNoNav>} />
       <Route path="/forgot-password" element={<LayoutNoNav><ForgotPasswordPage /></LayoutNoNav>} />
-      <Route path="/account" element={<ProtectedRoute adminOnly={true}><LayoutNoNav><MyAccountPage /></LayoutNoNav></ProtectedRoute>} />
+      <Route path="/account" element={<ProtectedRoute adminOnly={true}><Layout><MyAccountPage /></Layout></ProtectedRoute>} />
       
       <Route path="/" element={<Navigate to="/plans" />} />
       <Route path="/plans" element={<ProtectedRoute><Layout><InsurancePlanMainPage /></Layout></ProtectedRoute>} />
@@ -26,6 +29,10 @@ const App = () => {
       <Route path="/plans/medicare" element={<ProtectedRoute><Layout><InsurancePlanMainPage /></Layout></ProtectedRoute>} />
       <Route path="/plans/medi-cal" element={<ProtectedRoute><Layout><InsurancePlanMainPage /></Layout></ProtectedRoute>} />
       <Route path="/plans/bluecard-prefixes" element={<Layout><BlueCardPrefixesPage /></Layout>} />
+
+      <Route path="/portal-links" element={<ProtectedRoute><Layout><AllPortalLinksPage /></Layout></ProtectedRoute>} />
+      <Route path="/phone-numbers" element={<ProtectedRoute><Layout><AllPhoneNumbersPage /></Layout></ProtectedRoute>} />
+      <Route path="/printable-page" element={<ProtectedRoute><Layout><PrintableInsurancePlanPage /></Layout></ProtectedRoute>} />
 
       <Route path="/books/create" element={<ProtectedRoute><CreateInsurancePlan /></ProtectedRoute>} />
       <Route path="/books/edit/:id" element={<ProtectedRoute><EditInsurancePlan /></ProtectedRoute>} />

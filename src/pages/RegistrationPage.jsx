@@ -5,6 +5,8 @@ import API from '../axios';
 import Spinner from '../components/Spinner';
 import '../styles/_auth.css';
 
+const isValidNPI = (npi) => /^\d{10}$/.test(npi);
+
 const RegistrationPage = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -15,7 +17,11 @@ const RegistrationPage = () => {
     email: '',
     password: '',
     confirmPassword: '',
+    phoneNumber: '',
+    department: '',
+    npi: '',
   });
+
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -29,6 +35,11 @@ const RegistrationPage = () => {
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match.');
+      return;
+    }
+
+    if (!isValidNPI(formData.npi)) {
+      setError('Invalid NPI number. Please enter a valid 10-digit NPI.');
       return;
     }
 
@@ -85,6 +96,41 @@ const RegistrationPage = () => {
               className="form-control"
               name="email"
               value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label fw-bold">Phone Number</label>
+            <input
+              type="tel"
+              className="form-control"
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label fw-bold">Department (optional)</label>
+            <input
+              type="text"
+              className="form-control"
+              name="department"
+              value={formData.department}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label fw-bold">NPI Number</label>
+            <input
+              type="text"
+              className="form-control"
+              name="npi"
+              value={formData.npi}
               onChange={handleChange}
               required
             />

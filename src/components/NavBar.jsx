@@ -90,13 +90,15 @@ const NavBar = () => {
 
           <div className="d-flex flex-column align-items-start">
             <hr className="divider" />
+            <Link to="/" className="btn btn-blue w-100">Home</Link>
+            <hr className="divider" />
             <Link to="/account" className="btn btn-blue w-100">My Account</Link>
             <hr className="divider" />
-            <Link to="/insurance-phones" className="btn btn-blue w-100">Insurance Phone Numbers</Link>
+            <Link to="/phone-numbers" className="btn btn-blue w-100">Insurance Phone Numbers</Link>
             <hr className="divider" />
-            <Link to="/insurance-portals" className="btn btn-blue w-100">Insurance Web Portals</Link>
+            <Link to="/portal-links" className="btn btn-blue w-100">Insurance Web Portals</Link>
             <hr className="divider" />
-            <Link to="/downtime" className="btn btn-blue w-100">Downtime Printout</Link>
+            <Link to="/printable-page" className="btn btn-blue w-100">Downtime Printout</Link>
             <hr className="divider" />
             {isAuthenticated && (
               <>
@@ -107,6 +109,7 @@ const NavBar = () => {
               </>
             )}
             <button className="btn btn-request w-100">Request an Update</button>
+            <hr className="divider" />
             <hr className="divider" />
           </div>
         </div>

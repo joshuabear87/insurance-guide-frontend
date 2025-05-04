@@ -33,13 +33,7 @@ const Layout = ({ children }) => {
         <Navbar />
       </div>
 
-      <div className="text-end px-3 pt-2">
-        <button onClick={() => setDarkMode(!darkMode)} className="btn btn-sm btn-outline-secondary">
-          {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
-        </button>
-      </div>
-
-      <main className="flex-grow-1 container-fluid" style={{ paddingTop: `${topPadding}px`, paddingBottom: '60px' }}>
+      <main className="flex-grow-1 container-fluid my-5" style={{ paddingTop: `${topPadding}px`, paddingBottom: '60px' }}>
         {children}
       </main>
 

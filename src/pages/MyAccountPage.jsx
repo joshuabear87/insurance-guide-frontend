@@ -24,21 +24,68 @@ const MyAccountPage = () => {
     fetchUser();
   }, []);
 
-  if (loading) return <Spinner />;
+  const formatRole = (role) => {
+    return role === 'admin' ? 'Administrator' : 'User';
+  };
 
+  const formatStatus = (status) => {
+    return status === 'approved' ? 'Approved' : 'Pending';
+  };
+
+  if (loading) return <Spinner />;
+  if (!user) return <p className="text-danger text-center">⚠️ Unable to load user profile.</p>;
+  
   return (
-    <div className="container mt-5">
-      <h2>My Account</h2>
-      <div className="card p-4 shadow-sm">
-        <p><strong>Name:</strong> {user.username}</p>
-        <p><strong>Facility:</strong> {user.facilityName}</p>
-        <p><strong>Email:</strong> {user.email}</p>
-        <p><strong>Phone:</strong> {user.phoneNumber || 'N/A'}</p>
-        <p><strong>Status:</strong> {user.status}</p>
-        <p><strong>Role:</strong> {user.role}</p>
-        <button className="btn btn-outline-primary mt-3" onClick={() => setShowEditModal(true)}>
-          Edit My Info
-        </button>
+    <div className="container py-4">
+      <div className="card shadow-sm p-4" style={{ maxWidth: '700px', margin: '0 auto', fontSize: '0.85rem' }}>
+        <h2 className="fw-bold text-center mb-4" style={{ color: '#005b7f' }}>My Account</h2>
+        <div className="row g-4">
+          <div className="col-md-6">
+            <div className="mb-3">
+              <strong>Name:</strong>
+              <div className="text-muted">{user.username}</div>
+            </div>
+            <div className="mb-3">
+              <strong>Facility:</strong>
+              <div className="text-muted">{user.facilityName}</div>
+            </div>
+            <div className="mb-3">
+              <strong>Department:</strong>
+              <div className="text-muted">{user.department || 'N/A'}</div>
+            </div>
+            <div className="mb-3">
+              <strong>NPI:</strong>
+              <div className="text-muted">{user.npi}</div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="mb-3">
+              <strong>Email:</strong>
+              <div className="text-muted">{user.email}</div>
+            </div>
+            <div className="mb-3">
+              <strong>Phone:</strong>
+              <div className="text-muted">{user.phoneNumber}</div>
+            </div>
+            <div className="mb-3">
+              <strong>Status:</strong>
+              <div className="text-muted">{formatStatus(user.status)}</div>
+            </div>
+            <div className="mb-3">
+              <strong>Role:</strong>
+              <div className="text-muted">{formatRole(user.role)}</div>
+            </div>
+          </div>
+        </div>
+        <div className="d-flex justify-content-center mt-4">
+          <button
+            className="btn btn-login"
+            style={{ backgroundColor: '#005b7f', color: 'white', fontSize: '0.75rem', borderRadius: '5px', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)', minWidth: '120px' }}
+            onClick={() => setShowEditModal(true)}
+          >
+            Edit My Info
+          </button>
+        </div>
       </div>
 
       {user.role === 'admin' && (
