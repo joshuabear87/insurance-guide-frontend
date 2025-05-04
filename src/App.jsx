@@ -32,7 +32,7 @@ const App = () => {
 
       <Route path="/portal-links" element={<ProtectedRoute><Layout><AllPortalLinksPage /></Layout></ProtectedRoute>} />
       <Route path="/phone-numbers" element={<ProtectedRoute><Layout><AllPhoneNumbersPage /></Layout></ProtectedRoute>} />
-      <Route path="/printable-page" element={<ProtectedRoute><Layout><PrintableInsurancePlanPage /></Layout></ProtectedRoute>} />
+      <Route path="/printable-page" element={<ProtectedRoute><LayoutNoNav><PrintableInsurancePlanPage /></LayoutNoNav></ProtectedRoute>} />
 
       <Route path="/books/create" element={<ProtectedRoute><CreateInsurancePlan /></ProtectedRoute>} />
       <Route path="/books/edit/:id" element={<ProtectedRoute><EditInsurancePlan /></ProtectedRoute>} />

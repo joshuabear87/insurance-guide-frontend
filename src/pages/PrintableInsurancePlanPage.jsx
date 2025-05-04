@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import API from '../axios';
 import { formatAddress } from '../components/utils/helpers';
+import { useSnackbar } from 'notistack';
+import { AuthContext } from '../context/AuthContexts';
+import SendPdfButton from '../components/SendPdfButton';
 
 const PrintableInsurancePlanPage = () => {
   const [plans, setPlans] = useState([]);
+  const { user } = useContext(AuthContext);
+  const isAdmin = user?.role === 'admin';
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -19,6 +24,12 @@ const PrintableInsurancePlanPage = () => {
 
   return (
     <div className="container my-4">
+      {isAdmin && (
+  <div className="d-flex justify-content-end mb-3">
+    <SendPdfButton />
+  </div>
+)}
+
       <h1 className="text-center mb-5">Insurance Plan Directory</h1>
 
       {/* --- Table 1: Insurance Plan Details --- */}
