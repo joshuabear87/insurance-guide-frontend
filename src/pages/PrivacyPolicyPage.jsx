@@ -1,8 +1,10 @@
 import React from 'react';
+import BackButton from '../components/BackButton';
 
 const PrivacyPolicyPage = () => {
   return (
     <div className="container py-5 d-flex justify-content-center">
+      <BackButton />
       <div className="card shadow-sm p-4" style={{ maxWidth: '800px', width: '100%', fontSize: '0.9rem' }}>
         <h2 className="text-center mb-4 text-blue">Privacy Policy</h2>
         <p className="text-muted text-end">Last updated: May 3, 2025</p>
