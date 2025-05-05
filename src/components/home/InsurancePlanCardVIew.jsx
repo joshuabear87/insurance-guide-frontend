@@ -3,6 +3,7 @@ import InsurancePlanModalContent from '../InsurancePlanModalContent';
 import { isAdmin } from '../utils/auth';
 import EditButton from '../EditButton';
 import { getNestedValue, formatAddress, formatLabel } from '../../components/utils/helpers';
+import { ensureHttps } from '../utils/urlHelpers';
 
 const InsurancePlanCardView = ({ books, visibleColumns }) => {
   const [selectedBook, setSelectedBook] = useState(null);
@@ -23,64 +24,41 @@ const InsurancePlanCardView = ({ books, visibleColumns }) => {
                   <EditButton id={book._id} onClick={(e) => e.stopPropagation()} />
                 )}
 
-                {/* Always show these */}
                 <h5 className="text-center text-blue fw-bold mb-1">{book.descriptiveName || '-'}</h5>
                 <p className="text-center text-blue text-muted mb-3">{book.financialClass || '-'}</p>
 
-                {/* Section: Plan Details */}
-                {[
-                  'payerName',
-                  'payerCode',
-                  'planName',
-                  'planCode',
-                  'samcContracted',
-                  'samfContracted',
-                  'payerId',
-                  'ipaPayerId',
-                ].some((key) => visibleColumns[key] && book[key]) && (
-                    <div className="card mb-3 shadow-sm">
-                      <div className="card-body">
-                        <h6 className="text-center fw-bold border-bottom pb-2 mb-3 text-blue">Plan Details</h6>
-                        {[
-                          'payerName',
-                          'payerCode',
-                          'planName',
-                          'planCode',
-                          'samcContracted',
-                          'samfContracted',
-                          'payerId',
-                          'ipaPayerId',
-                        ].map((key) =>
-                          visibleColumns[key] && book[key] ? (
-                            <p key={key} className="mb-1">
-                              <strong>{formatLabel(key)}:</strong> {getNestedValue(book, key) || '-'}
-                            </p>
-                          ) : null
-                        )}
-                      </div>
+                {/* Plan Details */}
+                {[ 'payerName', 'payerCode', 'planName', 'planCode', 'samcContracted', 'samfContracted', 'payerId', 'ipaPayerId' ]
+                  .some((key) => visibleColumns[key] && book[key]) && (
+                  <div className="card mb-3 shadow-sm">
+                    <div className="card-body">
+                      <h6 className="text-center fw-bold border-bottom pb-2 mb-3 text-blue">Plan Details</h6>
+                      {[ 'payerName', 'payerCode', 'planName', 'planCode', 'samcContracted', 'samfContracted', 'payerId', 'ipaPayerId' ]
+                        .map((key) => visibleColumns[key] && book[key] && (
+                          <p key={key} className="mb-1">
+                            <strong>{formatLabel(key)}:</strong> {getNestedValue(book, key) || '-'}
+                          </p>
+                        ))}
                     </div>
-                  )}
+                  </div>
+                )}
 
-                {/* Section: Addresses */}
+                {/* Addresses */}
                 {(visibleColumns.facilityAddress || visibleColumns.providerAddress) && (
                   <div className="card mb-3 shadow-sm">
                     <div className="card-body">
                       <h6 className="text-center fw-bold border-bottom pb-2 mb-3 text-blue">Addresses</h6>
                       {visibleColumns.facilityAddress && (
-                        <p className="mb-1">
-                          <strong>Facility Address:</strong> {formatAddress(book.facilityAddress)}
-                        </p>
+                        <p className="mb-1"><strong>Facility Address:</strong> {formatAddress(book.facilityAddress)}</p>
                       )}
                       {visibleColumns.providerAddress && (
-                        <p className="mb-1">
-                          <strong>Provider Address:</strong> {formatAddress(book.providerAddress)}
-                        </p>
+                        <p className="mb-1"><strong>Provider Address:</strong> {formatAddress(book.providerAddress)}</p>
                       )}
                     </div>
                   </div>
                 )}
 
-                {/* Section: Communication */}
+                {/* Communication */}
                 {(visibleColumns.phoneNumbers || visibleColumns.portalLinks) && (
                   <div className="card mb-3 shadow-sm">
                     <div className="card-body">
@@ -104,7 +82,14 @@ const InsurancePlanCardView = ({ books, visibleColumns }) => {
                             <ul className="ms-3 mb-0">
                               {book.portalLinks.map((link, idx) => (
                                 <li key={idx}>
-                                  <a href={link.url} target="_blank" rel="noopener noreferrer">{link.title}</a>
+                                  <a
+                                    href={ensureHttps(link.url)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    {link.title}
+                                  </a>
                                 </li>
                               ))}
                             </ul>
@@ -115,7 +100,7 @@ const InsurancePlanCardView = ({ books, visibleColumns }) => {
                   </div>
                 )}
 
-                {/* Section: Prefixes */}
+                {/* Prefixes */}
                 {visibleColumns.prefixes && (
                   <div className="card mb-3 shadow-sm">
                     <div className="card-body">
@@ -127,7 +112,7 @@ const InsurancePlanCardView = ({ books, visibleColumns }) => {
                   </div>
                 )}
 
-                {/* Section: Notes */}
+                {/* Notes */}
                 {(visibleColumns.authorizationNotes || visibleColumns.notes) && (book.authorizationNotes || book.notes) && (
                   <div className="card mb-3 shadow-sm">
                     <div className="card-body">
@@ -142,8 +127,7 @@ const InsurancePlanCardView = ({ books, visibleColumns }) => {
                   </div>
                 )}
 
-
-                {/* Section: Images */}
+                {/* Images */}
                 {(visibleColumns.image || visibleColumns.secondaryImage) && (
                   <div className="card shadow-sm">
                     <div className="card-body text-center">

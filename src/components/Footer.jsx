@@ -1,11 +1,18 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-light text-center py-3 border-top mt-5 fixed-bottom">
-      <div className="container">
-        <small className="text-muted">
-          &copy; Joshua Atendido Bear • <em>Hoken Hub.</em> All rights reserved. — a <em>Wakai Kuma</em> production
+    <footer className="bg-light text-center py-3 fixed-bottom shadow-lg border-top mt-5">
+      <div>
+        <small className="d-block">
+          &copy; {new Date().getFullYear()} Joshua Atendido Bear, <em>Hoken Hub</em>. All rights reserved.
+          A <em>Wakai Kuma</em> Production.
+        </small>
+        <small className="d-block mt-1">
+          <Link to="/terms" className="text-dark mx-2 text-decoration-none">Terms of Use</Link>
+          |
+          <Link to="/privacy" className="text-dark mx-2 text-decoration-none">Privacy Policy</Link>
         </small>
       </div>
     </footer>

@@ -3,6 +3,7 @@ import InsurancePlanModalContent from '../InsurancePlanModalContent';
 import { isAdmin } from '../utils/auth';
 import EditButton from '../EditButton';
 import { formatAddress, formatLabel } from '../../components/utils/helpers';
+import { ensureHttps } from '../utils/urlHelpers';
 
 const BlueCardCardView = ({ rows, visibleColumns, onSelect }) => {
   const [selectedBook, setSelectedBook] = useState(null);
@@ -36,32 +37,18 @@ const BlueCardCardView = ({ rows, visibleColumns, onSelect }) => {
                 <p className="text-center text-blue mb-3"><strong>Prefix:</strong> {row.prefix || '-'}</p>
 
                 {/* Section: Plan Details */}
-                {[
-                  'planName',
-                  'planCode',
-                  'payerName',
-                  'payerCode',
-                  'samcContracted',
-                  'samfContracted',
-                  'payerId',
-                  'ipaPayerId',
-                ].some((key) => visibleColumns[key] && row[key]) && (
+                {[ 'planName', 'planCode', 'payerName', 'payerCode', 'samcContracted', 'samfContracted', 'payerId', 'ipaPayerId' ]
+                  .some((key) => visibleColumns[key] && row[key]) && (
                   <div className="card mb-3 shadow-sm">
                     <div className="card-body">
                       <h6 className="text-center fw-bold border-bottom pb-2 mb-3 text-blue">Plan Details</h6>
                       {[
-                        'planName',
-                        'planCode',
-                        'payerName',
-                        'payerCode',
-                        'samcContracted',
-                        'samfContracted',
-                        'payerId',
-                        'ipaPayerId',
+                        'planName', 'planCode', 'payerName', 'payerCode',
+                        'samcContracted', 'samfContracted', 'payerId', 'ipaPayerId'
                       ].map((key) =>
                         visibleColumns[key] && row[key] ? (
                           <p key={key} className="mb-1">
-                            <strong>{formatLabel(key)}:</strong> {row[key] || '-'}
+                            <strong>{formatLabel(key)}:</strong> {row[key]}
                           </p>
                         ) : null
                       )}
@@ -114,7 +101,14 @@ const BlueCardCardView = ({ rows, visibleColumns, onSelect }) => {
                             <ul className="ms-3 mb-0">
                               {row.portalLinks.map((link, idx) => (
                                 <li key={idx}>
-                                  <a href={link.url} target="_blank" rel="noopener noreferrer">{link.title}</a>
+                                  <a
+                                    href={ensureHttps(link.url)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    {link.title}
+                                  </a>
                                 </li>
                               ))}
                             </ul>

@@ -15,6 +15,8 @@ import AllPortalLinksPage from './pages/AllPortalLinksPage';
 import AllPhoneNumbersPage from './pages/AllPhoneNumbersPage';
 import PrintableInsurancePlanPage from './pages/PrintableInsurancePlanPage';
 import RequestUpdateForm from './components/RequestUpdateForm';
+import TermsOfUsePage from './pages/TermsOfUsePage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 
 const App = () => {
   const [showPHIModal, setShowPHIModal] = useState(false);
@@ -65,7 +67,9 @@ const App = () => {
         <Route path="/login" element={<LayoutNoNav><LoginPage /></LayoutNoNav>} />
         <Route path="/register" element={<LayoutNoNav><RegistrationPage /></LayoutNoNav>} />
         <Route path="/forgot-password" element={<LayoutNoNav><ForgotPasswordPage /></LayoutNoNav>} />
-        <Route path="/account" element={<ProtectedRoute adminOnly={true}><Layout><MyAccountPage /></Layout></ProtectedRoute>} />
+        <Route path="/terms" element={<TermsOfUsePage />} />
+        <Route path="/privacy" element={<PrivacyPolicyPage />} />
+        <Route path="/account" element={<ProtectedRoute><Layout><MyAccountPage /></Layout></ProtectedRoute>} />
         
         <Route path="/" element={<Navigate to="/plans" />} />
         <Route path="/plans" element={<ProtectedRoute><Layout><InsurancePlanMainPage /></Layout></ProtectedRoute>} />

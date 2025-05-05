@@ -5,6 +5,7 @@ import InsurancePlanModalContent from '../InsurancePlanModalContent';
 import columnConfig from '../utils/columnConfig';
 import { isAdmin } from '../utils/auth';
 import { getNestedValue } from '../../components/utils/helpers';
+import { ensureHttps } from '../utils/urlHelpers';
 
 const InsurancePlanTable = ({ books, visibleColumns }) => {
   const [selectedBook, setSelectedBook] = useState(null);
@@ -87,13 +88,33 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
                 )}
                 {columnConfig.map(({ key, render, component: Comp }) => {
                   if (!visibleColumns[key]) return null;
+
                   const value = getNestedValue(book, key);
 
-                  const rendered = render
-                    ? render(value)
-                    : Comp
-                    ? <Comp status={value} />
-                    : value || '-';
+                  let renderedValue;
+
+                  // Handle portalLinks rendering as clickable links
+                  if (key === 'portalLinks' && Array.isArray(value)) {
+                    renderedValue = value.length > 0 ? (
+                      <ul className="mb-0 ps-3">
+                        {value.map((link, i) => (
+                          <li key={i}>
+                            <a href={ensureHttps(link.url)}  onClick={(e) => e.stopPropagation()} target="_blank" rel="noopener noreferrer">
+                              {link.title}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      '-'
+                    );
+                  } else if (render) {
+                    renderedValue = render(value);
+                  } else if (Comp) {
+                    renderedValue = <Comp status={value} />;
+                  } else {
+                    renderedValue = value || '-';
+                  }
 
                   const isObject = typeof value === 'object' && value !== null;
 
@@ -108,7 +129,7 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
                         maxWidth: '180px',
                       }}
                     >
-                      {rendered}
+                      {renderedValue}
                     </td>
                   );
                 })}

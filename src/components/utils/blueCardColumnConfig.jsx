@@ -1,3 +1,5 @@
+import { ensureHttps } from './urlHelpers';
+
 const blueCardColumnConfig = [
   { key: 'prefix', label: 'Prefix' }, // Always visible
 
@@ -41,7 +43,7 @@ const blueCardColumnConfig = [
         <ul className="mb-0 ps-3">
           {links.map((link, i) => (
             <li key={i}>
-              <a href={link.url} target="_blank" rel="noopener noreferrer">
+              <a href={ensureHttps(link.url)}  onClick={(e) => e.stopPropagation()} target="_blank" rel="noopener noreferrer">
                 {link.title}
               </a>
             </li>
@@ -51,7 +53,7 @@ const blueCardColumnConfig = [
         '-'
       ),
   },
-
+  
   {
     key: 'phoneNumbers',
     label: 'Phone Numbers',

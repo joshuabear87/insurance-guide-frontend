@@ -160,6 +160,21 @@ const EditInsurancePlan = () => {
     navigate(0); // Quick reload to reset
   };
 
+  const handleDeleteConfirmed = async () => {
+    try {
+      setLoading(true);
+      await API.delete(`/books/${id}`);
+      enqueueSnackbar('Insurance plan deleted.', { variant: 'success' });
+      navigate('/');
+    } catch (err) {
+      console.error('Delete failed:', err);
+      enqueueSnackbar('Failed to delete insurance plan.', { variant: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
   return (
     <div className="container my-5">
       <div className="d-flex justify-content-start my-3">
@@ -211,6 +226,10 @@ const EditInsurancePlan = () => {
               <button className="btn btn-cancel" type="button" onClick={handleReset}>Reset</button>
               <button className="btn btn-login" type="button" onClick={() => setShowPHIModal(true)}>Save Changes</button>
             </div>
+            <div className="text-end mt-1">
+  <button className="btn btn-delete" onClick={() => setShowDeleteModal(true)}>Delete Plan</button>
+</div>
+
           </div>
         </div>
       </div>
@@ -256,7 +275,7 @@ const EditInsurancePlan = () => {
               </button>
               <button className="btn btn-login px-4" onClick={() => {
                 setShowPHIModal(false);
-                handleSavePlanConfirmed();
+                handleSubmitConfirmed();
               }}>
                 I Understand & Save
               </button>
@@ -264,6 +283,50 @@ const EditInsurancePlan = () => {
           </div>
         </div>
       )}
+
+{showDeleteModal && (
+  <div
+    className="modal-backdrop-custom fade show"
+    onClick={() => setShowDeleteModal(false)}
+    style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100vw',
+      height: '100vh',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      zIndex: 1050,
+    }}
+  >
+    <div
+      className="modal-content-custom"
+      onClick={(e) => e.stopPropagation()}
+      style={{
+        backgroundColor: 'white',
+        maxWidth: '500px',
+        width: '90%',
+        margin: 'auto',
+        padding: '2rem',
+        borderRadius: '1rem',
+        boxShadow: '0 0 20px rgba(0,0,0,0.2)',
+        transform: 'translateY(20%)',
+      }}
+    >
+      <h5 className="text-center text-danger mb-3">⚠️ Confirm Deletion</h5>
+      <p className="text-muted text-center">
+        Are you sure you want to delete this insurance plan? This action cannot be undone.
+      </p>
+      <div className="d-flex justify-content-center gap-3 mt-4">
+        <button className="btn btn-cancel px-4" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+        </div>
+        <div>
+
+        <button className="btn btn-delete px-4 w-100" onClick={handleDeleteConfirmed}>Delete</button>
+        </div>
+      </div>
+    </div>
+)}
+
     </div>
   );
 };

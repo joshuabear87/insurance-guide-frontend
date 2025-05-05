@@ -1,5 +1,5 @@
-// 🔵 InsurancePlanModalContent.jsx (with grouped cards and image zoom)
 import React, { useState } from 'react';
+import { ensureHttps } from './utils/urlHelpers';
 
 const InsurancePlanModalContent = ({ book, onClose }) => {
   const [enlargedImage, setEnlargedImage] = useState(null);
@@ -28,10 +28,18 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
       onClick={onClose}
     >
       <div
-        className="rounded-2 shadow-lg bg-white text-dark"
+        className="rounded-2 shadow-lg bg-white text-dark position-relative"
         style={{ maxWidth: '1200px', width: '100%', overflowY: 'auto', maxHeight: '90vh' }}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Close Button */}
+        <button
+          className="btn btn-close position-absolute"
+          style={{ top: '15px', right: '15px', zIndex: 1100 }}
+          aria-label="Close"
+          onClick={onClose}
+        ></button>
+
         {/* Header */}
         <div className="text-white py-3 px-4" style={{ backgroundColor: '#005b7f' }}>
           <h2 className="text-center m-0">{book.descriptiveName}</h2>
@@ -142,18 +150,18 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
       <div className="col-6">
         <h6 className="fw-bold">Web Portal Links</h6>
         <ul className="list-unstyled mb-0 mt-2">
-          {book.portalLinks?.length > 0 ? (
-            book.portalLinks.map((link, idx) => (
-              <li key={idx}>
-                <a href={link.url} target="_blank" rel="noopener noreferrer">
-                  {link.title}
-                </a>
-              </li>
-            ))
-          ) : (
-            <li>N/A</li>
-          )}
-        </ul>
+  {book.portalLinks?.length > 0 ? (
+    book.portalLinks.map((link, idx) => (
+      <li key={idx}>
+        <a href={ensureHttps(link.url)} target="_blank" rel="noopener noreferrer">
+          {link.title}
+        </a>
+      </li>
+    ))
+  ) : (
+    <li>N/A</li>
+  )}
+</ul>
       </div>
 
       <div className="col-6">

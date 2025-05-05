@@ -16,14 +16,12 @@ const InsurancePlanMainPage = () => {
   const [columnSettingsOpen, setColumnSettingsOpen] = useState(false);
 
   const location = useLocation();
-
   const filterMap = {
     '/plans': 'All',
     '/plans/medicare': 'Medicare',
     '/plans/medi-cal': 'Medi-Cal',
     '/plans/commercial': 'Commercial',
   };
-
   const currentPath = location.pathname;
   const currentFilter = filterMap[currentPath] || 'All';
 
@@ -94,12 +92,8 @@ const InsurancePlanMainPage = () => {
     };
 
     columnConfig.forEach(col => {
-      if (!defaultTable.hasOwnProperty(col.key)) {
-        defaultTable[col.key] = false;
-      }
-      if (!defaultCard.hasOwnProperty(col.key)) {
-        defaultCard[col.key] = false;
-      }
+      if (!defaultTable.hasOwnProperty(col.key)) defaultTable[col.key] = false;
+      if (!defaultCard.hasOwnProperty(col.key)) defaultCard[col.key] = false;
     });
 
     if (type === 'table') {
@@ -115,9 +109,7 @@ const InsurancePlanMainPage = () => {
 
   const restoreAllColumns = () => {
     const allVisible = {};
-    columnConfig.forEach(col => {
-      allVisible[col.key] = true;
-    });
+    columnConfig.forEach(col => (allVisible[col.key] = true));
 
     if (showType === 'table') {
       setTableColumns(allVisible);
@@ -154,10 +146,8 @@ const InsurancePlanMainPage = () => {
       })
       .filter((book) => {
         const search = searchQuery.toLowerCase();
-  
-        // Combine basic fields
         const valuesToSearch = [
-          ...Object.values(book).map((v) => String(v).toLowerCase()),
+          ...Object.values(book).map(v => String(v).toLowerCase()),
           book.facilityAddress?.street?.toLowerCase() || '',
           book.facilityAddress?.city?.toLowerCase() || '',
           book.facilityAddress?.state?.toLowerCase() || '',
@@ -166,25 +156,17 @@ const InsurancePlanMainPage = () => {
           book.providerAddress?.city?.toLowerCase() || '',
           book.providerAddress?.state?.toLowerCase() || '',
           book.providerAddress?.zip?.toLowerCase() || '',
-          ...(book.prefixes || []).map((p) => p.value?.toLowerCase() || ''),
-          ...(book.portalLinks || []).flatMap((l) => [
-            l.title?.toLowerCase() || '',
-            l.url?.toLowerCase() || '',
-          ]),
-          ...(book.phoneNumbers || []).flatMap((p) => [
-            p.title?.toLowerCase() || '',
-            p.number?.toLowerCase() || '',
-          ]),
+          ...(book.prefixes || []).map(p => p.value?.toLowerCase() || ''),
+          ...(book.portalLinks || []).flatMap(l => [l.title?.toLowerCase() || '', l.url?.toLowerCase() || '']),
+          ...(book.phoneNumbers || []).flatMap(p => [p.title?.toLowerCase() || '', p.number?.toLowerCase() || '']),
         ];
-  
-        return valuesToSearch.some((value) => value.includes(search));
+        return valuesToSearch.some(value => value.includes(search));
       });
   }, [books, searchQuery, currentFilter]);
-  
+
   return (
     <>
       <PlanFilterPills />
-
       <Searchbar
         showType={showType}
         setShowType={setShowType}

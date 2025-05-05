@@ -3,7 +3,7 @@ import { FaBars } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import API from '../axios';
-import styles from '../styles/NavBar.module.css'
+import styles from '../styles/NavBar.module.css';
 
 const NavBar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -11,6 +11,7 @@ const NavBar = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('accessToken'));
+  const [user, setUser] = useState(null);
   const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
@@ -18,8 +19,18 @@ const NavBar = () => {
     const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {
       API.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+      fetchUser();
     }
   }, []);
+
+  const fetchUser = async () => {
+    try {
+      const res = await API.get('/users/me');
+      setUser(res.data);
+    } catch (err) {
+      console.error('Failed to fetch user info:', err);
+    }
+  };
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);
@@ -37,6 +48,7 @@ const NavBar = () => {
       localStorage.setItem('accessToken', accessToken);
       API.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
       setIsAuthenticated(true);
+      await fetchUser(); // fetch role after login
       setShowLoginForm(false);
       closeSidebar();
       alert('Login successful!');
@@ -49,6 +61,7 @@ const NavBar = () => {
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     setIsAuthenticated(false);
+    setUser(null);
     setShowLoginForm(false);
     closeSidebar();
     alert('Logged out successfully!');
@@ -98,9 +111,9 @@ const NavBar = () => {
             <hr className="divider" />
             <Link to="/portal-links" className="btn btn-blue w-100" onClick={closeSidebar}>Insurance Web Portals</Link>
             <hr className="divider" />
-            {isAuthenticated && (
+            {user?.role === 'admin' && (
               <>
-                <Link to="/books/create" className="w-100">
+                <Link to="/books/create" className="w-100" onClick={closeSidebar}>
                   <button className="btn btn-green w-100">+ Add New Insurance</button>
                 </Link>
                 <hr className="divider" />
@@ -108,7 +121,7 @@ const NavBar = () => {
             )}
             <Link to='/request-update' className="btn btn-request w-100" onClick={closeSidebar}>Request an Update</Link>
             <hr className="divider" />
-            <Link to="/printable-page" className="btn btn-request w-100">Downtime Printout</Link>
+            <Link to="/printable-page" className="btn btn-request w-100" onClick={closeSidebar}>Downtime Printout</Link>
             <hr className="divider" />
           </div>
         </div>

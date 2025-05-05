@@ -53,7 +53,8 @@ const BlueCardTableView = ({
       <AiOutlineEdit className="fs-5 text-primary" />
     </Link>
   </td>
-)}              <td>{row.prefix}</td>
+)}
+<td>{row.prefix}</td>
               {blueCardColumnConfig.map(({ key, render }) => {
                 if (key === 'prefix' || !visibleColumns[key]) return null;
                 const value = getNestedValue(row, key);
