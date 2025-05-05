@@ -3,15 +3,20 @@ import BackButton from '../components/BackButton';
 
 const TermsOfUsePage = () => {
   return (
-    <div className="container py-5 d-flex justify-content-center">
-      <BackButton />
-      <div className="card shadow-sm p-4" style={{ maxWidth: '800px', width: '100%', fontSize: '0.9rem' }}>
+    <div className="container py-5">
+      {/* Back button on top */}
+      <div className="mb-3">
+        <BackButton />
+      </div>
+
+      {/* Terms of Use Card */}
+      <div className="card shadow-sm p-4 mx-auto" style={{ maxWidth: '800px', fontSize: '0.9rem' }}>
         <h2 className="text-center mb-4 text-blue">Terms of Use</h2>
         <p className="text-muted text-end">Last updated: May 3, 2025</p>
 
         <section className="mb-4">
           <h5 className="text-blue">1. Acceptance of Terms</h5>
-          <p>By accessing or using this application, you agree to be bound by these Terms of Use. If you do not agree, please do not use the app.</p>
+          <p>By accessing or using this application, you agree to be bound by these Terms of Use...</p>
         </section>
 
         <section className="mb-4">
