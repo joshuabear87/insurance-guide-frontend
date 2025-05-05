@@ -40,7 +40,7 @@ const CreateInsurancePlan = () => {
 
   const [loading, setLoading] = useState(false);
   const [showValidationError, setShowValidationError] = useState(false);
-
+  const [showPHIModal, setShowPHIModal] = useState(false);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -56,19 +56,12 @@ const CreateInsurancePlan = () => {
         body: formDataCloudinary,
       });
       const data = await res.json();
-      if (isSecondary) {
-        setFormData((prev) => ({
-          ...prev,
-          secondaryImage: data.secure_url,
-          secondaryImagePublicId: data.public_id,
-        }));
-      } else {
-        setFormData((prev) => ({
-          ...prev,
-          image: data.secure_url,
-          imagePublicId: data.public_id,
-        }));
-      }
+      setFormData((prev) => ({
+        ...prev,
+        ...(isSecondary
+          ? { secondaryImage: data.secure_url, secondaryImagePublicId: data.public_id }
+          : { image: data.secure_url, imagePublicId: data.public_id }),
+      }));
     } catch (error) {
       console.error('Cloudinary upload error:', error);
     }
@@ -76,21 +69,16 @@ const CreateInsurancePlan = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'ipaPayerId' || name === 'payerId') {
-      setFormData({ ...formData, [name]: value.toUpperCase() });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    setFormData({ ...formData, [name]: name === 'ipaPayerId' || name === 'payerId' ? value.toUpperCase() : value });
   };
 
   const handleAddressChange = (e) => {
-    const { name, value } = e.target;
-    const [field, key] = name.split('.');
+    const [field, key] = e.target.name.split('.');
     setFormData((prev) => ({
       ...prev,
       [field]: {
         ...prev[field],
-        [key]: value,
+        [key]: e.target.value,
       },
     }));
   };
@@ -102,27 +90,17 @@ const CreateInsurancePlan = () => {
     setFormData({ ...formData, prefixes: updated });
   };
 
-  const addPrefix = () => {
-    setFormData({ ...formData, prefixes: [...formData.prefixes, ''] });
-  };
-
+  const addPrefix = () => setFormData({ ...formData, prefixes: [...formData.prefixes, ''] });
   const removePrefix = (index) => {
     const updated = formData.prefixes.filter((_, i) => i !== index);
     setFormData({ ...formData, prefixes: updated });
   };
 
-  const handleSavePlan = async () => {
+  const handleSavePlanConfirmed = async () => {
     const requiredFields = [
-      'financialClass',
-      'descriptiveName',
-      'payerName',
-      'payerCode',
-      'planName',
-      'planCode',
-      'samcContracted',
-      'samfContracted',
+      'financialClass', 'descriptiveName', 'payerName', 'payerCode',
+      'planName', 'planCode', 'samcContracted', 'samfContracted',
     ];
-
     const hasEmpty = requiredFields.some((field) => !formData[field]);
     if (hasEmpty) {
       setShowValidationError(true);
@@ -139,10 +117,9 @@ const CreateInsurancePlan = () => {
       portalLinks: formData.portalLinks.filter((link) => link.title && link.url),
       phoneNumbers: formData.phoneNumbers.filter((phone) => phone.title && phone.number),
       prefixes: formData.prefixes
-      .map((val) => val?.trim().toUpperCase())
-      .filter((val) => /^[A-Z0-9]{3}$/.test(val))
-      .map((val) => ({ value: val })),
-    
+        .map((val) => val?.trim().toUpperCase())
+        .filter((val) => /^[A-Z0-9]{3}$/.test(val))
+        .map((val) => ({ value: val })),
     };
 
     try {
@@ -188,32 +165,27 @@ const CreateInsurancePlan = () => {
 
   return (
     <div className="container my-5">
-    <div className="d-flex justify-content-start my-3">
-      <BackButton />
-    </div>
+      <div className="d-flex justify-content-start my-3">
+        <BackButton />
+      </div>
       <div className="d-flex justify-content-center">
         {loading && <Spinner />}
         <div className="card w-75 border-0 shadow-lg mt-4 overflow-hidden">
-          {/* Blue Header Section */}
           <div className="text-white py-3 px-4" style={{ backgroundColor: '#005b7f' }}>
             <h2 className="text-center m-0">Create Insurance Plan</h2>
           </div>
 
-          {/* Card Body */}
           <div className="p-4">
             {showValidationError && (
               <div className="alert alert-danger">
                 Please complete all required fields marked with <span className="text-danger">*</span>.
               </div>
             )}
+
             <h3 className="text-center mb-4 text-blue">Plan Details</h3>
-            <PlanBasicInfoForm
-              formData={formData}
-              handleChange={handleChange}
-              showValidationError={showValidationError}
-            />
+            <PlanBasicInfoForm formData={formData} handleChange={handleChange} showValidationError={showValidationError} />
+
             <div className="row g-4">
-              {/* Left column: Portals + Phones */}
               <div className="col-md-6">
                 <div className="bg-light p-3 rounded shadow-sm h-100">
                   <PlanPortalLinks formData={formData} setFormData={setFormData} />
@@ -221,8 +193,6 @@ const CreateInsurancePlan = () => {
                   <PlanPhoneNumbers formData={formData} setFormData={setFormData} />
                 </div>
               </div>
-
-              {/* Right column: Prefixes */}
               <div className="col-md-6">
                 <div className="bg-light p-3 rounded shadow-sm h-100">
                   <PlanPrefixesForm
@@ -234,38 +204,78 @@ const CreateInsurancePlan = () => {
                 </div>
               </div>
             </div>
+
             <h3 className="text-center my-4 text-blue">Claims Information</h3>
+            <PlanAddressSection formData={formData} handleAddressChange={handleAddressChange} handleChange={handleChange} />
 
-            <PlanAddressSection
-              formData={formData}
-              handleAddressChange={handleAddressChange}
-              handleChange={handleChange}
-            />
             <h3 className="text-center my-4 text-blue">Important Notes</h3>
-
             <PlanNotesSection formData={formData} handleChange={handleChange} />
-            <h3 className="text-center my-4 text-blue">Insurance Card Examples</h3>
 
-            <PlanImageUploads
-              formData={formData}
-              setFormData={setFormData}
-              handleImageUpload={handleImageUpload}
-            />
+            <h3 className="text-center my-4 text-blue">Insurance Card Examples</h3>
+            <PlanImageUploads formData={formData} setFormData={setFormData} handleImageUpload={handleImageUpload} />
 
             <hr className="divider my-4" />
             <div className="d-flex justify-content-between">
-              <button className="btn btn-cancel" type="button" onClick={handleReset}>
-                Reset
-              </button>
-              <button className="btn btn-login" type="button" onClick={handleSavePlan}>
-                Save
-              </button>
+              <button className="btn btn-cancel" type="button" onClick={handleReset}>Reset</button>
+              <button className="btn btn-login" type="button" onClick={() => setShowPHIModal(true)}>Save</button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* PHI MODAL */}
+      {showPHIModal && (
+        <div
+          className="modal-backdrop-custom fade show"
+          onClick={() => setShowPHIModal(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 1050,
+            animation: 'fadeInBackdrop 0.25s ease-in',
+          }}
+        >
+          <div
+            className="modal-content-custom"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: 'white',
+              maxWidth: '500px',
+              width: '90%',
+              margin: 'auto',
+              padding: '2rem',
+              borderRadius: '1rem',
+              boxShadow: '0 0 20px rgba(0,0,0,0.2)',
+              animation: 'fadeInModal 0.3s ease-out',
+              transform: 'translateY(20%)',
+            }}
+          >
+            <h5 className="text-center text-blue mb-3">⚠️ Please Do Not Include PHI</h5>
+            <p className="text-muted text-center">
+              Ensure this insurance plan does not contain any Protected Health Information (PHI)
+              such as patient names, IDs, or any personal identifiers. If you see PHI, report it to the administrator it immediately.
+            </p>
+            <div className="d-flex justify-content-center gap-3 mt-4">
+              <button className="btn btn-cancel px-4" onClick={() => setShowPHIModal(false)}>
+                Cancel
+              </button>
+              <button className="btn btn-login px-4" onClick={() => {
+                setShowPHIModal(false);
+                handleSavePlanConfirmed();
+              }}>
+                I Understand & Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default CreateInsurancePlan;
+

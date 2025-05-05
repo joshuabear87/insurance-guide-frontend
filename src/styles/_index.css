@@ -20,6 +20,10 @@ body {
   background-color: #005b7f16 !important; 
 }
 
+.bg-dark-blue {
+  background-color: #005b7f !important;
+}
+
 .bg-grey {
   background-color: #ccc;
 }

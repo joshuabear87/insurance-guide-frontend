@@ -274,3 +274,10 @@
   transform: scale(1.03);
   box-shadow: 0 0 12px rgba(0, 91, 127, 0.4);
 }
+
+.edit-btn:hover {
+  background-color: #005b7f !important;
+  color: white !important;
+  text-decoration: none;
+  transform: scale(1.03);
+}

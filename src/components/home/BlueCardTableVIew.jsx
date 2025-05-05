@@ -47,14 +47,13 @@ const BlueCardTableView = ({
         <tbody>
           {rows.map((row, i) => (
             <tr key={`${row.prefix}-${i}`} onClick={() => onSelect(row.book)} style={{ cursor: 'pointer' }}>
-              {admin && (
-                <td onClick={(e) => e.stopPropagation()}>
-                  <Link to={`/books/edit/${row.book._id}`}>
-                    <AiOutlineEdit className="fs-5 text-primary" />
-                  </Link>
-                </td>
-              )}
-              <td>{row.prefix}</td>
+{admin && (
+  <td onClick={(e) => e.stopPropagation()}>
+    <Link to={`/books/edit/${row.book._id}`}>
+      <AiOutlineEdit className="fs-5 text-primary" />
+    </Link>
+  </td>
+)}              <td>{row.prefix}</td>
               {blueCardColumnConfig.map(({ key, render }) => {
                 if (key === 'prefix' || !visibleColumns[key]) return null;
                 const value = getNestedValue(row, key);
