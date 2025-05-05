@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import API from '../axios';
 import InsurancePlanModalContent from '../components/InsurancePlanModalContent';
 import Spinner from '../components/Spinner';
+import { ensureHttps } from '../components/utils/urlHelpers'; // ✅ Import added
 
 const AllPortalLinksPage = () => {
   const [linkMap, setLinkMap] = useState({});
@@ -76,7 +77,12 @@ const AllPortalLinksPage = () => {
       <div className="card p-3 shadow-lg">
         {Object.entries(filteredLinkMap).map(([title, { url, names }]) => (
           <div key={title} className="mb-4">
-            <a href={url} target="_blank" rel="noopener noreferrer" className="fw-semibold text-blue">
+            <a
+              href={ensureHttps(url)} // ✅ Ensure HTTPS applied here
+              target="_blank"
+              rel="noopener noreferrer"
+              className="fw-semibold text-blue"
+            >
               {title}
             </a>
             <ul className="mb-2 mt-2 ps-3">
