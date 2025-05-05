@@ -55,12 +55,6 @@ const PrintableInsurancePlanPage = () => {
         <BackButton />
       </div>
 
-      {isAdmin && (
-        <div className="d-flex justify-content-start mb-3">
-          <SendPdfButton />
-        </div>
-      )}
-
       <h1 className="text-center mb-5">Downtime Printout</h1>
 
       {/* --- Table 1: Filtered Plan Details --- */}
