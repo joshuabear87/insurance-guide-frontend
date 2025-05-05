@@ -16,7 +16,8 @@ const MyAccountPage = () => {
     } catch (err) {
       console.error('Error fetching user:', err);
     } finally {
-      setLoading(false);
+      // Delay to smooth transition
+      setTimeout(() => setLoading(false), 400);
     }
   };
 
@@ -32,13 +33,20 @@ const MyAccountPage = () => {
     return status === 'approved' ? 'Approved' : 'Pending';
   };
 
-  if (loading) return <Spinner />;
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center m-5">
+          <Spinner />
+      </div>
+    );
+  }
+
   if (!user) return <p className="text-danger text-center">⚠️ Unable to load user profile.</p>;
-  
+
   return (
     <div className="container py-4">
-      <div className="card shadow-sm p-4" style={{ maxWidth: '700px', margin: '0 auto', fontSize: '0.85rem' }}>
-        <h2 className="fw-bold text-center mb-4" style={{ color: '#005b7f' }}>My Account</h2>
+      <div className="card shadow-lg p-4" style={{ maxWidth: '700px', margin: '0 auto', fontSize: '0.85rem' }}>
+        <h2 className="text-center mb-4 text-blue" >My Account</h2>
         <div className="row g-4">
           <div className="col-md-6">
             <div className="mb-3">
@@ -80,7 +88,14 @@ const MyAccountPage = () => {
         <div className="d-flex justify-content-center mt-4">
           <button
             className="btn btn-login"
-            style={{ backgroundColor: '#005b7f', color: 'white', fontSize: '0.75rem', borderRadius: '5px', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)', minWidth: '120px' }}
+            style={{
+              backgroundColor: '#005b7f',
+              color: 'white',
+              fontSize: '0.75rem',
+              borderRadius: '5px',
+              boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)',
+              minWidth: '120px'
+            }}
             onClick={() => setShowEditModal(true)}
           >
             Edit My Info

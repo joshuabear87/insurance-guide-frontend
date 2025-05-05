@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import API from '../axios';
 import InsurancePlanModalContent from '../components/InsurancePlanModalContent';
+import Spinner from '../components/Spinner';
 
 const AllPortalLinksPage = () => {
   const [linkMap, setLinkMap] = useState({});
   const [plans, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -26,6 +28,8 @@ const AllPortalLinksPage = () => {
         setLinkMap(grouped);
       } catch (err) {
         console.error('Error fetching portal links:', err);
+      } finally {
+        setTimeout(() => setLoading(false), 400); // Smooth transition
       }
     };
 
@@ -47,9 +51,17 @@ const AllPortalLinksPage = () => {
     return acc;
   }, {});
 
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center m-5">
+        <Spinner />
+      </div>
+    );
+  }
+
   return (
     <div className="container py-4">
-      <h2 className="text-center mb-4 fw-bold" style={{ color: '#005b7f' }}>All Portal Links</h2>
+      <h2 className="text-center mb-4 text-blue">Insurance Web Portals</h2>
 
       <div className="mb-3">
         <input
@@ -61,10 +73,10 @@ const AllPortalLinksPage = () => {
         />
       </div>
 
-      <div className="card p-3 shadow-sm">
+      <div className="card p-3 shadow-lg">
         {Object.entries(filteredLinkMap).map(([title, { url, names }]) => (
           <div key={title} className="mb-4">
-            <a href={url} target="_blank" rel="noopener noreferrer" className="fw-semibold text-primary">
+            <a href={url} target="_blank" rel="noopener noreferrer" className="fw-semibold text-blue">
               {title}
             </a>
             <ul className="mb-2 mt-2 ps-3">

@@ -251,11 +251,13 @@ const EditInsurancePlan = () => {
     setShowValidationError(false);
   };
   return (
-    <div className="container-fluid min-vh-100 py-5 bg-light">
+    <div className="container my-5">
+    <div className="d-flex justify-content-start my-3">
       <BackButton />
+    </div>
       <div className="d-flex justify-content-center">
         {loading && <Spinner />}
-        <div className="card w-75 border-0 shadow-sm mt-4 overflow-hidden">
+        <div className="card w-75 border-0 shadow-lg mt-4 overflow-hidden">
           {/* Blue Header Section */}
           <div className="text-white py-3 px-4" style={{ backgroundColor: '#005b7f' }}>
             <h2 className="text-center m-0">Edit Insurance Plan</h2>

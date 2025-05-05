@@ -92,13 +92,11 @@ const NavBar = () => {
             <hr className="divider" />
             <Link to="/" className="btn btn-blue w-100">Home</Link>
             <hr className="divider" />
-            <Link to="/account" className="btn btn-blue w-100">My Account</Link>
+            <Link to="/account" className="btn btn-blue w-100" onClick={closeSidebar}>My Account</Link>
             <hr className="divider" />
-            <Link to="/phone-numbers" className="btn btn-blue w-100">Insurance Phone Numbers</Link>
+            <Link to="/phone-numbers" className="btn btn-blue w-100" onClick={closeSidebar}>Insurance Phone Numbers</Link>
             <hr className="divider" />
-            <Link to="/portal-links" className="btn btn-blue w-100">Insurance Web Portals</Link>
-            <hr className="divider" />
-            <Link to="/printable-page" className="btn btn-blue w-100">Downtime Printout</Link>
+            <Link to="/portal-links" className="btn btn-blue w-100" onClick={closeSidebar}>Insurance Web Portals</Link>
             <hr className="divider" />
             {isAuthenticated && (
               <>
@@ -108,8 +106,9 @@ const NavBar = () => {
                 <hr className="divider" />
               </>
             )}
-            <button className="btn btn-request w-100">Request an Update</button>
+            <Link to='/request-update' className="btn btn-request w-100" onClick={closeSidebar}>Request an Update</Link>
             <hr className="divider" />
+            <Link to="/printable-page" className="btn btn-request w-100">Downtime Printout</Link>
             <hr className="divider" />
           </div>
         </div>

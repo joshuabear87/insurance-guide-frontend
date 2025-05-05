@@ -187,11 +187,13 @@ const CreateInsurancePlan = () => {
   };
 
   return (
-    <div className="container-fluid min-vh-100 py-5 bg-light">
+    <div className="container my-5">
+    <div className="d-flex justify-content-start my-3">
       <BackButton />
+    </div>
       <div className="d-flex justify-content-center">
         {loading && <Spinner />}
-        <div className="card w-75 border-0 shadow-sm mt-4 overflow-hidden">
+        <div className="card w-75 border-0 shadow-lg mt-4 overflow-hidden">
           {/* Blue Header Section */}
           <div className="text-white py-3 px-4" style={{ backgroundColor: '#005b7f' }}>
             <h2 className="text-center m-0">Create Insurance Plan</h2>
@@ -252,10 +254,10 @@ const CreateInsurancePlan = () => {
 
             <hr className="divider my-4" />
             <div className="d-flex justify-content-between">
-              <button className="btn btn-secondary" type="button" onClick={handleReset}>
+              <button className="btn btn-cancel" type="button" onClick={handleReset}>
                 Reset
               </button>
-              <button className="btn btn-primary" type="button" onClick={handleSavePlan}>
+              <button className="btn btn-login" type="button" onClick={handleSavePlan}>
                 Save
               </button>
             </div>

@@ -45,8 +45,8 @@ const AdminPanel = () => {
   }, []);
 
   return (
-    <div className="card p-3 shadow-sm">
-      <h4 className="fw-bold text-center mb-3" style={{ color: '#005b7f' }}>User Management</h4>
+    <div className="card p-3 shadow-lg">
+      <h4 className="text-center mb-3 text-blue">User Management</h4>
       <div className="table-responsive">
         <table className="table table-bordered table-hover align-middle responsive-table" style={{ fontSize: '0.75rem' }}>
           <thead className="table-primary">

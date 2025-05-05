@@ -293,3 +293,8 @@ html {
   background-color: #91c9f74f;
   padding: 10px;
 }
+
+@page {
+  size: auto; /* Let Puppeteer match page height to content */
+  margin: 0;  /* Optional: remove default margins */
+}

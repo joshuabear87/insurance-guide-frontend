@@ -14,6 +14,7 @@ import BlueCardPrefixesPage from './pages/BlueCardPrefixesPage';
 import AllPortalLinksPage from './pages/AllPortalLinksPage';
 import AllPhoneNumbersPage from './pages/AllPhoneNumbersPage';
 import PrintableInsurancePlanPage from './pages/PrintableInsurancePlanPage';
+import RequestUpdateForm from './components/RequestUpdateForm';
 
 const App = () => {
   return (
@@ -32,7 +33,8 @@ const App = () => {
 
       <Route path="/portal-links" element={<ProtectedRoute><Layout><AllPortalLinksPage /></Layout></ProtectedRoute>} />
       <Route path="/phone-numbers" element={<ProtectedRoute><Layout><AllPhoneNumbersPage /></Layout></ProtectedRoute>} />
-      <Route path="/printable-page" element={<ProtectedRoute><LayoutNoNav><PrintableInsurancePlanPage /></LayoutNoNav></ProtectedRoute>} />
+      <Route path="/printable-page" element={<ProtectedRoute><PrintableInsurancePlanPage /></ProtectedRoute>} />
+      <Route path="/request-update" element={<ProtectedRoute><Layout><RequestUpdateForm /></Layout></ProtectedRoute>} />
 
       <Route path="/books/create" element={<ProtectedRoute><CreateInsurancePlan /></ProtectedRoute>} />
       <Route path="/books/edit/:id" element={<ProtectedRoute><EditInsurancePlan /></ProtectedRoute>} />

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import API from '../axios';
 import InsurancePlanModalContent from '../components/InsurancePlanModalContent';
+import Spinner from '../components/Spinner';
 
 const AllPhoneNumbersPage = () => {
   const [groupedNumbers, setGroupedNumbers] = useState({});
   const [filtered, setFiltered] = useState({});
   const [search, setSearch] = useState('');
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -27,6 +29,8 @@ const AllPhoneNumbersPage = () => {
         setFiltered(grouped);
       } catch (err) {
         console.error('Error fetching phone numbers:', err);
+      } finally {
+        setTimeout(() => setLoading(false), 400); // ✅ 400ms delay
       }
     };
 
@@ -47,9 +51,17 @@ const AllPhoneNumbersPage = () => {
     setFiltered(filteredMap);
   }, [search, groupedNumbers]);
 
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center m-5">
+          <Spinner />
+      </div>
+    );
+  }
+
   return (
     <div className="container py-4">
-      <h2 className="text-center mb-4 fw-bold" style={{ color: '#005b7f' }}>All Phone Numbers</h2>
+      <h2 className="text-center mb-4 text-blue">Insurance Phone Numbers</h2>
 
       <div className="mb-3">
         <input
@@ -61,16 +73,20 @@ const AllPhoneNumbersPage = () => {
         />
       </div>
 
-      <div className="card p-3 shadow-sm">
+      <div className="card p-3 shadow-lg">
         {Object.entries(filtered).map(([label, plans]) => (
           <div key={label} className="mb-4">
-            <div className="fw-semibold text-primary">{label}</div>
+            <div className="fw-semibold text-blue">{label}</div>
             <ul className="mb-2 mt-2 ps-3">
               {plans.map((plan, i) => (
                 <li
                   key={i}
                   onClick={() => setSelectedPlan(plan)}
-                  style={{ fontSize: '0.85rem', cursor: 'pointer', color: '#005b7f' }}
+                  style={{
+                    fontSize: '0.85rem',
+                    cursor: 'pointer',
+                    color: '#005b7f',
+                  }}
                 >
                   {plan.descriptiveName}
                 </li>
