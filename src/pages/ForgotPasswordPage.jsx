@@ -25,7 +25,7 @@ const ForgotPasswordPage = () => {
   return (
     <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
       <div className="card p-4 shadow rounded-4" style={{ maxWidth: '400px', width: '100%' }}>
-        <h2 className="text-center mb-4 fw-bold text-primary" style={{ color: '#007b9e' }}>
+        <h2 className="text-center mb-4 fw-bold text-blue" style={{ color: '#007b9e' }}>
           Forgot Password
         </h2>
 
@@ -44,7 +44,7 @@ const ForgotPasswordPage = () => {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-100 btn-login">
+          <button type="submit" className="btn btn-login w-100">
             Send Reset Link
           </button>
 

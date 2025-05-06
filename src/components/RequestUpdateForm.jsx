@@ -2,14 +2,14 @@ import React, { useState, useContext, useEffect } from 'react';
 import API from '../axios';
 import { useSnackbar } from 'notistack';
 import { AuthContext } from '../context/AuthContexts';
-import Spinner from './Spinner'; // ensure this points to your Spinner component
+import Spinner from './Spinner'; 
 
 const RequestUpdateForm = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { user } = useContext(AuthContext);
 
-  const [loadingScreen, setLoadingScreen] = useState(true); // for page-level spinner
-  const [submitting, setSubmitting] = useState(false); // for submit button spinner
+  const [loadingScreen, setLoadingScreen] = useState(true);
+  const [submitting, setSubmitting] = useState(false); 
 
   const [formData, setFormData] = useState({
     name: user?.name || '',
@@ -17,6 +17,13 @@ const RequestUpdateForm = () => {
     position: user?.department || '',
     message: '',
   });
+
+  const [broadcast, setBroadcast] = useState({
+    subject: '',
+    message: '',
+    attachment: null,
+  });
+  
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -127,7 +134,92 @@ const RequestUpdateForm = () => {
             </button>
           </form>
         </div>
+        
+      {user?.role === 'admin' && (
+  <div className="mt-5">
+    <div className="card shadow-lg border-0 p-4" style={{ backgroundColor: '#f0f4f8', borderLeft: '5px solid #005b7f' }}>
+      <h3 className="text-center mb-4 text-blue">📣 Broadcast Message to All Users</h3>
+
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          setSubmitting(true);
+          const form = new FormData();
+          form.append('subject', broadcast.subject);
+          form.append('message', broadcast.message);
+          if (broadcast.attachment) {
+            form.append('attachment', broadcast.attachment);
+          }
+
+          try {
+            await API.post('/admin/broadcast-email', form, {
+              headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            enqueueSnackbar('Broadcast email sent!', { variant: 'success' });
+            setBroadcast({ subject: '', message: '', attachment: null });
+          } catch (err) {
+            console.error(err);
+            enqueueSnackbar('Failed to send broadcast.', { variant: 'error' });
+          } finally {
+            setSubmitting(false);
+          }
+        }}
+      >
+        <div className="mb-3">
+          <label className="form-label fw-semibold">Subject</label>
+          <input
+            type="text"
+            className="form-control"
+            required
+            value={broadcast.subject}
+            onChange={(e) => setBroadcast(prev => ({ ...prev, subject: e.target.value }))}
+            disabled={submitting}
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label fw-semibold">Message</label>
+          <textarea
+            rows="5"
+            className="form-control"
+            required
+            value={broadcast.message}
+            onChange={(e) => setBroadcast(prev => ({ ...prev, message: e.target.value }))}
+            disabled={submitting}
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="form-label fw-semibold">Optional Attachment</label>
+          <input
+            type="file"
+            className="form-control"
+            accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+            onChange={(e) => setBroadcast(prev => ({ ...prev, attachment: e.target.files[0] }))}
+            disabled={submitting}
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="btn btn-login w-100 fw-bold d-flex justify-content-center align-items-center"
+          disabled={submitting}
+        >
+          {submitting ? (
+            <>
+              <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
+              Sending...
+            </>
+          ) : (
+            '📧 Send Email to All Users'
+          )}
+        </button>
+      </form>
+    </div>
+  </div>
+)}
       </div>
+
     </div>
   );
 };

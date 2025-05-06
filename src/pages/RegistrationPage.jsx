@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import API from '../axios';
 import Spinner from '../components/Spinner';
+import PasswordFieldWithStrength from '../components/PasswordFieldWithStrength';
 import '../styles/_auth.css';
 
 const isValidNPI = (npi) => /^\d{10}$/.test(npi);
@@ -26,7 +27,8 @@ const RegistrationPage = () => {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -136,17 +138,11 @@ const RegistrationPage = () => {
             />
           </div>
 
-          <div className="mb-3">
-            <label className="form-label fw-bold">Password</label>
-            <input
-              type="password"
-              className="form-control"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          {/* ✅ Password Field with Strength Component */}
+          <PasswordFieldWithStrength
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          />
 
           <div className="mb-3">
             <label className="form-label fw-bold">Confirm Password</label>
