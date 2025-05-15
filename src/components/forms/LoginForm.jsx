@@ -102,9 +102,13 @@ const LoginForm = ({
         </div>
 
         <div className="d-grid mb-3">
-          <button className="btn btn-brand" type="submit" disabled={loading}>
-            {loading ? <Spinner size="sm" /> : 'Login'}
-          </button>
+        <button className="btn btn-brand" type="submit" disabled={loading}>
+  {loading ? (
+    <span className="spinner-border spinner-border-sm text-light" role="status" />
+  ) : (
+    'Login'
+  )}
+</button>
         </div>
       </form>
 
