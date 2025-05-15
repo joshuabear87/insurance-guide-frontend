@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { ensureHttps } from './utils/urlHelpers';
+import { FacilityContext } from '../context/FacilityContext';
 
 const InsurancePlanModalContent = ({ book, onClose }) => {
   const [enlargedImage, setEnlargedImage] = useState(null);
+  const { facility, facilityTheme } = useContext(FacilityContext);
 
   const formatAddress = (addr) => {
     if (!addr || typeof addr !== 'object') return 'None entered...';
@@ -11,6 +13,7 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
     const line2 = [city, state, zip].filter(Boolean).join(', ');
     return [line1, line2].filter(Boolean).join(', ') || 'None entered...';
   };
+
 
   return (
     <div
@@ -41,7 +44,7 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
         ></button>
 
         {/* Header */}
-        <div className="text-white py-3 px-4" style={{ backgroundColor: '#005b7f' }}>
+        <div className="text-white py-3 px-4" style={{ backgroundColor: facilityTheme.primaryColor }}>
           <h2 className="text-center m-0">{book.descriptiveName}</h2>
           <h4 className="text-center fs-6 m-1">{book.financialClass}</h4>
         </div>
@@ -95,47 +98,55 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
                       <p>{book.payerName || 'N/A'}</p>
                     </div>
                     <div className="col-6">
-                      <h6 >Payer Code</h6>
+                      <h6>Payer Code</h6>
                       <p>{book.payerCode || 'N/A'}</p>
                     </div>
                   </div>
                   <div className="row">
                     <div className="col-6">
-                      <h6 >Plan Name</h6>
+                      <h6>Plan Name</h6>
                       <p>{book.planName || 'N/A'}</p>
                     </div>
                     <div className="col-6">
-                      <h6 >Plan Code</h6>
+                      <h6>Plan Code</h6>
                       <p>{book.planCode || 'N/A'}</p>
                     </div>
                   </div>
+
+                  {/* Contracted Facilities Section */}
                   <div className="row">
                     <div className="col-6">
-                      <h6 >SAMC Contracted?</h6>
-                      <p>{book.samcContracted || 'N/A'}</p>
-                    </div>
-                    <div className="col-6">
-                      <h6 >SAMF Contracted?</h6>
-                      <p>{book.samfContracted || 'N/A'}</p>
+                      <h6>Facility Contracted</h6>
+                      <ul>
+                        {book.facilityContracts?.length > 0
+                          ? book.facilityContracts.map((contract, index) => (
+                              <li key={index}>{`${contract.facilityName}: ${contract.status}`}</li>
+                            ))
+                          : 'N/A'}
+                      </ul>
                     </div>
                   </div>
+
                   <div className="row">
                     <div className="col-6">
-                      <h6 >Payer ID (Payer)</h6>
+                      <h6>Payer ID (Payer)</h6>
                       <p>{book.payerId || 'N/A'}</p>
                     </div>
                     <div className="col-6">
-                      <h6 >Payer ID (IPA)</h6>
+                      <h6>Payer ID (IPA)</h6>
                       <p>{book.ipaPayerId || 'N/A'}</p>
                     </div>
                   </div>
+
                   <div className="text-center">
-                    <h6 >Blue Card Prefixes</h6>
+                    <h6>Blue Card Prefixes</h6>
                     <p>
                       {book.prefixes?.length > 0
                         ? book.prefixes.map((p, i) => (
-                          <span key={i} className="badge bg-secondary me-2">{p?.value}</span>
-                        ))
+                            <span key={i} className="badge bg-secondary me-2">
+                              {p?.value}
+                            </span>
+                          ))
                         : 'N/A'}
                     </p>
                   </div>
@@ -144,54 +155,55 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
 
               {/* Portal Links & Phone Numbers */}
               <div className="card shadow-sm mb-3">
-  <div className="card-body">
-    <h5 className="fw-bold text-blue text-center mb-3">Portals & Phone Numbers</h5>
-    <div className="row">
-      <div className="col-6">
-        <h6 className="fw-bold">Web Portal Links</h6>
-        <ul className="list-unstyled mb-0 mt-2">
-  {book.portalLinks?.length > 0 ? (
-    book.portalLinks.map((link, idx) => (
-      <li key={idx}>
-        <a href={ensureHttps(link.url)} target="_blank" rel="noopener noreferrer">
-          {link.title}
-        </a>
-      </li>
-    ))
-  ) : (
-    <li>N/A</li>
-  )}
-</ul>
-      </div>
+                <div className="card-body">
+                  <h5 className="fw-bold text-blue text-center mb-3">Portals & Phone Numbers</h5>
+                  <div className="row">
+                    <div className="col-6">
+                      <h6 className="fw-bold">Web Portal Links</h6>
+                      <ul className="list-unstyled mb-0 mt-2">
+                        {book.portalLinks?.length > 0 ? (
+                          book.portalLinks.map((link, idx) => (
+                            <li key={idx}>
+                              <a href={ensureHttps(link.url)} target="_blank" rel="noopener noreferrer">
+                                {link.title}
+                              </a>
+                            </li>
+                          ))
+                        ) : (
+                          <li>N/A</li>
+                        )}
+                      </ul>
+                    </div>
 
-      <div className="col-6">
-        <h6 className="fw-bold">Phone Numbers</h6>
-        <ul className="list-unstyled mb-0 mt-2">
-          {book.phoneNumbers?.length > 0 ? (
-            book.phoneNumbers.map((phone, idx) => (
-              <li key={idx}>
-                <p><em>{phone.title}:</em> {phone.number}</p>
-              </li>
-            ))
-          ) : (
-            <li>N/A</li>
-          )}
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
+                    <div className="col-6">
+                      <h6 className="fw-bold">Phone Numbers</h6>
+                      <ul className="list-unstyled mb-0 mt-2">
+                        {book.phoneNumbers?.length > 0 ? (
+                          book.phoneNumbers.map((phone, idx) => (
+                            <li key={idx}>
+                              <p>
+                                <em>{phone.title}:</em> {phone.number}
+                              </p>
+                            </li>
+                          ))
+                        ) : (
+                          <li>N/A</li>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               {/* Addresses */}
               <div className="card shadow-sm">
                 <div className="card-body">
                   <div className="row">
-
                     <h5 className="fw-bold text-blue text-center mb-3">Addresses</h5>
                     <div className="col-6">
-                      <h6>Facility Address:</h6> <p>{formatAddress(book.facilityAddress)}</p>                      </div>
+                      <h6>Facility Address:</h6> <p>{formatAddress(book.facilityAddress)}</p>
+                    </div>
                     <div className="col-6">
-
                       <h6>Professional Address:</h6> <p>{formatAddress(book.providerAddress)}</p>
                     </div>
                   </div>

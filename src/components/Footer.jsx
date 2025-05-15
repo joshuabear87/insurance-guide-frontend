@@ -7,7 +7,6 @@ const Footer = () => {
       <div>
         <small className="d-block">
           &copy; {new Date().getFullYear()} Joshua Atendido Bear, <em>Hoken Hub</em>. All rights reserved.
-          A <em>Wakai Kuma</em> Production.
         </small>
         <small className="d-block mt-1">
           <Link to="/terms" className="text-dark mx-2 text-decoration-none">Terms of Use</Link>

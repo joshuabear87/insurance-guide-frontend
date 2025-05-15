@@ -4,6 +4,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack'; 
 import App from './App.jsx';
 import AuthProvider from './context/AuthContexts';
+import { FacilityProvider } from './context/FacilityContext';
+
 import './styles/_index.css'; 
 import './styles/_buttons.css'; 
 import './styles/_auth.css'
@@ -16,7 +18,9 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <SnackbarProvider maxSnack={3}>
         <AuthProvider>
-        <App />
+          <FacilityProvider>
+            <App />
+          </FacilityProvider>
         </AuthProvider>
       </SnackbarProvider>
     </BrowserRouter>

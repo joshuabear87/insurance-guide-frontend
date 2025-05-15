@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import API from '../axios';
 import { AuthContext } from '../context/AuthContexts';
-import SendPdfButton from '../components/SendPdfButton';
 import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner'; 
 import { useLocation } from 'react-router-dom';
@@ -55,12 +54,6 @@ const PrintableInsurancePlanPage = () => {
         <BackButton />
       </div>
 
-      {isAdmin && (
-        <div className="d-flex justify-content-start mb-3">
-          <SendPdfButton />
-        </div>
-      )}
-
       <h1 className="text-center mb-5">Downtime Printout</h1>
 
       {/* --- Table 1: Filtered Plan Details --- */}
@@ -75,6 +68,7 @@ const PrintableInsurancePlanPage = () => {
               <th style={{ minWidth: '65px' }}>Plan Code</th>
               <th style={{ minWidth: '50px' }}>SAMC Contracted</th>
               <th style={{ minWidth: '50px' }}>SAMF Contracted</th>
+              <th style={{ minWidth: '50px' }}>Facility Contracts</th>
               <th style={{ minWidth: '100px' }}>Notes</th>
               <th style={{ minWidth: '100px' }}>Authorization Notes</th>
             </tr>
@@ -92,6 +86,13 @@ const PrintableInsurancePlanPage = () => {
                 <td>{plan.planCode}</td>
                 <td>{plan.samcContracted}</td>
                 <td>{plan.samfContracted}</td>
+                <td>
+                  {(plan.facilityContracts || []).map((contract, i) => (
+                    <div key={i}>
+                      {contract.facilityName}: {contract.contractStatus || 'N/A'}
+                    </div>
+                  ))}
+                </td>
                 <td>{plan.notes || '-'}</td>
                 <td>{plan.authorizationNotes || '-'}</td>
               </tr>

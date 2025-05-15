@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useContext } from 'react';
+import { FacilityContext } from '../context/FacilityContext';
 
 const BlueCardSearchbar = ({
   showType,
@@ -16,6 +17,9 @@ const BlueCardSearchbar = ({
   const settingsRef = useRef(null);
   const buttonRef = useRef(null);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const { facility, facilityTheme } = useContext(FacilityContext);
+  console.log('🧩 facility:', facility);
+  console.log('🎨 facilityTheme:', facilityTheme);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -50,7 +54,7 @@ const BlueCardSearchbar = ({
             showType === 'table' ? 'text-white' : 'text-dark bg-light border-secondary'
           }`}
           style={{
-            backgroundColor: showType === 'table' ? '#005b7f' : undefined,
+            backgroundColor: showType === 'table' ? facilityTheme.primaryColor : undefined,
             borderRadius: '6px 0 0 6px',
             fontSize: '0.75rem',
           }}
@@ -64,7 +68,7 @@ const BlueCardSearchbar = ({
             showType === 'card' ? 'text-white' : 'text-dark bg-light border-secondary'
           }`}
           style={{
-            backgroundColor: showType === 'card' ? '#005b7f' : undefined,
+            backgroundColor: showType === 'card' ? facilityTheme.primaryColor : undefined,
             borderRadius: '0 6px 6px 0',
             fontSize: '0.75rem',
           }}
@@ -83,8 +87,8 @@ const BlueCardSearchbar = ({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{
-            minWidth: '200px',
-            maxWidth: '280px',
+            minWidth: '300px',
+            maxWidth: '300px',
             fontSize: '0.85rem',
             borderRadius: '6px',
           }}
@@ -96,7 +100,7 @@ const BlueCardSearchbar = ({
           style={{
             borderRadius: '6px',
             fontSize: '0.75rem',
-            backgroundColor: columnSettingsOpen ? '#005b7f' : undefined,
+            backgroundColor: columnSettingsOpen ? facilityTheme.primaryColor : undefined,
             color: columnSettingsOpen ? 'white' : undefined,
           }}
           onClick={() => setColumnSettingsOpen(!columnSettingsOpen)}

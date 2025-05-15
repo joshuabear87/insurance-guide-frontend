@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import InsurancePlanMainPage from './pages/InsurancePlanMainPage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -18,9 +18,16 @@ import RequestUpdateForm from './components/RequestUpdateForm';
 import TermsOfUsePage from './pages/TermsOfUsePage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import { FacilityContext } from './context/FacilityContext';
 
 const App = () => {
   const [showPHIModal, setShowPHIModal] = useState(false);
+  const { facilityTheme } = useContext(FacilityContext);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--primary-color', facilityTheme.primaryColor || '#005b7f');
+  }, [facilityTheme]);
 
   useEffect(() => {
     const dismissed = sessionStorage.getItem('phiWarningDismissed');

@@ -66,7 +66,7 @@ const RequestUpdateForm = () => {
     <div className="container my-5">
       <div className="mx-auto" style={{ maxWidth: '600px' }}>
         <div className="card shadow-lg border-0 p-4" style={{ backgroundColor: '#f8f9fa', borderLeft: '5px solid #005b7f' }}>
-          <h3 className="text-center mb-4 text-blue">
+          <h3 className="text-center mb-4 text-brand">
             📝 Request Update or New Plan Code
           </h3>
           <form onSubmit={handleSubmit}>
@@ -138,7 +138,7 @@ const RequestUpdateForm = () => {
       {user?.role === 'admin' && (
   <div className="mt-5">
     <div className="card shadow-lg border-0 p-4" style={{ backgroundColor: '#f0f4f8', borderLeft: '5px solid #005b7f' }}>
-      <h3 className="text-center mb-4 text-blue">📣 Broadcast Message to All Users</h3>
+      <h3 className="text-center mb-4 text-brand">📣 Broadcast Message to All Users</h3>
 
       <form
         onSubmit={async (e) => {

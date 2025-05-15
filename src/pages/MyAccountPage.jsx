@@ -36,7 +36,7 @@ const MyAccountPage = () => {
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center m-5">
-          <Spinner />
+        <Spinner />
       </div>
     );
   }
@@ -46,16 +46,18 @@ const MyAccountPage = () => {
   return (
     <div className="container py-4">
       <div className="card shadow-lg p-4" style={{ maxWidth: '700px', margin: '0 auto', fontSize: '0.85rem' }}>
-        <h2 className="text-center mb-4 text-blue" >My Account</h2>
+        <h2 className="text-center mb-4 text-blue">My Account</h2>
         <div className="row g-4">
           <div className="col-md-6">
             <div className="mb-3">
               <strong>Name:</strong>
-              <div className="text-muted">{user.username}</div>
+              <div className="text-muted">{user.firstName} {user.lastName}</div> {/* Display first and last name */}
             </div>
             <div className="mb-3">
-              <strong>Facility:</strong>
-              <div className="text-muted">{user.facilityName}</div>
+              <strong>Approved Facilities:</strong>
+              <ul className="text-muted ps-3">
+                {user.facilityAccess?.map((f, i) => <li key={i}>{f}</li>)}
+              </ul>
             </div>
             <div className="mb-3">
               <strong>Department:</strong>

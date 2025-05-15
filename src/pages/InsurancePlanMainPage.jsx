@@ -7,8 +7,9 @@ import InsurancePlanTable from '../components/home/InsurancePlanTable';
 import InsurancePlanCardView from '../components/home/InsurancePlanCardVIew';
 import columnConfig from '../components/utils/columnConfig';
 import PlanFilterPills from '../components/PlanFilterPills';
+import { exportToExcel } from '../components/utils/exportToExcel';
 
-const InsurancePlanMainPage = () => {
+const InsurancePlanMainPage = ({ setExportHandler }) => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showType, setShowType] = useState('table');
@@ -124,8 +125,11 @@ const InsurancePlanMainPage = () => {
 
   useEffect(() => {
     const fetchBooks = async () => {
+      const activeFacility = localStorage.getItem('activeFacility');
+      if (!activeFacility) return;
+
       try {
-        const res = await API.get('/books');
+        const res = await API.get(`/books?facility=${encodeURIComponent(activeFacility)}`);
         setBooks(res.data.data);
       } catch (err) {
         console.error('Error fetching books:', err);
@@ -161,8 +165,21 @@ const InsurancePlanMainPage = () => {
           ...(book.phoneNumbers || []).flatMap(p => [p.title?.toLowerCase() || '', p.number?.toLowerCase() || '']),
         ];
         return valuesToSearch.some(value => value.includes(search));
-      });
+      })
+      .map(book => ({
+        ...book,
+        facilityContracts: book.facilityContracts || [],
+      }));
   }, [books, searchQuery, currentFilter]);
+
+  // 🆕 Push export logic to Layout so Navbar can show export button
+  useEffect(() => {
+    if (setExportHandler) {
+      setExportHandler(() =>
+        () => exportToExcel(filteredBooks, columnConfig, 'InsurancePlans.xlsx')
+      );
+    }
+  }, [filteredBooks]);
 
   return (
     <>
@@ -195,9 +212,7 @@ const InsurancePlanMainPage = () => {
 
       {showToast && (
         <div
-          className={`toast show position-fixed shadow-lg ${
-            animateToast ? 'toast-animate-in' : 'toast-animate-out'
-          }`}
+          className={`toast show position-fixed shadow-lg ${animateToast ? 'toast-animate-in' : 'toast-animate-out'}`}
           role="alert"
           style={{
             bottom: '50px',

@@ -10,23 +10,22 @@ const blueCardColumnConfig = [
   { key: 'planName', label: 'Plan Name' },
   { key: 'planCode', label: 'Plan Code' },
 
+  // Removed SAMC and SAMF Contracted columns, now using facilityContracts
   {
-    key: 'samcContracted',
-    label: 'SAMC Contracted',
-    render: (val) => (
-      <span style={{ color: val?.toLowerCase() === 'contracted' ? 'green' : 'red', fontWeight: 'bold' }}>
-        {val || '-'}
-      </span>
-    ),
-  },
-  {
-    key: 'samfContracted',
-    label: 'SAMF Contracted',
-    render: (val) => (
-      <span style={{ color: val?.toLowerCase() === 'contracted' ? 'green' : 'red', fontWeight: 'bold' }}>
-        {val || '-'}
-      </span>
-    ),
+    key: 'facilityContracts',
+    label: 'Facility Contracts',
+    render: (contracts) =>
+      contracts?.length > 0 ? (
+        <ul className="mb-0 ps-3">
+          {contracts.map((contract, i) => (
+            <li key={i}>
+              <strong>{contract.facilityName}:</strong> {contract.contractStatus}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        '-'
+      ),
   },
 
   {
@@ -43,7 +42,7 @@ const blueCardColumnConfig = [
         <ul className="mb-0 ps-3">
           {links.map((link, i) => (
             <li key={i}>
-              <a href={ensureHttps(link.url)}  onClick={(e) => e.stopPropagation()} target="_blank" rel="noopener noreferrer">
+              <a href={ensureHttps(link.url)} onClick={(e) => e.stopPropagation()} target="_blank" rel="noopener noreferrer">
                 {link.title}
               </a>
             </li>

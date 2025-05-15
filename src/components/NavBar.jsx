@@ -1,3 +1,4 @@
+// components/NavBar.jsx
 import React, { useState, useEffect } from 'react';
 import { FaBars } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
@@ -5,7 +6,7 @@ import axios from 'axios';
 import API from '../axios';
 import styles from '../styles/NavBar.module.css';
 
-const NavBar = () => {
+const NavBar = ({ onExport, onExportBlueCard }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [username, setUsername] = useState('');
@@ -15,26 +16,17 @@ const NavBar = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-    if (accessToken) {
-      API.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-      fetchUser();
-    }
-  }, []);
-
-  const fetchUser = async () => {
-    try {
-      const res = await API.get('/users/me');
-      setUser(res.data);
-    } catch (err) {
-      console.error('Failed to fetch user info:', err);
-    }
-  };
-
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);
   const handleLoginToggle = () => setShowLoginForm(!showLoginForm);
+
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (token && !user) {
+      fetchUser();
+    }
+  }, []);
+  
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -48,7 +40,7 @@ const NavBar = () => {
       localStorage.setItem('accessToken', accessToken);
       API.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
       setIsAuthenticated(true);
-      await fetchUser(); // fetch role after login
+      await fetchUser();
       setShowLoginForm(false);
       closeSidebar();
       alert('Login successful!');
@@ -68,29 +60,36 @@ const NavBar = () => {
     navigate('/');
   };
 
+  const fetchUser = async () => {
+    try {
+      const res = await API.get('/users/me');
+      setUser(res.data);
+    } catch (err) {
+      console.error('Failed to fetch user info:', err);
+    }
+  };
+
   return (
     <>
       <nav className={`navbar fixed-top py-3 px-3 ${styles.navbar}`}>
         <div className="container-fluid d-flex justify-content-between align-items-center">
           <div className="text-truncate">
-            <h1 className="p mb-1 text-blue">Hoken Hub</h1>
-            <h4 className="mb-0 text-blue">Insurance Coding Guide (pilot)</h4>
+            <h1 className="p mb-1 text-brand">Hoken Hub</h1>
+            <h4 className="mb-0 text-brand">Insurance Coding Guide (pilot)</h4>
           </div>
-          <button
-            className={`btn text-blue text-delete ${styles.hamburger}`}
-            onClick={toggleSidebar}
-            aria-label="Toggle sidebar"
-          >
-            <FaBars size={24} />
-          </button>
+          <div className="d-flex align-items-center gap-2">
+            <button
+              className={`btn text-brand text-delete ${styles.hamburger}`}
+              onClick={toggleSidebar}
+              aria-label="Toggle sidebar"
+              >
+              <FaBars size={24} />
+            </button>
+          </div>
         </div>
       </nav>
 
-      {/* Sidebar */}
-      <div
-        className={`sidebar-overlay ${sidebarOpen ? 'active' : ''}`}
-        onClick={closeSidebar}
-      >
+      <div className={`sidebar-overlay ${sidebarOpen ? 'active' : ''}`} onClick={closeSidebar}>
         <div className="sidebar-content" onClick={(e) => e.stopPropagation()}>
           <div className="d-flex flex-column align-items-center m-3">
             {!isAuthenticated && !showLoginForm && (
@@ -121,13 +120,20 @@ const NavBar = () => {
             )}
             <Link to='/request-update' className="btn btn-request w-100" onClick={closeSidebar}>Request an Update</Link>
             <hr className="divider" />
-            <Link to="/printable-page" className="btn btn-request w-100" onClick={closeSidebar}>Downtime Printout</Link>
-            <hr className="divider" />
+            {onExport && (
+              <button className="btn btn-blue btn-md w-100" onClick={onExport}>
+                📤 Export All Local Plans to Excel
+              </button>
+            )}
+            {onExportBlueCard && (
+  <button className="btn btn-blue btn-md w-100" onClick={onExportBlueCard}>
+    💳 Export BlueCard Prefixes
+  </button>
+)}
           </div>
         </div>
       </div>
 
-      {/* Login Modal */}
       {showLoginForm && (
         <div className="modal-overlay" onClick={handleLoginToggle}>
           <div className="modal-container" onClick={(e) => e.stopPropagation()}>

@@ -6,12 +6,13 @@ import PlanFilterPills from '../components/PlanFilterPills';
 import BlueCardSearchbar from '../components/BlueCardSearchbar';
 import BlueCardCardView from '../components/home/BlueCardCardView';
 import blueCardColumnConfig from '../components/utils/blueCardColumnConfig';
-import BlueCardTableView from '../components/home/BlueCardTableVIew';
+import BlueCardTableView from '../components/home/BlueCardTableView';
+import { exportToExcel } from '../components/utils/exportToExcel';
 
 const getNestedValue = (obj, path) =>
   path.split('.').reduce((acc, key) => acc?.[key], obj);
 
-const BlueCardPrefixesPage = () => {
+const BlueCardPrefixesPage = ({ setExportHandlerBlueCard }) => {
   const [prefixRows, setPrefixRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sortColumn, setSortColumn] = useState('prefix');
@@ -66,6 +67,7 @@ const BlueCardPrefixesPage = () => {
     localStorage.setItem('visibleBlueCardColumns', JSON.stringify(allVisible));
   };
 
+  // Prefixes are shown for all facilities — no facility filter applied
   useEffect(() => {
     const fetchPlans = async () => {
       try {
@@ -74,11 +76,13 @@ const BlueCardPrefixesPage = () => {
         const rows = [];
         plans.forEach((plan) => {
           const prefixes = plan.prefixes || [];
+          const facilityContracts = plan.facilityContracts || []; // Add facility contracts
           prefixes.forEach((p) => {
             rows.push({
               ...plan,
               prefix: p.value,
               book: plan,
+              facilityContracts: facilityContracts, // Include facility contract data
             });
           });
         });
@@ -91,6 +95,13 @@ const BlueCardPrefixesPage = () => {
     };
     fetchPlans();
   }, []);
+
+useEffect (() => {
+  if (setExportHandlerBlueCard) {
+    setExportHandlerBlueCard(() => () => exportToExcel(prefixRows, blueCardColumnConfig, 'BlueCardPrefixes.xlsx')
+  );
+  }
+}, [prefixRows]);
 
   const handleSort = (key) => {
     if (sortColumn === key) {
@@ -116,7 +127,7 @@ const BlueCardPrefixesPage = () => {
           : String(bVal).localeCompare(String(aVal));
       });
   }, [prefixRows, sortColumn, sortDirection, searchQuery]);
-
+  
   return (
     <>
       <PlanFilterPills />
@@ -140,15 +151,15 @@ const BlueCardPrefixesPage = () => {
           <Spinner />
         </div>
       ) : showType === 'table' ? (
-<BlueCardTableView
-  rows={filteredRows}
-  sortColumn={sortColumn}
-  sortDirection={sortDirection}
-  handleSort={handleSort}
-  visibleColumns={visibleColumns}
-  isAuthenticated={isAuthenticated}
-  onSelect={(book) => setSelectedBook(book)}
-/>
+        <BlueCardTableView
+          rows={filteredRows}
+          sortColumn={sortColumn}
+          sortDirection={sortDirection}
+          handleSort={handleSort}
+          visibleColumns={visibleColumns}
+          isAuthenticated={isAuthenticated}
+          onSelect={(book) => setSelectedBook(book)}
+        />
       ) : (
         <BlueCardCardView
           rows={filteredRows}

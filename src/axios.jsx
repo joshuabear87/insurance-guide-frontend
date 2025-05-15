@@ -26,9 +26,13 @@ API.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/refresh`, {}, {
-          withCredentials: true,
-        });
+        // ✅ Include activeFacility in refresh body
+        const activeFacility = localStorage.getItem('activeFacility');
+        const res = await axios.post(
+          `${import.meta.env.VITE_API_URL}/auth/refresh`,
+          { activeFacility },
+          { withCredentials: true }
+        );
 
         const newAccessToken = res.data.accessToken;
         localStorage.setItem('accessToken', newAccessToken);
@@ -37,6 +41,8 @@ API.interceptors.response.use(
         return API(originalRequest);
       } catch (refreshError) {
         localStorage.removeItem('accessToken');
+        localStorage.removeItem('activeFacility');
+        localStorage.removeItem('user');
         window.location.href = '/login';
       }
     }

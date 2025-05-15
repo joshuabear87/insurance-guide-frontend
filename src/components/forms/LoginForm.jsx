@@ -1,7 +1,9 @@
-import React from 'react';
+// LoginForm.jsx
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import Spinner from '../Spinner';
+import { FacilityContext } from '../../context/FacilityContext';
 
 const LoginForm = ({
   email,
@@ -12,26 +14,59 @@ const LoginForm = ({
   toggleShowPassword,
   loading,
   handleLogin,
-  variant = 'default', // NEW: fallback if no variant passed
+  variant = 'default',
 }) => {
   const emailId = `login-email-${variant}`;
   const passwordId = `login-password-${variant}`;
+  const { facility, setFacility } = useContext(FacilityContext);
+
+  const defaultFacility =
+    facility ||
+    localStorage.getItem('requestedFacility') ||
+    '';
+
+  const [selectedFacility, setSelectedFacility] = useState(defaultFacility);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!selectedFacility) return alert('Please select a facility.');
+    setFacility(selectedFacility);
+    handleLogin(e, selectedFacility);
+  };
 
   return (
     <>
-      <h2 className="text-center text-blue fw-bold mb-3" style={{ fontSize: '1.5rem' }}>
+      <h2 className="text-center text-brand fw-bold mb-3" style={{ fontSize: '1.5rem' }}>
         Login
       </h2>
       <hr className="mb-4" />
 
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor={emailId} className="form-label fw-bold">Email</label>
+          <label className="form-label fw-bold">Facility</label>
+          <select
+            className="form-select"
+            value={selectedFacility}
+            onChange={(e) => setSelectedFacility(e.target.value)}
+            required
+          >
+            <option value="" disabled>
+              Select facility...
+            </option>
+            <option value="Saint Agnes Medical Center">Saint Agnes Medical Center</option>
+            <option value="Saint Alphonsus Health System">Saint Alphonsus Health System</option>
+          </select>
+        </div>
+
+        <div className="mb-3">
+          <label htmlFor={emailId} className="form-label fw-bold">
+            Email
+          </label>
           <input
             type="email"
             id={emailId}
             name="email"
-            autoComplete='email'
+            autoComplete="email"
             className="form-control"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -41,13 +76,15 @@ const LoginForm = ({
         </div>
 
         <div className="mb-3">
-          <label htmlFor={passwordId} className="form-label fw-bold">Password</label>
+          <label htmlFor={passwordId} className="form-label fw-bold">
+            Password
+          </label>
           <div className="input-group">
             <input
               type={showPassword ? 'text' : 'password'}
               id={passwordId}
               name="password"
-              autoComplete='current-password'
+              autoComplete="current-password"
               className="form-control"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -65,7 +102,7 @@ const LoginForm = ({
         </div>
 
         <div className="d-grid mb-3">
-          <button className="btn btn-login" type="submit" disabled={loading}>
+          <button className="btn btn-brand" type="submit" disabled={loading}>
             {loading ? <Spinner size="sm" /> : 'Login'}
           </button>
         </div>
@@ -80,7 +117,7 @@ const LoginForm = ({
       <div className="text-center mt-3">
         <small className="text-muted">No account? No problem!</small>
         <br />
-        <Link to="/register" className="btn btn-blue-outline btn-sm mt-2">
+        <Link to="/register" className="btn btn-brand-outline btn-sm mt-2">
           Register Here
         </Link>
       </div>

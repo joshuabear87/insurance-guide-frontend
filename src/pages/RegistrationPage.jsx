@@ -1,20 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import API from '../axios';
 import Spinner from '../components/Spinner';
 import PasswordFieldWithStrength from '../components/PasswordFieldWithStrength';
-import '../styles/_auth.css';
-
-const isValidNPI = (npi) => /^\d{10}$/.test(npi);
 
 const RegistrationPage = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
   const [formData, setFormData] = useState({
-    username: '',
-    facilityName: '',
+    firstName: '',
+    lastName: '',
+    requestedFacility: [], // Changed to an array to hold multiple selected facilities
     email: '',
     password: '',
     confirmPassword: '',
@@ -22,13 +20,36 @@ const RegistrationPage = () => {
     department: '',
     npi: '',
   });
-
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [facilities, setFacilities] = useState([]);
 
+  useEffect(() => {
+    const fetchFacilities = async () => {
+      try {
+        const res = await API.get('/facilities');
+        console.log('Facility API response:', res.data); // 👈 Check this
+        setFacilities(Array.isArray(res.data) ? res.data : res.data.data || []);
+      } catch (err) {
+        console.error('Failed to fetch facilities:', err);
+      }
+    };
+    fetchFacilities();
+  }, []);
+    
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, checked } = e.target;
+
+    if (name === 'requestedFacility') {
+      setFormData((prev) => {
+        const updatedFacilities = checked
+          ? [...prev.requestedFacility, value]  // Add facility to the array
+          : prev.requestedFacility.filter((facility) => facility !== value); // Remove facility from the array
+        return { ...prev, requestedFacility: updatedFacilities };
+      });
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -40,18 +61,13 @@ const RegistrationPage = () => {
       return;
     }
 
-    if (!isValidNPI(formData.npi)) {
-      setError('Invalid NPI number. Please enter a valid 10-digit NPI.');
-      return;
-    }
-
     try {
       setLoading(true);
       await API.post('/auth/register', formData);
       enqueueSnackbar('Registration successful! Awaiting admin approval.', { variant: 'success' });
+      localStorage.setItem('requestedFacility', formData.requestedFacility); // 👈 store for login
       navigate('/login');
     } catch (err) {
-      console.error(err);
       setError(err.response?.data?.message || 'Registration failed');
     } finally {
       setLoading(false);
@@ -67,28 +83,48 @@ const RegistrationPage = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label fw-bold">Username</label>
+            <label className="form-label fw-bold">First Name</label>
             <input
               type="text"
               className="form-control"
-              name="username"
-              value={formData.username}
+              name="firstName"
+              value={formData.firstName}
               onChange={handleChange}
               required
             />
           </div>
 
           <div className="mb-3">
-            <label className="form-label fw-bold">Facility Name</label>
+            <label className="form-label fw-bold">Last Name</label>
             <input
               type="text"
               className="form-control"
-              name="facilityName"
-              value={formData.facilityName}
+              name="lastName"
+              value={formData.lastName}
               onChange={handleChange}
-              placeholder="Enter your facility or organization"
               required
             />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label fw-bold">Select Facility</label>
+            <div>
+              {facilities.map((facility) => (
+                <div key={facility._id} className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    name="requestedFacility"
+                    value={facility.name}
+                    checked={formData.requestedFacility.includes(facility.name)} // Check if the facility is selected
+                    onChange={handleChange}
+                  />
+                  <label className="form-check-label">
+                    {facility.name}
+                  </label>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="mb-3">
@@ -133,12 +169,17 @@ const RegistrationPage = () => {
               className="form-control"
               name="npi"
               value={formData.npi}
-              onChange={handleChange}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                setFormData((prev) => ({ ...prev, npi: value }));
+              }}
+              maxLength={10}
+              pattern="\d{10}"
+              title="Enter exactly 10 digits"
               required
             />
           </div>
 
-          {/* ✅ Password Field with Strength Component */}
           <PasswordFieldWithStrength
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -157,7 +198,7 @@ const RegistrationPage = () => {
           </div>
 
           <div className="d-grid">
-            <button type="submit" className="btn btn-login" disabled={loading}>
+            <button type="submit" className="btn btn-login" disabled={loading || formData.npi.length !== 10}>
               {loading ? <Spinner size="sm" /> : 'Register'}
             </button>
           </div>

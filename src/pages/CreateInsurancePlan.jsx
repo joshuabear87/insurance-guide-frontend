@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import API from '../axios';
@@ -11,18 +11,19 @@ import PlanAddressSection from '../components/forms/PlanAddressNotesForm';
 import PlanBasicInfoForm from '../components/forms/PlanBasicInfoForm';
 import PlanPrefixesForm from '../components/forms/PlanPrefixesForm';
 import PlanNotesSection from '../components/forms/PlanNotesSection';
+import { FacilityContext } from '../context/FacilityContext';
 
 const CreateInsurancePlan = () => {
+  const activeFacility = localStorage.getItem('activeFacility') || '';
   const [formData, setFormData] = useState({
     financialClass: '',
     descriptiveName: '',
+    facilityName: activeFacility,
     prefix: '',
     payerName: '',
     payerCode: '',
     planName: '',
     planCode: '',
-    samcContracted: '',
-    samfContracted: '',
     notes: '',
     authorizationNotes: '',
     ipaPayerId: '',
@@ -36,8 +37,10 @@ const CreateInsurancePlan = () => {
     secondaryImage: '',
     imagePublicId: '',
     secondaryImagePublicId: '',
+    facilityContracts: [], // Facility contracts are handled in PlanBasicInfoForm
   });
 
+  const { facility, facilityTheme } = useContext(FacilityContext);
   const [loading, setLoading] = useState(false);
   const [showValidationError, setShowValidationError] = useState(false);
   const [showPHIModal, setShowPHIModal] = useState(false);
@@ -96,10 +99,27 @@ const CreateInsurancePlan = () => {
     setFormData({ ...formData, prefixes: updated });
   };
 
+  const addContract = () => {
+    const newContracts = [...formData.facilityContracts, { facilityName: '', contractStatus: '' }];
+    setFormData({ ...formData, facilityContracts: newContracts });
+  };
+
+  const handleContractChange = (e, index) => {
+    const { name, value } = e.target;
+    const newContracts = [...formData.facilityContracts];
+    newContracts[index][name] = value;
+    setFormData({ ...formData, facilityContracts: newContracts });
+  };
+
+  const removeContract = (index) => {
+    const newContracts = formData.facilityContracts.filter((_, i) => i !== index);
+    setFormData({ ...formData, facilityContracts: newContracts });
+  };
+
   const handleSavePlanConfirmed = async () => {
     const requiredFields = [
       'financialClass', 'descriptiveName', 'payerName', 'payerCode',
-      'planName', 'planCode', 'samcContracted', 'samfContracted',
+      'planName', 'planCode',
     ];
     const hasEmpty = requiredFields.some((field) => !formData[field]);
     if (hasEmpty) {
@@ -159,6 +179,7 @@ const CreateInsurancePlan = () => {
       secondaryImage: '',
       imagePublicId: '',
       secondaryImagePublicId: '',
+      facilityContracts: [], // Reset contracts
     });
     setShowValidationError(false);
   };
@@ -171,9 +192,12 @@ const CreateInsurancePlan = () => {
       <div className="d-flex justify-content-center">
         {loading && <Spinner />}
         <div className="card w-75 border-0 shadow-lg mt-4 overflow-hidden">
-          <div className="text-white py-3 px-4" style={{ backgroundColor: '#005b7f' }}>
+          <div className="text-white py-3 px-4" style={{ backgroundColor: facilityTheme.primaryColor }}>
             <h2 className="text-center m-0">Create Insurance Plan</h2>
           </div>
+          <p className="text-center text-muted mt-2" style={{ fontSize: '0.9rem' }}>
+            Facility: <strong>{formData.facilityName}</strong>
+          </p>
 
           <div className="p-4">
             {showValidationError && (
@@ -183,7 +207,8 @@ const CreateInsurancePlan = () => {
             )}
 
             <h3 className="text-center mb-4 text-blue">Plan Details</h3>
-            <PlanBasicInfoForm formData={formData} handleChange={handleChange} showValidationError={showValidationError} />
+            <PlanBasicInfoForm formData={formData} handleChange={handleChange} showValidationError={showValidationError}
+                               addContract={addContract} handleContractChange={handleContractChange} removeContract={removeContract} />
 
             <div className="row g-4">
               <div className="col-md-6">
@@ -257,7 +282,7 @@ const CreateInsurancePlan = () => {
             <h5 className="text-center text-blue mb-3">⚠️ Please Do Not Include PHI</h5>
             <p className="text-muted text-center">
               Ensure this insurance plan does not contain any Protected Health Information (PHI)
-              such as patient names, IDs, or any personal identifiers. If you see PHI, report it to the administrator it immediately.
+              such as patient names, IDs, or any personal identifiers. If you see PHI, report it to the administrator immediately.
             </p>
             <div className="d-flex justify-content-center gap-3 mt-4">
               <button className="btn btn-cancel px-4" onClick={() => setShowPHIModal(false)}>
@@ -278,4 +303,3 @@ const CreateInsurancePlan = () => {
 };
 
 export default CreateInsurancePlan;
-

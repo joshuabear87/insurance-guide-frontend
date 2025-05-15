@@ -16,7 +16,7 @@ const BlueCardCardView = ({ rows, visibleColumns, onSelect }) => {
           {rows.map((row, i) => (
             <div key={i} className="col-12 col-sm-6 col-lg-4">
               <div
-                className="card h-100 bg-blue border-0 shadow-sm p-3 responsive-card position-relative"
+                className="card h-100 bg-blue border-0 shadow-lg p-3 responsive-card position-relative"
                 onClick={() => setSelectedBook(row.book)}
                 style={{
                   cursor: 'pointer',
@@ -42,8 +42,8 @@ const BlueCardCardView = ({ rows, visibleColumns, onSelect }) => {
                   <div className="card mb-3 shadow-sm">
                     <div className="card-body">
                       <h6 className="text-center fw-bold border-bottom pb-2 mb-3 text-blue">Plan Details</h6>
-                      {[
-                        'planName', 'planCode', 'payerName', 'payerCode',
+                      {[ 
+                        'planName', 'planCode', 'payerName', 'payerCode', 
                         'samcContracted', 'samfContracted', 'payerId', 'ipaPayerId'
                       ].map((key) =>
                         visibleColumns[key] && row[key] ? (
@@ -51,6 +51,26 @@ const BlueCardCardView = ({ rows, visibleColumns, onSelect }) => {
                             <strong>{formatLabel(key)}:</strong> {row[key]}
                           </p>
                         ) : null
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Section: Facility Contracts */}
+                {(visibleColumns.facilityContracts) && (
+                  <div className="card mb-3 shadow-sm">
+                    <div className="card-body">
+                      <h6 className="text-center fw-bold border-bottom pb-2 mb-3 text-blue">Facility Contracts</h6>
+                      {row.facilityContracts?.length > 0 ? (
+                        <ul className="ms-3 mb-2">
+                          {row.facilityContracts.map((contract, idx) => (
+                            <li key={idx}>
+                              <strong>{contract.facilityName}:</strong> {contract.contractStatus}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="mb-2">-</p>
                       )}
                     </div>
                   </div>

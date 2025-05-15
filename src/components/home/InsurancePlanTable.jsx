@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AiOutlineEdit } from 'react-icons/ai';
-import InsurancePlanModalContent from '../InsurancePlanModalContent';
 import columnConfig from '../utils/columnConfig';
 import { isAdmin } from '../utils/auth';
+import InsurancePlanModalContent from '../InsurancePlanModalContent';
 import { getNestedValue } from '../../components/utils/helpers';
-import { ensureHttps } from '../utils/urlHelpers';
+import { FacilityContext } from '../../context/FacilityContext';
 
 const InsurancePlanTable = ({ books, visibleColumns }) => {
   const [selectedBook, setSelectedBook] = useState(null);
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState('asc');
   const admin = isAdmin();
+  const { facility, facilityTheme } = useContext(FacilityContext);
+  console.log('🧩 facility:', facility);
+  console.log('🎨 facilityTheme:', facilityTheme);
 
   const handleSort = (key) => {
     if (sortColumn === key) {
@@ -39,16 +42,11 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
   return (
     <>
       <div className="table-responsive">
-        <table
-          className="table table-bordered table-hover align-middle responsive-table"
-          style={{ fontSize: '0.75rem', tableLayout: 'auto' }}
-        >
-          <thead className="table-primary">
+        <table className="table table-bordered align-middle responsive-table" style={{ fontSize: '0.75rem', tableLayout: 'auto' }}>
+          <thead>
             <tr>
               {admin && (
-                <th style={{ backgroundColor: '#005b7f', color: 'white' }}>
-                  Operations
-                </th>
+                <th style={{ backgroundColor: facilityTheme.primaryColor, color: 'white' }}>Operations</th>
               )}
               {columnConfig.map(({ key, label }) =>
                 visibleColumns[key] ? (
@@ -56,7 +54,7 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
                     key={key}
                     onClick={() => handleSort(key)}
                     style={{
-                      backgroundColor: '#005b7f',
+                      backgroundColor: facilityTheme.primaryColor,
                       color: 'white',
                       cursor: 'pointer',
                       userSelect: 'none',
@@ -74,11 +72,7 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
           </thead>
           <tbody>
             {sortedBooks.map((book) => (
-              <tr
-                key={book._id}
-                onClick={() => setSelectedBook(book)}
-                style={{ cursor: 'pointer' }}
-              >
+              <tr key={book._id} onClick={() => setSelectedBook(book)} style={{ cursor: 'pointer' }}>
                 {admin && (
                   <td onClick={(e) => e.stopPropagation()}>
                     <Link to={`/books/edit/${book._id}`}>
@@ -90,24 +84,21 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
                   if (!visibleColumns[key]) return null;
 
                   const value = getNestedValue(book, key);
-
                   let renderedValue;
 
-                  // Handle portalLinks rendering as clickable links
-                  if (key === 'portalLinks' && Array.isArray(value)) {
-                    renderedValue = value.length > 0 ? (
-                      <ul className="mb-0 ps-3">
-                        {value.map((link, i) => (
-                          <li key={i}>
-                            <a href={ensureHttps(link.url)}  onClick={(e) => e.stopPropagation()} target="_blank" rel="noopener noreferrer">
-                              {link.title}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      '-'
-                    );
+                  if (key === 'facilityContracts') {
+                    renderedValue =
+                      value?.length > 0 ? (
+                        <ul className="mb-0 ps-3">
+                          {value.map((contract, idx) => (
+                            <li key={idx}>
+                              <strong>{contract.facilityName}</strong>: {contract.contractStatus}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        '-'
+                      );
                   } else if (render) {
                     renderedValue = render(value);
                   } else if (Comp) {
@@ -140,10 +131,7 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
       </div>
 
       {selectedBook && (
-        <InsurancePlanModalContent
-          book={selectedBook}
-          onClose={() => setSelectedBook(null)}
-        />
+        <InsurancePlanModalContent book={selectedBook} onClose={() => setSelectedBook(null)} />
       )}
     </>
   );
