@@ -6,7 +6,7 @@ import PlanFilterPills from '../components/PlanFilterPills';
 import BlueCardSearchbar from '../components/BlueCardSearchbar';
 import BlueCardCardView from '../components/home/BlueCardCardView';
 import blueCardColumnConfig from '../components/utils/blueCardColumnConfig';
-import BlueCardTableView from '../components/home/BlueCardTableView';
+import BlueCardTableView from '../components/home/BlueCardTableVIew';
 import { exportToExcel } from '../components/utils/exportToExcel';
 
 const getNestedValue = (obj, path) =>
@@ -76,7 +76,7 @@ const BlueCardPrefixesPage = ({ setExportHandlerBlueCard }) => {
         const rows = [];
         plans.forEach((plan) => {
           const prefixes = plan.prefixes || [];
-          const facilityContracts = plan.facilityContracts || []; // Add facility contracts
+          const facilityContracts = plan.facilityContracts || [];
           prefixes.forEach((p) => {
             rows.push({
               ...plan,
