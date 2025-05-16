@@ -5,13 +5,14 @@ import { FacilityContext } from '../context/FacilityContext';
 const InsurancePlanModalContent = ({ book, onClose }) => {
   const [enlargedImage, setEnlargedImage] = useState(null);
   const { facility, facilityTheme } = useContext(FacilityContext);
+  const [zoomed, setZoomed] = useState(false)
 
   const formatAddress = (addr) => {
-    if (!addr || typeof addr !== 'object') return 'None entered...';
+    if (!addr || typeof addr !== 'object') return '-';
     const { street, street2, city, state, zip } = addr;
     const line1 = [street, street2].filter(Boolean).join(', ');
     const line2 = [city, state, zip].filter(Boolean).join(', ');
-    return [line1, line2].filter(Boolean).join(', ') || 'None entered...';
+    return [line1, line2].filter(Boolean).join(', ') || '-';
   };
 
 
@@ -95,21 +96,21 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
                   <div className="row">
                     <div className="col-6">
                       <h6>Payer Name</h6>
-                      <p>{book.payerName || 'N/A'}</p>
+                      <p>{book.payerName || '-'}</p>
                     </div>
                     <div className="col-6">
                       <h6>Payer Code</h6>
-                      <p>{book.payerCode || 'N/A'}</p>
+                      <p>{book.payerCode || '-'}</p>
                     </div>
                   </div>
                   <div className="row">
                     <div className="col-6">
                       <h6>Plan Name</h6>
-                      <p>{book.planName || 'N/A'}</p>
+                      <p>{book.planName || '-'}</p>
                     </div>
                     <div className="col-6">
                       <h6>Plan Code</h6>
-                      <p>{book.planCode || 'N/A'}</p>
+                      <p>{book.planCode || '-'}</p>
                     </div>
                   </div>
 
@@ -117,24 +118,34 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
                   <div className="row">
                     <div className="col-6">
                       <h6>Facility Contracted</h6>
-                      <ul>
-                        {book.facilityContracts?.length > 0
-                          ? book.facilityContracts.map((contract, index) => (
-                              <li key={index}>{`${contract.facilityName}: ${contract.status}`}</li>
-                            ))
-                          : 'N/A'}
-                      </ul>
+                      <p>
+                        <ul className="list-unstyled">
+                          {book.facilityContracts.map((contract, index) => {
+                            const status = contract.contractStatus?.toLowerCase();
+                            let textColorClass = 'text-secondary';
+                            if (status === 'contracted') textColorClass = 'text-success';
+                            else if (status === 'not contracted') textColorClass = 'text-danger';
+                            else if (status === 'must call to confirm') textColorClass = 'text-warning';
+                            else if (status === 'see notes') textColorClass = 'text-info';
+                            return (
+                              <li key={index} className={`mb-1 ${textColorClass}`}>
+                                <strong>{contract.facilityName}:</strong> {contract.contractStatus || '-'}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </p>
                     </div>
                   </div>
 
                   <div className="row">
                     <div className="col-6">
                       <h6>Payer ID (Payer)</h6>
-                      <p>{book.payerId || 'N/A'}</p>
+                      <p>{book.payerId || '-'}</p>
                     </div>
                     <div className="col-6">
                       <h6>Payer ID (IPA)</h6>
-                      <p>{book.ipaPayerId || 'N/A'}</p>
+                      <p>{book.ipaPayerId || '-'}</p>
                     </div>
                   </div>
 
@@ -143,11 +154,11 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
                     <p>
                       {book.prefixes?.length > 0
                         ? book.prefixes.map((p, i) => (
-                            <span key={i} className="badge bg-secondary me-2">
-                              {p?.value}
-                            </span>
-                          ))
-                        : 'N/A'}
+                          <span key={i} className="badge bg-secondary me-2">
+                            {p?.value}
+                          </span>
+                        ))
+                        : '-'}
                     </p>
                   </div>
                 </div>
@@ -160,36 +171,42 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
                   <div className="row">
                     <div className="col-6">
                       <h6 className="fw-bold">Web Portal Links</h6>
-                      <ul className="list-unstyled mb-0 mt-2">
-                        {book.portalLinks?.length > 0 ? (
-                          book.portalLinks.map((link, idx) => (
-                            <li key={idx}>
-                              <a href={ensureHttps(link.url)} target="_blank" rel="noopener noreferrer">
-                                {link.title}
-                              </a>
-                            </li>
-                          ))
-                        ) : (
-                          <li>N/A</li>
-                        )}
-                      </ul>
+                      <p>
+
+                        <ul className="list-unstyled mb-0 mt-2">
+                          {book.portalLinks?.length > 0 ? (
+                            book.portalLinks.map((link, idx) => (
+                              <li key={idx}>
+                                <a href={ensureHttps(link.url)} target="_blank" rel="noopener noreferrer">
+                                  {link.title}
+                                </a>
+                              </li>
+                            ))
+                          ) : (
+                            <li>-</li>
+                          )}
+                        </ul>
+                      </p>
                     </div>
 
                     <div className="col-6">
                       <h6 className="fw-bold">Phone Numbers</h6>
-                      <ul className="list-unstyled mb-0 mt-2">
-                        {book.phoneNumbers?.length > 0 ? (
-                          book.phoneNumbers.map((phone, idx) => (
-                            <li key={idx}>
-                              <p>
-                                <em>{phone.title}:</em> {phone.number}
-                              </p>
-                            </li>
-                          ))
-                        ) : (
-                          <li>N/A</li>
-                        )}
-                      </ul>
+                      <p>
+
+                        <ul className="list-unstyled mb-0 mt-2">
+                          {book.phoneNumbers?.length > 0 ? (
+                            book.phoneNumbers.map((phone, idx) => (
+                              <li key={idx}>
+                                <p>
+                                  <em>{phone.title}:</em> {phone.number}
+                                </p>
+                              </li>
+                            ))
+                          ) : (
+                            <li>-</li>
+                          )}
+                        </ul>
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -217,13 +234,13 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
             <div className="col-md-6">
               <div className="card bg-light p-3 shadow-sm h-100">
                 <h5 className="fw-bold text-blue text-center mb-2">Eligibility and Coding Notes</h5>
-                <p className="mb-0">{book.notes || 'N/A'}</p>
+                <p className="mb-0">{book.notes || '-'}</p>
               </div>
             </div>
             <div className="col-md-6">
               <div className="card bg-light p-3 shadow-sm h-100">
                 <h5 className="fw-bold text-blue text-center mb-2">Authorization Notes</h5>
-                <p className="mb-0">{book.authorizationNotes || 'N/A'}</p>
+                <p className="mb-0">{book.authorizationNotes || '-'}</p>
               </div>
             </div>
           </div>
@@ -234,13 +251,13 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
             <div className="col-md-6">
               <h6 className="text-muted">Created At</h6>
               <p className="text-dark">
-                {book.createdAt ? new Date(book.createdAt).toLocaleString() : 'N/A'}
+                {book.createdAt ? new Date(book.createdAt).toLocaleString() : '-'}
               </p>
             </div>
             <div className="col-md-6">
               <h6 className="text-muted">Last Updated</h6>
               <p className="text-dark">
-                {book.updatedAt ? new Date(book.updatedAt).toLocaleString() : 'N/A'}
+                {book.updatedAt ? new Date(book.updatedAt).toLocaleString() : '-'}
               </p>
             </div>
           </div>
@@ -251,23 +268,32 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
           <div
             className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
             style={{ backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 9999 }}
-            onClick={() => setEnlargedImage(null)}
+            onClick={() => {
+              setEnlargedImage(null);
+              setZoomed(false); // Reset zoom on close
+            }}
           >
             <img
               src={enlargedImage}
-              alt="Enlarged"
+              alt="Zoomable"
               className="img-fluid"
               style={{
-                maxHeight: '90vh',
-                maxWidth: '90vw',
+                maxHeight: zoomed ? 'none' : '90vh',
+                maxWidth: zoomed ? 'none' : '90vw',
+                transform: zoomed ? 'scale(2)' : 'scale(1)',
+                transition: 'transform 0.3s ease-in-out',
+                objectFit: 'contain',
                 borderRadius: '8px',
                 boxShadow: '0 0 20px rgba(0,0,0,0.5)',
+                cursor: 'zoom-in',
               }}
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                setZoomed(!zoomed); // Toggle zoom
+              }}
             />
           </div>
-        )}
-      </div>
+        )}      </div>
     </div>
   );
 };

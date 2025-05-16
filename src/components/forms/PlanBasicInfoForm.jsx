@@ -102,7 +102,8 @@ const PlanBasicInfoForm = ({
                   <option value="">Select Contract Status</option>
                   <option value="Contracted">Contracted</option>
                   <option value="Not Contracted">Not Contracted</option>
-                  <option value="Must Call to Confirm">Must Call to Confirm</option>
+                  <option value="Must Call">Must Call</option>
+                  <option value="See Notes">See Notes</option>
                 </select>
               </div>
               <div className="col-md-2">

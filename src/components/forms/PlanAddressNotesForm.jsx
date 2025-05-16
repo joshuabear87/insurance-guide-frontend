@@ -70,7 +70,7 @@ const PlanAddressSection = ({ formData, handleAddressChange, handleChange }) => 
           <h5 className="text-center my-2">Electronic Payer IDs</h5>
           <div className="row g-3">
             <div className="col-md-6">
-              <label className="form-label">Payer ID (IPA)</label>
+              <label className="form-label">Payer ID (Professional)</label>
               <input
                 type="text"
                 className="form-control"

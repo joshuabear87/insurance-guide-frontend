@@ -89,12 +89,27 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
                   if (key === 'facilityContracts') {
                     renderedValue =
                       value?.length > 0 ? (
-                        <ul className="mb-0 ps-3">
-                          {value.map((contract, idx) => (
-                            <li key={idx}>
-                              <strong>{contract.facilityName}</strong>: {contract.contractStatus}
-                            </li>
-                          ))}
+                        <ul className="list-unstyled mb-0">
+                          {value?.length > 0 ? (
+                            <ul className="list-unstyled mb-0 ps-0">
+                              {value.map((contract, idx) => {
+                                let color = 'inherit';
+                                if (contract.contractStatus === 'Contracted') color = 'green';
+                                else if (contract.contractStatus === 'Not Contracted') color = 'red';
+                                else if (contract.contractStatus === 'Must Call') color = 'orange';
+                                else if (contract.contractStatus === 'See Notes') color = '#0d6efd';
+
+                                return (
+                                  <li key={idx} style={{color}}>
+                                    <strong>{contract.facilityName}</strong>:{' '}
+                                    <span style={{ color }}>{contract.contractStatus}</span>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          ) : (
+                            '-'
+                          )}
                         </ul>
                       ) : (
                         '-'
