@@ -76,7 +76,7 @@ const PlanBasicInfoForm = ({
         {/* Facility Contracts section */}
         <div className="col-12">
           <label className="form-label">
-            Facility Contracts <span className="text-danger">*</span>
+            Contracting <span className="text-danger">*</span>
           </label>
 
           {/* Render existing facility contracts dynamically */}
@@ -109,10 +109,10 @@ const PlanBasicInfoForm = ({
               <div className="col-md-2">
                 <button
                   type="button"
-                  className="btn btn-danger"
+                  className="btn btn-sm btn-delete"
                   onClick={() => removeContract(index)}
                 >
-                  Remove
+                  ✖
                 </button>
               </div>
             </div>
@@ -120,8 +120,8 @@ const PlanBasicInfoForm = ({
 
           {/* Button to add a new contract line */}
           <div className="d-flex justify-content-start">
-            <button type="button" className="btn btn-success" onClick={addContract}>
-              Add Contract Line
+            <button type="button" className="btn btn-login btn-sm" onClick={addContract}>
+             + Add Contract Line
             </button>
           </div>
         </div>

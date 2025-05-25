@@ -11,8 +11,8 @@ const facilities = [
 const EditUserByAdminModal = ({ user, onClose, onSave }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [formData, setFormData] = useState({
-    firstName: user.firstName || '',   // Replaced username with firstName
-    lastName: user.lastName || '',     // Added lastName
+    firstName: user.firstName || '',   
+    lastName: user.lastName || '',     
     email: user.email || '',
     phoneNumber: user.phoneNumber || '',
     department: user.department || '',

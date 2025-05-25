@@ -4,7 +4,7 @@ import { AiOutlineEdit } from 'react-icons/ai';
 import columnConfig from '../utils/columnConfig';
 import { isAdmin } from '../utils/auth';
 import InsurancePlanModalContent from '../InsurancePlanModalContent';
-import { getNestedValue } from '../../components/utils/helpers';
+import { getNestedValue, getContractColor } from '../../components/utils/helpers';
 import { FacilityContext } from '../../context/FacilityContext';
 
 const InsurancePlanTable = ({ books, visibleColumns }) => {
@@ -13,8 +13,6 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
   const [sortDirection, setSortDirection] = useState('asc');
   const admin = isAdmin();
   const { facility, facilityTheme } = useContext(FacilityContext);
-  console.log('🧩 facility:', facility);
-  console.log('🎨 facilityTheme:', facilityTheme);
 
   const handleSort = (key) => {
     if (sortColumn === key) {
@@ -90,26 +88,11 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
                     renderedValue =
                       value?.length > 0 ? (
                         <ul className="list-unstyled mb-0">
-                          {value?.length > 0 ? (
-                            <ul className="list-unstyled mb-0 ps-0">
-                              {value.map((contract, idx) => {
-                                let color = 'inherit';
-                                if (contract.contractStatus === 'Contracted') color = 'green';
-                                else if (contract.contractStatus === 'Not Contracted') color = 'red';
-                                else if (contract.contractStatus === 'Must Call') color = 'orange';
-                                else if (contract.contractStatus === 'See Notes') color = '#0d6efd';
-
-                                return (
-                                  <li key={idx} style={{color}}>
-                                    <strong>{contract.facilityName}</strong>:{' '}
-                                    <span style={{ color }}>{contract.contractStatus}</span>
-                                  </li>
-                                );
-                              })}
-                            </ul>
-                          ) : (
-                            '-'
-                          )}
+                          {value.map((contract, idx) => (
+                            <li key={idx} style={{ color: getContractColor(contract.contractStatus) }}>
+                              <strong>{contract.facilityName}</strong>: {contract.contractStatus}
+                            </li>
+                          ))}
                         </ul>
                       ) : (
                         '-'
@@ -132,7 +115,7 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
-                        maxWidth: '180px',
+                        maxWidth: '300px',
                       }}
                     >
                       {renderedValue}

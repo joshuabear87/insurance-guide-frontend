@@ -131,7 +131,7 @@ const BlueCardSearchbar = ({
 
             {/* Skip prefix in settings list */}
             {columnConfig.map(({ key, label }) => {
-              if (key === 'prefix') return null;
+              if (key === 'prefix' || key === 'prefixes') return null;
               return (
                 <div key={key} className="form-check">
                   <input

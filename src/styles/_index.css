@@ -86,6 +86,10 @@ html {
   scroll-behavior: smooth;
 }
 
+ul {
+    font-size: 0.875rem;
+}
+
 /* ----------------------------------
   SIDEBAR STYLING
 ---------------------------------- */

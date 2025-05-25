@@ -15,6 +15,8 @@ const InsurancePlanMainPage = ({ setExportHandler }) => {
   const [showType, setShowType] = useState('table');
   const [searchQuery, setSearchQuery] = useState('');
   const [columnSettingsOpen, setColumnSettingsOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = showType === 'table' ? 50 : 24;
 
   const location = useLocation();
   const filterMap = {
@@ -172,7 +174,19 @@ const InsurancePlanMainPage = ({ setExportHandler }) => {
       }));
   }, [books, searchQuery, currentFilter]);
 
-  // 🆕 Push export logic to Layout so Navbar can show export button
+  const paginatedBooks = useMemo(() => {
+    return filteredBooks.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    );
+  }, [filteredBooks, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(filteredBooks.length / itemsPerPage);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, currentFilter, showType]);
+
   useEffect(() => {
     if (setExportHandler) {
       setExportHandler(() =>
@@ -204,11 +218,23 @@ const InsurancePlanMainPage = ({ setExportHandler }) => {
             <Spinner />
           </div>
         ) : showType === 'table' ? (
-          <InsurancePlanTable books={filteredBooks} visibleColumns={tableColumns} />
+          <InsurancePlanTable books={paginatedBooks} visibleColumns={tableColumns} />
         ) : (
-          <InsurancePlanCardView books={filteredBooks} visibleColumns={cardColumns} />
+          <InsurancePlanCardView books={paginatedBooks} visibleColumns={cardColumns} />
         )}
       </div>
+
+      <nav className="d-flex justify-content-center mt-3">
+        <ul className="pagination pagination-sm">
+          {Array.from({ length: totalPages }, (_, i) => (
+            <li key={i} className={`page-item ${i + 1 === currentPage ? 'active' : ''}`}>
+              <button className="page-link" onClick={() => setCurrentPage(i + 1)}>
+                {i + 1}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
       {showToast && (
         <div

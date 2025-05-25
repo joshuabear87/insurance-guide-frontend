@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { AiOutlineEdit } from 'react-icons/ai';
 import blueCardColumnConfig from '../utils/blueCardColumnConfig';
 import { isAdmin } from '../utils/auth';
-import { getNestedValue } from '../../components/utils/helpers';
+import { getNestedValue, getContractColor } from '../../components/utils/helpers';
 import { FacilityContext } from '../../context/FacilityContext';
 
 const BlueCardTableView = ({
@@ -15,7 +15,7 @@ const BlueCardTableView = ({
   onSelect,
 }) => {
   const admin = isAdmin();
-  const { facility, facilityTheme } = useContext(FacilityContext);
+  const { facilityTheme } = useContext(FacilityContext);
 
   return (
     <div className="table-responsive" style={{ fontSize: '0.75rem' }}>
@@ -23,9 +23,23 @@ const BlueCardTableView = ({
         <thead>
           <tr>
             {admin && (
-              <th style={{ backgroundColor: facilityTheme.primaryColor, color: 'white' }}>Operations</th>
+              <th style={{ backgroundColor: facilityTheme.primaryColor, color: 'white' }}>
+                Operations
+              </th>
             )}
-            <th style={{ backgroundColor: facilityTheme.primaryColor, color: 'white' }}>Prefix</th>
+            <th
+              onClick={() => handleSort('prefix')}
+              style={{
+                backgroundColor: facilityTheme.primaryColor,
+                color: 'white',
+                cursor: 'pointer',
+                userSelect: 'none',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Prefix {sortColumn === 'prefix' && (sortDirection === 'asc' ? '↑' : '↓')}
+            </th>
+
             {blueCardColumnConfig.map((col) => {
               if (col.key === 'prefix' || !visibleColumns[col.key]) return null;
               return (
@@ -57,26 +71,42 @@ const BlueCardTableView = ({
                 </td>
               )}
               <td>{row.prefix}</td>
+
               {blueCardColumnConfig.map(({ key, render }) => {
                 if (key === 'prefix' || !visibleColumns[key]) return null;
+
                 const value = getNestedValue(row, key);
 
-                // Custom rendering for the new facility contracts data
                 if (key === 'facilityContracts') {
                   return (
-                    <td key={key}>
-                      {value?.length > 0 ? (
-                        <ul className="mb-0 ps-3">
-                          {value.map((contract, idx) => (
-                            <li key={idx}>
-                              <strong>{contract.facilityName}</strong>: {contract.contractStatus}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        '-'
-                      )}
-                    </td>
+                    <td
+  key={key}
+  style={{
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    maxWidth: 'none',
+  }}
+>
+  {value?.length > 0 ? (
+    <ul className="list-unstyled mb-0 d-flex flex-wrap gap-2">
+      {value.map((contract, idx) => (
+        <li
+          key={idx}
+          style={{
+            color: getContractColor(contract.contractStatus),
+            marginRight: '1rem',
+          }}
+        >
+          <strong>{contract.facilityName}</strong>: {contract.contractStatus}
+        </li>
+      ))}
+    </ul>
+  ) : (
+    '-'
+  )}
+</td>
+
                   );
                 }
 
@@ -88,14 +118,14 @@ const BlueCardTableView = ({
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
-                      maxWidth: key.includes('image') ? '150px' : '180px',
+                      maxWidth: key.includes('image') ? '150px' : '300px',
                     }}
                   >
                     {render
                       ? render(value)
                       : typeof value === 'string' || typeof value === 'number'
-                      ? value || '-'
-                      : '-'}
+                        ? value || '-'
+                        : '-'}
                   </td>
                 );
               })}

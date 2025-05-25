@@ -21,3 +21,19 @@ export const formatAddress = (addr) => {
       .replace(/\s+/g, ' ') // Clean up extra spaces
       .trim();
   };
+
+  export const getContractColor = (status) => {
+  switch ((status || '').toLowerCase()) {
+    case 'contracted':
+      return 'green';
+    case 'not contracted':
+      return 'red';
+    case 'must call':
+    case 'must call to confirm':
+      return 'orange';
+    case 'see notes':
+      return '#0d6efd'; // Bootstrap primary blue
+    default:
+      return 'inherit';
+  }
+};

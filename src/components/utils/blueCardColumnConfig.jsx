@@ -1,7 +1,7 @@
 import { ensureHttps } from './urlHelpers';
 
 const blueCardColumnConfig = [
-  { key: 'prefix', label: 'Prefix' }, // Always visible
+  { key: 'prefix', label: 'Prefix' },
 
   { key: 'financialClass', label: 'Financial Class' },
   { key: 'descriptiveName', label: 'Descriptive Name' },
@@ -10,13 +10,12 @@ const blueCardColumnConfig = [
   { key: 'planName', label: 'Plan Name' },
   { key: 'planCode', label: 'Plan Code' },
 
-  // Removed SAMC and SAMF Contracted columns, now using facilityContracts
   {
     key: 'facilityContracts',
-    label: 'Facility Contracts',
+    label: 'Contracting',
     render: (contracts) =>
       contracts?.length > 0 ? (
-        <ul className="mb-0 ps-3">
+        <ul className="list-unstyled mb-0">
           {contracts.map((contract, i) => (
             <li key={i}>
               <strong>{contract.facilityName}:</strong> {contract.contractStatus}
@@ -39,7 +38,7 @@ const blueCardColumnConfig = [
     label: 'Portal Links',
     render: (links) =>
       links?.length > 0 ? (
-        <ul className="mb-0 ps-3">
+        <ul className="list-unstyled mb-0">
           {links.map((link, i) => (
             <li key={i}>
               <a href={ensureHttps(link.url)} onClick={(e) => e.stopPropagation()} target="_blank" rel="noopener noreferrer">
@@ -58,7 +57,7 @@ const blueCardColumnConfig = [
     label: 'Phone Numbers',
     render: (phones) =>
       phones?.length > 0 ? (
-        <ul className="mb-0 ps-3">
+        <ul className="list-unstyled mb-0">
           {phones.map((phone, i) => (
             <li key={i}>
               {phone.title}: {phone.number}
@@ -83,7 +82,7 @@ const blueCardColumnConfig = [
 
   {
     key: 'facilityAddress',
-    label: 'Facility Address',
+    label: 'Claims Address (HB)',
     render: (addr) => {
       if (!addr || typeof addr !== 'object') return '-';
       const { street, street2, city, state, zip } = addr;
@@ -100,7 +99,7 @@ const blueCardColumnConfig = [
 
   {
     key: 'providerAddress',
-    label: 'Provider Address',
+    label: 'Claims Address (PB)',
     render: (addr) => {
       if (!addr || typeof addr !== 'object') return '-';
       const { street, street2, city, state, zip } = addr;

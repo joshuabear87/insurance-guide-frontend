@@ -16,6 +16,7 @@ const EditInsurancePlan = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+
   const [formData, setFormData] = useState({
     facilityName: '',
     financialClass: '',
@@ -37,7 +38,7 @@ const EditInsurancePlan = () => {
     secondaryImage: '',
     imagePublicId: '',
     secondaryImagePublicId: '',
-    facilityContracts: [{ facility: '', status: '' }] // New field to handle multiple facility contracts
+    facilityContracts: [{ facilityName: '', contractStatus: '' }],
   });
 
   const [loading, setLoading] = useState(false);
@@ -56,7 +57,12 @@ const EditInsurancePlan = () => {
           prefixes: Array.isArray(plan.prefixes) ? plan.prefixes.map(p => p?.value || '') : [''],
           portalLinks: plan.portalLinks?.length ? plan.portalLinks : [{ title: '', url: '' }],
           phoneNumbers: plan.phoneNumbers?.length ? plan.phoneNumbers : [{ title: '', number: '' }],
-          facilityContracts: plan.facilityContracts || [{ facility: '', status: '' }], // Initialize facility contracts
+          facilityContracts: Array.isArray(plan.facilityContracts)
+            ? plan.facilityContracts.map(c => ({
+                facilityName: c.facilityName || '',
+                contractStatus: c.contractStatus || '',
+              }))
+            : [{ facilityName: '', contractStatus: '' }],
         });
       } catch (err) {
         enqueueSnackbar('Failed to load plan details!', { variant: 'error' });
@@ -69,7 +75,10 @@ const EditInsurancePlan = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: name === 'ipaPayerId' || name === 'payerId' ? value.toUpperCase() : value });
+    setFormData({
+      ...formData,
+      [name]: ['ipaPayerId', 'payerId'].includes(name) ? value.toUpperCase() : value,
+    });
   };
 
   const handleAddressChange = (e) => {
@@ -99,20 +108,20 @@ const EditInsurancePlan = () => {
   const addContract = () => {
     setFormData({
       ...formData,
-      facilityContracts: [...formData.facilityContracts, { facility: '', status: '' }]
+      facilityContracts: [...formData.facilityContracts, { facilityName: '', contractStatus: '' }],
     });
   };
 
-  const handleContractChange = (index, e) => {
+  const handleContractChange = (e, index) => {
     const { name, value } = e.target;
-    const updatedContracts = [...formData.facilityContracts];
-    updatedContracts[index][name] = value;
-    setFormData({ ...formData, facilityContracts: updatedContracts });
+    const updated = [...formData.facilityContracts];
+    updated[index][name] = value;
+    setFormData({ ...formData, facilityContracts: updated });
   };
 
   const removeContract = (index) => {
-    const updatedContracts = formData.facilityContracts.filter((_, i) => i !== index);
-    setFormData({ ...formData, facilityContracts: updatedContracts });
+    const updated = formData.facilityContracts.filter((_, i) => i !== index);
+    setFormData({ ...formData, facilityContracts: updated });
   };
 
   const handleImageUpload = async (file, isSecondary = false) => {
@@ -159,8 +168,9 @@ const EditInsurancePlan = () => {
         .map(val => val?.trim().toUpperCase())
         .filter(val => /^[A-Z0-9]{3}$/.test(val))
         .map(val => ({ value: val })),
-      facilityContracts: formData.facilityContracts
-        .filter(contract => contract.facility && contract.status), // Ensure all contracts are filled
+      facilityContracts: formData.facilityContracts.filter(contract =>
+        contract.facilityName && contract.contractStatus
+      ),
     };
 
     try {
@@ -219,10 +229,18 @@ const EditInsurancePlan = () => {
             )}
 
             <h3 className="text-center mb-4 text-blue">Plan Details</h3>
-            <PlanBasicInfoForm formData={formData} handleChange={handleChange} showValidationError={showValidationError} />
+            <PlanBasicInfoForm
+              formData={formData}
+              handleChange={handleChange}
+              showValidationError={showValidationError}
+              addContract={addContract}
+              handleContractChange={handleContractChange}
+              removeContract={removeContract}
+            />
+
             <div className="row g-4">
               <div className="col-md-6">
-                <div className="bg-light p-3 shadow-sm h-100">
+                <div className="bg-light p-3 rounded shadow-sm h-100">
                   <PlanPortalLinks formData={formData} setFormData={setFormData} />
                   <hr />
                   <PlanPhoneNumbers formData={formData} setFormData={setFormData} />
@@ -240,58 +258,15 @@ const EditInsurancePlan = () => {
               </div>
             </div>
 
-            <h3 className="text-center my-4 text-blue">Facility Contract Information</h3>
-            <div className="bg-light p-3 rounded shadow-sm mb-4">
-              <div>
-                {formData.facilityContracts.map((contract, index) => (
-                  <div key={index} className="mb-3">
-                    <div className="row">
-                      <div className="col-6">
-                        <label>Facility</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="facility"
-                          value={contract.facility}
-                          onChange={(e) => handleContractChange(index, e)}
-                        />
-                      </div>
-                      <div className="col-6">
-                        <label>Status</label>
-                        <select
-                          className="form-select"
-                          name="status"
-                          value={contract.status}
-                          onChange={(e) => handleContractChange(index, e)}
-                        >
-                          <option value="Contracted">Contracted</option>
-                          <option value="Not Contracted">Not Contracted</option>
-                          <option value="Must Call to Confirm">Must Call to Confirm</option>
-                        </select>
-                      </div>
-                    </div>
-                    <button
-                      className="btn btn-danger btn-sm mt-2"
-                      onClick={() => removeContract(index)}
-                    >
-                      Remove Facility
-                    </button>
-                  </div>
-                ))}
-                <button
-                  className="btn btn-primary btn-sm"
-                  onClick={addContract}
-                >
-                  Add Facility Contract
-                </button>
-              </div>
-            </div>
+            <h3 className="text-center my-4 text-blue">Claims Information</h3>
+            <PlanAddressSection formData={formData} handleAddressChange={handleAddressChange} handleChange={handleChange} />
 
             <h3 className="text-center my-4 text-blue">Important Notes</h3>
             <PlanNotesSection formData={formData} handleChange={handleChange} />
 
             <h3 className="text-center my-4 text-blue">Insurance Card Examples</h3>
             <PlanImageUploads formData={formData} setFormData={setFormData} handleImageUpload={handleImageUpload} />
+
             <hr className="divider my-4" />
             <div className="d-flex justify-content-between">
               <button className="btn btn-cancel" type="button" onClick={handleReset}>Reset</button>
@@ -304,6 +279,7 @@ const EditInsurancePlan = () => {
         </div>
       </div>
 
+      {/* PHI Modal */}
       {showPHIModal && (
         <div
           className="modal-backdrop-custom fade show"
@@ -316,7 +292,6 @@ const EditInsurancePlan = () => {
             height: '100vh',
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             zIndex: 1050,
-            animation: 'fadeInBackdrop 0.25s ease-in',
           }}
         >
           <div
@@ -330,19 +305,15 @@ const EditInsurancePlan = () => {
               padding: '2rem',
               borderRadius: '1rem',
               boxShadow: '0 0 20px rgba(0,0,0,0.2)',
-              animation: 'fadeInModal 0.3s ease-out',
               transform: 'translateY(20%)',
             }}
           >
             <h5 className="text-center text-blue mb-3">⚠️ Please Do Not Include PHI</h5>
             <p className="text-muted text-center">
-              Ensure this insurance plan does not contain any Protected Health Information (PHI)
-              such as patient names, IDs, or any personal identifiers. If you see PHI, report it to the administrator immediately.
+              Ensure this insurance plan does not contain any Protected Health Information (PHI).
             </p>
             <div className="d-flex justify-content-center gap-3 mt-4">
-              <button className="btn btn-cancel px-4" onClick={() => setShowPHIModal(false)}>
-                Cancel
-              </button>
+              <button className="btn btn-cancel px-4" onClick={() => setShowPHIModal(false)}>Cancel</button>
               <button className="btn btn-login px-4" onClick={() => {
                 setShowPHIModal(false);
                 handleSubmitConfirmed();
@@ -354,49 +325,61 @@ const EditInsurancePlan = () => {
         </div>
       )}
 
-      {showDeleteModal && (
-        <div
-          className="modal-backdrop-custom fade show"
-          onClick={() => setShowDeleteModal(false)}
+      {/* Delete Modal */}
+{showDeleteModal && (
+  <div
+    className="modal d-flex justify-content-center align-items-center show"
+    onClick={() => setShowDeleteModal(false)}
+    style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100vw',
+      height: '100vh',
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      zIndex: 1050,
+    }}
+  >
+    <div
+      className="bg-white rounded shadow p-4"
+      onClick={(e) => e.stopPropagation()}
+      style={{
+        maxWidth: '480px',
+        width: '90%',
+      }}
+    >
+      <h5 className="text-center text-danger mb-3">⚠️ Confirm Deletion</h5>
+      <p className="text-muted text-center mb-4">
+        Are you sure you want to delete this insurance plan? This action cannot be undone.
+      </p>
+
+      <div className="d-flex justify-content-center gap-3">
+        <button
+          className="btn btn-cancel"
           style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            zIndex: 1050,
-          }}
+            fontSize: '1rem',
+            padding: '0.375rem 0.75rem',
+            lineHeight: '1.5',
+         }}
+          onClick={() => setShowDeleteModal(false)}
         >
-          <div
-            className="modal-content-custom"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              backgroundColor: 'white',
-              maxWidth: '500px',
-              width: '90%',
-              margin: 'auto',
-              padding: '2rem',
-              borderRadius: '1rem',
-              boxShadow: '0 0 20px rgba(0,0,0,0.2)',
-              transform: 'translateY(20%)',
-            }}
-          >
-            <h5 className="text-center text-danger mb-3">⚠️ Confirm Deletion</h5>
-            <p className="text-muted text-center">
-              Are you sure you want to delete this insurance plan? This action cannot be undone.
-            </p>
-            <div className="d-flex justify-content-center gap-3 mt-4">
-              <button className="btn btn-cancel px-4" onClick={() => setShowDeleteModal(false)}>Cancel</button>
-            </div>
-            <div>
-
-              <button className="btn btn-delete px-4 w-100" onClick={handleDeleteConfirmed}>Delete</button>
-            </div>
-          </div>
-        </div>
-      )}
-
+          Cancel
+        </button>
+        <button
+          className="btn btn-delete"
+          style={{
+            fontSize: '1rem',
+            padding: '0.375rem 0.75rem',
+            lineHeight: '1.5',
+          }}
+          onClick={handleDeleteConfirmed}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };

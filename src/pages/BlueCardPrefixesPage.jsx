@@ -21,6 +21,8 @@ const BlueCardPrefixesPage = ({ setExportHandlerBlueCard }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showType, setShowType] = useState('table');
   const [columnSettingsOpen, setColumnSettingsOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = showType === 'table' ? 50 : 24;
 
   const isAuthenticated = !!localStorage.getItem('accessToken');
 
@@ -67,7 +69,6 @@ const BlueCardPrefixesPage = ({ setExportHandlerBlueCard }) => {
     localStorage.setItem('visibleBlueCardColumns', JSON.stringify(allVisible));
   };
 
-  // Prefixes are shown for all facilities — no facility filter applied
   useEffect(() => {
     const fetchPlans = async () => {
       try {
@@ -82,7 +83,7 @@ const BlueCardPrefixesPage = ({ setExportHandlerBlueCard }) => {
               ...plan,
               prefix: p.value,
               book: plan,
-              facilityContracts: facilityContracts, // Include facility contract data
+              facilityContracts,
             });
           });
         });
@@ -96,12 +97,13 @@ const BlueCardPrefixesPage = ({ setExportHandlerBlueCard }) => {
     fetchPlans();
   }, []);
 
-useEffect (() => {
-  if (setExportHandlerBlueCard) {
-    setExportHandlerBlueCard(() => () => exportToExcel(prefixRows, blueCardColumnConfig, 'BlueCardPrefixes.xlsx')
-  );
-  }
-}, [prefixRows]);
+  useEffect(() => {
+    if (setExportHandlerBlueCard) {
+      setExportHandlerBlueCard(() => () =>
+        exportToExcel(prefixRows, blueCardColumnConfig, 'BlueCardPrefixes.xlsx')
+      );
+    }
+  }, [prefixRows]);
 
   const handleSort = (key) => {
     if (sortColumn === key) {
@@ -127,7 +129,20 @@ useEffect (() => {
           : String(bVal).localeCompare(String(aVal));
       });
   }, [prefixRows, sortColumn, sortDirection, searchQuery]);
-  
+
+  const paginatedRows = useMemo(() => {
+    return filteredRows.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    );
+  }, [filteredRows, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(filteredRows.length / itemsPerPage);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, sortColumn, sortDirection, showType]);
+
   return (
     <>
       <PlanFilterPills />
@@ -152,7 +167,7 @@ useEffect (() => {
         </div>
       ) : showType === 'table' ? (
         <BlueCardTableView
-          rows={filteredRows}
+          rows={paginatedRows}
           sortColumn={sortColumn}
           sortDirection={sortDirection}
           handleSort={handleSort}
@@ -162,11 +177,23 @@ useEffect (() => {
         />
       ) : (
         <BlueCardCardView
-          rows={filteredRows}
+          rows={paginatedRows}
           visibleColumns={visibleColumns}
           onSelect={(book) => setSelectedBook(book)}
         />
       )}
+
+      <nav className="d-flex justify-content-center mt-3">
+        <ul className="pagination pagination-sm">
+          {Array.from({ length: totalPages }, (_, i) => (
+            <li key={i} className={`page-item ${i + 1 === currentPage ? 'active' : ''}`}>
+              <button className="page-link" onClick={() => setCurrentPage(i + 1)}>
+                {i + 1}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
       {selectedBook && (
         <InsurancePlanModalContent

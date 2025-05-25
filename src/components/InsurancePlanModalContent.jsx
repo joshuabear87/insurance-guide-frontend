@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { ensureHttps } from './utils/urlHelpers';
+import { getContractColor } from './utils/helpers';
 import { FacilityContext } from '../context/FacilityContext';
 
 const InsurancePlanModalContent = ({ book, onClose }) => {
@@ -117,8 +118,7 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
                   {/* Contracted Facilities Section */}
                   <div className="row">
                     <div className="col-6">
-                      <h6>Facility Contracted</h6>
-                      <p>
+                      <h6>Contracting</h6>
                         <ul className="list-unstyled">
                           {book.facilityContracts.map((contract, index) => {
                             const status = contract.contractStatus?.toLowerCase();
@@ -128,23 +128,22 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
                             else if (status === 'must call to confirm') textColorClass = 'text-warning';
                             else if (status === 'see notes') textColorClass = 'text-info';
                             return (
-                              <li key={index} className={`mb-1 ${textColorClass}`}>
+                              <li key={index} className="mb-1" style={{ color: getContractColor(contract.contractStatus) }}>
                                 <strong>{contract.facilityName}:</strong> {contract.contractStatus || '-'}
                               </li>
                             );
                           })}
                         </ul>
-                      </p>
                     </div>
                   </div>
 
                   <div className="row">
                     <div className="col-6">
-                      <h6>Payer ID (Payer)</h6>
+                      <h6>Payer ID (HB)</h6>
                       <p>{book.payerId || '-'}</p>
                     </div>
                     <div className="col-6">
-                      <h6>Payer ID (IPA)</h6>
+                      <h6>Payer ID (PB)</h6>
                       <p>{book.ipaPayerId || '-'}</p>
                     </div>
                   </div>
@@ -218,10 +217,10 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
                   <div className="row">
                     <h5 className="fw-bold text-blue text-center mb-3">Addresses</h5>
                     <div className="col-6">
-                      <h6>Facility Address:</h6> <p>{formatAddress(book.facilityAddress)}</p>
+                      <h6>Claims Address (HB):</h6> <p>{formatAddress(book.facilityAddress)}</p>
                     </div>
                     <div className="col-6">
-                      <h6>Professional Address:</h6> <p>{formatAddress(book.providerAddress)}</p>
+                      <h6>Claims Address (PB):</h6> <p>{formatAddress(book.providerAddress)}</p>
                     </div>
                   </div>
                 </div>
