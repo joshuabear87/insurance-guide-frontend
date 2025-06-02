@@ -91,7 +91,7 @@ const AllPortalLinksPage = () => {
                 return (
                   <li
                     key={i}
-                    style={{ fontSize: '0.85rem', cursor: 'pointer', color: '#005b7f' }}
+                    style={{ fontSize: '0.85rem', cursor: 'pointer', color: 'black' }}
                     onClick={() => setSelectedPlan(matchedPlan)}
                   >
                     {descName}

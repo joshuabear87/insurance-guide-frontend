@@ -86,7 +86,7 @@ const PlanBasicInfoForm = ({
                 <input
                   type="text"
                   name="facilityName"
-                  value={contract.facilityName}
+                  value={contract.facilityName || ''}
                   className="form-control"
                   placeholder="Facility Name"
                   onChange={(e) => handleContractChange(e, index)}
@@ -95,7 +95,7 @@ const PlanBasicInfoForm = ({
               <div className="col-md-5">
                 <select
                   name="contractStatus"
-                  value={contract.contractStatus}
+                  value={contract.contractStatus || ''}
                   className="form-select"
                   onChange={(e) => handleContractChange(e, index)}
                 >

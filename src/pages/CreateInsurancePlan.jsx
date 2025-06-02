@@ -37,7 +37,7 @@ const CreateInsurancePlan = () => {
     secondaryImage: '',
     imagePublicId: '',
     secondaryImagePublicId: '',
-    facilityContracts: [], // Facility contracts are handled in PlanBasicInfoForm
+    facilityContracts: [], 
   });
 
   const { facility, facilityTheme } = useContext(FacilityContext);
@@ -164,8 +164,6 @@ const CreateInsurancePlan = () => {
       payerCode: '',
       planName: '',
       planCode: '',
-      samcContracted: '',
-      samfContracted: '',
       notes: '',
       authorizationNotes: '',
       ipaPayerId: '',

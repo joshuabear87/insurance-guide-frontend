@@ -9,9 +9,20 @@ export const formatAddress = (addr) => {
     return parts.length ? parts.join(', ') : '-';
   };
   
-  export const getNestedValue = (obj, path) =>
-    path.split('.').reduce((acc, key) => acc?.[key], obj);
-  
+export const getNestedValue = (obj, path) => {
+  try {
+    const value = path.split('.').reduce((acc, key) => acc?.[key], obj);
+    if (value === undefined || value === null) {
+      console.warn(`⚠️ Missing value for path "${path}" in book ID: ${obj?._id}`);
+      return '-';
+    }
+    return value;
+  } catch (err) {
+    console.error(`❌ Error accessing "${path}" in book ID: ${obj?._id}`, err);
+    return '-';
+  }
+};
+
 
   export const formatLabel = (key) => {
     return key

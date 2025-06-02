@@ -13,12 +13,12 @@ import LayoutNoNav from './components/LayoutNoNav';
 import BlueCardPrefixesPage from './pages/BlueCardPrefixesPage';
 import AllPortalLinksPage from './pages/AllPortalLinksPage';
 import AllPhoneNumbersPage from './pages/AllPhoneNumbersPage';
-import PrintableInsurancePlanPage from './pages/PrintableInsurancePlanPage';
 import RequestUpdateForm from './components/RequestUpdateForm';
 import TermsOfUsePage from './pages/TermsOfUsePage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import { FacilityContext } from './context/FacilityContext';
+import CookiePolicyPage from './pages/CookiePolicyPage';
 
 const App = () => {
   const [showPHIModal, setShowPHIModal] = useState(false);
@@ -78,6 +78,7 @@ const App = () => {
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/terms" element={<TermsOfUsePage />} />
         <Route path="/privacy" element={<PrivacyPolicyPage />} />
+        <Route path="/cookie-policy" element={<CookiePolicyPage />} />
         <Route path="/account" element={<ProtectedRoute><Layout><MyAccountPage /></Layout></ProtectedRoute>} />
         
         <Route path="/" element={<Navigate to="/plans" />} />
@@ -89,7 +90,6 @@ const App = () => {
 
         <Route path="/portal-links" element={<ProtectedRoute><Layout><AllPortalLinksPage /></Layout></ProtectedRoute>} />
         <Route path="/phone-numbers" element={<ProtectedRoute><Layout><AllPhoneNumbersPage /></Layout></ProtectedRoute>} />
-        <Route path="/printable-page" element={<ProtectedRoute><PrintableInsurancePlanPage /></ProtectedRoute>} />
         <Route path="/request-update" element={<ProtectedRoute><Layout><RequestUpdateForm /></Layout></ProtectedRoute>} />
 
         <Route path="/books/create" element={<ProtectedRoute><CreateInsurancePlan /></ProtectedRoute>} />

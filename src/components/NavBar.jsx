@@ -62,7 +62,8 @@ const NavBar = ({ onExport, onExportBlueCard }) => {
 
   const fetchUser = async () => {
     try {
-      const res = await API.get('/users/me');
+      const res = await API.get('/auth/me');
+      console.log('👤 User fetched:', res.data);
       setUser(res.data);
     } catch (err) {
       console.error('Failed to fetch user info:', err);

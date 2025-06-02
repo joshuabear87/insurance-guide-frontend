@@ -6,8 +6,9 @@ export const FacilityContext = createContext();
 export const FacilityProvider = ({ children }) => {
   const [facility, setFacility] = useState(localStorage.getItem('activeFacility') || '');
   const [facilityTheme, setFacilityTheme] = useState({
-    primaryColor: '#005b7f', // Default blue fallback
+    primaryColor: '#005b7f',
   });
+  const [facilities, setFacilities] = useState([]);
 
   useEffect(() => {
     if (facility) {
@@ -16,7 +17,7 @@ export const FacilityProvider = ({ children }) => {
       const fetchTheme = async () => {
         try {
           const res = await API.get(`/facilities/${encodeURIComponent(facility)}`);
-          setFacilityTheme(res.data);
+          setFacilityTheme(res.data.data);
         } catch (err) {
           console.error('❌ Failed to load facility theme:', err);
         }
@@ -26,8 +27,23 @@ export const FacilityProvider = ({ children }) => {
     }
   }, [facility]);
 
+  useEffect(() => {
+    const fetchFacilities = async () => {
+      try {
+        const res = await API.get('/facilities');
+        setFacilities(res.data.data); 
+      } catch (err) {
+        console.error('❌ Failed to load facility list:', err);
+      }
+    };
+
+    fetchFacilities();
+  }, []);
+
   return (
-    <FacilityContext.Provider value={{ facility, setFacility, facilityTheme }}>
+    <FacilityContext.Provider
+      value={{ facility, setFacility, facilityTheme, facilities }}
+    >
       {children}
     </FacilityContext.Provider>
   );

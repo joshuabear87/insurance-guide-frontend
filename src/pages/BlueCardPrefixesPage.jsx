@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useContext } from 'react';
 import API from '../axios';
 import Spinner from '../components/Spinner';
 import InsurancePlanModalContent from '../components/InsurancePlanModalContent';
@@ -8,6 +8,7 @@ import BlueCardCardView from '../components/home/BlueCardCardView';
 import blueCardColumnConfig from '../components/utils/blueCardColumnConfig';
 import BlueCardTableView from '../components/home/BlueCardTableVIew';
 import { exportToExcel } from '../components/utils/exportToExcel';
+import { FacilityContext } from '../context/FacilityContext';
 
 const getNestedValue = (obj, path) =>
   path.split('.').reduce((acc, key) => acc?.[key], obj);
@@ -23,6 +24,7 @@ const BlueCardPrefixesPage = ({ setExportHandlerBlueCard }) => {
   const [columnSettingsOpen, setColumnSettingsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = showType === 'table' ? 50 : 24;
+  const { facilityTheme } = useContext(FacilityContext);
 
   const isAuthenticated = !!localStorage.getItem('accessToken');
 
@@ -183,17 +185,28 @@ const BlueCardPrefixesPage = ({ setExportHandlerBlueCard }) => {
         />
       )}
 
-      <nav className="d-flex justify-content-center mt-3">
-        <ul className="pagination pagination-sm">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <li key={i} className={`page-item ${i + 1 === currentPage ? 'active' : ''}`}>
-              <button className="page-link" onClick={() => setCurrentPage(i + 1)}>
-                {i + 1}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </nav>
+{!loading && totalPages && (
+  <nav className="d-flex justify-content-center mt-3">
+    <ul className="pagination pagination-sm">
+      {Array.from({ length: totalPages }, (_, i) => (
+        <li key={i} className="page-item">
+          <button
+            className={`page-link ${i + 1 === currentPage ? 'text-white' : ''}`}
+            style={{
+              backgroundColor: i + 1 === currentPage ? facilityTheme.primaryColor : 'transparent',
+              borderColor: facilityTheme.primaryColor,
+              color: i + 1 === currentPage ? '#fff' : facilityTheme.primaryColor,
+            }}
+            onClick={() => setCurrentPage(i + 1)}
+          >
+            {i + 1}
+          </button>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
+
 
       {selectedBook && (
         <InsurancePlanModalContent

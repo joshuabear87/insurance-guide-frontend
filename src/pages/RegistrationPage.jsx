@@ -12,8 +12,7 @@ const RegistrationPage = () => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    requestedFacility: [], // Changed to an array to hold multiple selected facilities
-    email: '',
+    requestedFacility: [], 
     password: '',
     confirmPassword: '',
     phoneNumber: '',
@@ -28,7 +27,7 @@ const RegistrationPage = () => {
     const fetchFacilities = async () => {
       try {
         const res = await API.get('/facilities');
-        console.log('Facility API response:', res.data); // 👈 Check this
+        console.log('Facility API response:', res.data); 
         setFacilities(Array.isArray(res.data) ? res.data : res.data.data || []);
       } catch (err) {
         console.error('Failed to fetch facilities:', err);

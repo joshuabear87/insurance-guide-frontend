@@ -11,7 +11,7 @@ const MyAccountPage = () => {
 
   const fetchUser = async () => {
     try {
-      const res = await API.get('/users/me');
+      const res = await API.get('/auth/me');
       setUser(res.data);
     } catch (err) {
       console.error('Error fetching user:', err);

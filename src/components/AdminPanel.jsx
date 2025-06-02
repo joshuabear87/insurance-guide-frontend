@@ -1,21 +1,15 @@
 import React, { useEffect, useState, useContext } from 'react';
 import API from '../axios';
-import { useSnackbar } from 'notistack'; // Import enqueueSnackbar
+import { useSnackbar } from 'notistack';
 import EditUserByAdminModal from './EditUserByAdminModal';
 import { FacilityContext } from '../context/FacilityContext';
-
-const facilities = [
-  'Saint Agnes Medical Center',
-  'Saint Alphonsus Health System'
-];
 
 const AdminPanel = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const { enqueueSnackbar } = useSnackbar(); // Initialize enqueueSnackbar
-  const { facility, facilityTheme } = useContext(FacilityContext);
-
+  const { enqueueSnackbar } = useSnackbar();
+  const { facility, facilityTheme, facilities } = useContext(FacilityContext);
 
   const fetchUsers = async () => {
     try {
@@ -28,19 +22,16 @@ const AdminPanel = () => {
 
   const approveUser = async (id) => {
     try {
-      // Collect the facilities to approve (e.g., facilities requested by the user)
       const requestedFacility = users.find(user => user._id === id)?.requestedFacility;
       if (!requestedFacility) {
         enqueueSnackbar('No requested facility found for this user.', { variant: 'error' });
         return;
       }
 
-      const approvedFacilities = Array.isArray(requestedFacility) ? requestedFacility : [requestedFacility]; // Ensure it's an array
-
-      // Make the API call with the approved facilities in the request body
+      const approvedFacilities = Array.isArray(requestedFacility) ? requestedFacility : [requestedFacility];
       const response = await API.put(`/users/approve/${id}`, { approvedFacilities });
-      fetchUsers(); // Refresh the user list after approval
-      enqueueSnackbar(response.data.message, { variant: 'success' }); // Show success message
+      fetchUsers();
+      enqueueSnackbar(response.data.message, { variant: 'success' });
     } catch (err) {
       console.error('Failed to approve user', err);
       enqueueSnackbar('Failed to approve user', { variant: 'error' });
@@ -77,7 +68,7 @@ const AdminPanel = () => {
       user.firstName.toLowerCase().includes(query) ||
       user.lastName.toLowerCase().includes(query) ||
       user.email.toLowerCase().includes(query) ||
-      user.npi.includes(query) // You can add more fields to search by
+      user.npi.includes(query)
     );
   });
 
@@ -89,7 +80,6 @@ const AdminPanel = () => {
     <div className="card p-3 shadow-lg">
       <h4 className="text-center mb-3 text-blue">User Management</h4>
 
-      {/* Search Bar */}
       <div className="mb-3">
         <input
           type="text"
@@ -122,29 +112,32 @@ const AdminPanel = () => {
                 <td>{u.firstName} {u.lastName}</td>
                 <td>{u.email}</td>
                 <td>
-  {Array.isArray(u.requestedFacility) && u.requestedFacility.length > 0 ? (
-    u.requestedFacility.map((f, i) => (
-      <div key={i}>{f}</div>
-    ))
-  ) : (
-    'N/A'
-  )}
-</td>
-
+                  {Array.isArray(u.requestedFacility) && u.requestedFacility.length > 0 ? (
+                    u.requestedFacility.map((f, i) => (
+                      <div key={i}>{f}</div>
+                    ))
+                  ) : (
+                    'N/A'
+                  )}
+                </td>
                 <td>
-                  {u.facilityAccess?.map((f) => (
-                    <span
-                      key={f}
-                      className="badge me-1"
-                      style={{
-                        backgroundColor: f === 'Saint Agnes Medical Center' ? '#005b7f' : '#A30D1D',
-                        color: 'white',
-                        fontSize: '0.7rem',
-                      }}
-                    >
-                      {f}
-                    </span>
-                  ))}
+                  {u.facilityAccess?.map((f) => {
+                    const matchedFacility = facilities.find((fac) => fac.name === f);
+                    const badgeColor = matchedFacility?.primaryColor || '#6c757d';
+                    return (
+                      <span
+                        key={f}
+                        className="badge me-2 mb-1"
+                        style={{
+                          backgroundColor: badgeColor,
+                          color: 'white',
+                          fontSize: '0.7rem'
+                        }}
+                      >
+                        {f}
+                      </span>
+                    );
+                  })}
                 </td>
                 <td>{u.phoneNumber || 'N/A'}</td>
                 <td>{u.department || 'N/A'}</td>
@@ -152,54 +145,50 @@ const AdminPanel = () => {
                 <td>{formatStatus(u.status)}</td>
                 <td>{formatRole(u.role)}</td>
                 <td className="text-center align-middle">
-  <div className="d-flex flex-column align-items-center gap-1">
-    {u.status !== 'approved' && (
-      <button
-        className="btn btn-success btn-sm fw-semibold px-2 py-1"
-        style={{ fontSize: '0.7rem', minWidth: '80px' }}
-        onClick={() => approveUser(u._id)}
-        disabled={!u.requestedFacility}
-      >
-        Approve
-      </button>
-    )}
-
-    {u.role === 'admin' ? (
-      <button
-        className="btn btn-cancel btn-sm fw-semibold px-2 py-1"
-        style={{ fontSize: '0.7rem', minWidth: '80px' }}
-        onClick={() => demoteUser(u._id)}
-      >
-        Demote
-      </button>
-    ) : (
-      <button
-        className="btn btn-success btn-sm fw-semibold px-2 py-1"
-        style={{ fontSize: '0.7rem', minWidth: '80px' }}
-        onClick={() => promoteToAdmin(u._id)}
-      >
-        Promote
-      </button>
-    )}
-
-    <button
-      className="btn btn-login btn-sm fw-semibold px-2 py-1"
-      style={{ fontSize: '0.7rem', minWidth: '80px' }}
-      onClick={() => setSelectedUser(u)}
-    >
-      Edit
-    </button>
-
-    <button
-      className="btn btn-delete btn-sm fw-semibold px-2 py-1"
-      style={{ fontSize: '0.7rem', minWidth: '80px' }}
-      onClick={() => deleteUser(u._id)}
-    >
-      Delete
-    </button>
-  </div>
-</td>
-
+                  <div className="d-flex flex-column align-items-center gap-1">
+                    {u.status !== 'approved' && (
+                      <button
+                        className="btn btn-success btn-sm fw-semibold px-2 py-1"
+                        style={{ fontSize: '0.7rem', minWidth: '80px' }}
+                        onClick={() => approveUser(u._id)}
+                        disabled={!u.requestedFacility}
+                      >
+                        Approve
+                      </button>
+                    )}
+                    {u.role === 'admin' ? (
+                      <button
+                        className="btn btn-cancel btn-sm fw-semibold px-2 py-1"
+                        style={{ fontSize: '0.7rem', minWidth: '80px' }}
+                        onClick={() => demoteUser(u._id)}
+                      >
+                        Demote
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-success btn-sm fw-semibold px-2 py-1"
+                        style={{ fontSize: '0.7rem', minWidth: '80px' }}
+                        onClick={() => promoteToAdmin(u._id)}
+                      >
+                        Promote
+                      </button>
+                    )}
+                    <button
+                      className="btn btn-login btn-sm fw-semibold px-2 py-1"
+                      style={{ fontSize: '0.7rem', minWidth: '80px' }}
+                      onClick={() => setSelectedUser(u)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="btn btn-delete btn-sm fw-semibold px-2 py-1"
+                      style={{ fontSize: '0.7rem', minWidth: '80px' }}
+                      onClick={() => deleteUser(u._id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>

@@ -170,7 +170,6 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
                   <div className="row">
                     <div className="col-6">
                       <h6 className="fw-bold">Web Portal Links</h6>
-                      <p>
 
                         <ul className="list-unstyled mb-0 mt-2">
                           {book.portalLinks?.length > 0 ? (
@@ -185,7 +184,6 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
                             <li>-</li>
                           )}
                         </ul>
-                      </p>
                     </div>
 
                     <div className="col-6">

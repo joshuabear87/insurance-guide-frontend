@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import API from '../axios';
@@ -11,11 +11,13 @@ import PlanAddressSection from '../components/forms/PlanAddressNotesForm';
 import PlanBasicInfoForm from '../components/forms/PlanBasicInfoForm';
 import PlanPrefixesForm from '../components/forms/PlanPrefixesForm';
 import PlanNotesSection from '../components/forms/PlanNotesSection';
+import { FacilityContext } from '../context/FacilityContext';
 
 const EditInsurancePlan = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const { facilityTheme } = useContext(FacilityContext);
 
   const [formData, setFormData] = useState({
     facilityName: '',
@@ -51,7 +53,9 @@ const EditInsurancePlan = () => {
       setLoading(true);
       try {
         const res = await API.get(`/books/${id}`);
-        const plan = res.data;
+        const plan = res.data.data;
+        console.log('📦 Fetched plan:', res.data);
+
         setFormData({
           ...plan,
           prefixes: Array.isArray(plan.prefixes) ? plan.prefixes.map(p => p?.value || '') : [''],
@@ -205,7 +209,7 @@ const EditInsurancePlan = () => {
     }
   };
 
-  return (
+return (
     <div className="container my-5">
       <div className="d-flex justify-content-start my-3">
         <BackButton />
@@ -213,14 +217,15 @@ const EditInsurancePlan = () => {
       <div className="d-flex justify-content-center">
         {loading && <Spinner />}
         <div className="card w-75 border-0 shadow-lg mt-4 overflow-hidden">
-          <div className="text-white py-3 px-4" style={{ backgroundColor: '#005b7f' }}>
+          <div className="text-white py-3 px-4" style={{ backgroundColor: facilityTheme.primaryColor }}>
             <h2 className="text-center m-0">Edit Insurance Plan</h2>
           </div>
           {formData.facilityName && (
-            <div className="text-center mb-3 text-muted small fst-italic">
-              Viewing/editing plan for: <strong>{formData.facilityName}</strong>
-            </div>
+            <p className="text-center text-muted mt-2" style={{ fontSize: '0.9rem' }}>
+              Facility: <strong>{formData.facilityName}</strong>
+            </p>
           )}
+
           <div className="p-4">
             {showValidationError && (
               <div className="alert alert-danger">
@@ -228,7 +233,7 @@ const EditInsurancePlan = () => {
               </div>
             )}
 
-            <h3 className="text-center mb-4 text-blue">Plan Details</h3>
+            <h3 className="text-center mb-4">Plan Details</h3>
             <PlanBasicInfoForm
               formData={formData}
               handleChange={handleChange}

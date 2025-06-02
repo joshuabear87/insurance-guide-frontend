@@ -2,7 +2,6 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
-import Spinner from '../Spinner';
 import { FacilityContext } from '../../context/FacilityContext';
 
 const LoginForm = ({
@@ -18,7 +17,7 @@ const LoginForm = ({
 }) => {
   const emailId = `login-email-${variant}`;
   const passwordId = `login-password-${variant}`;
-  const { facility, setFacility } = useContext(FacilityContext);
+  const { facility, setFacility, facilities } = useContext(FacilityContext);
 
   const defaultFacility =
     facility ||
@@ -53,8 +52,11 @@ const LoginForm = ({
             <option value="" disabled>
               Select facility...
             </option>
-            <option value="Saint Agnes Medical Center">Saint Agnes Medical Center</option>
-            <option value="Saint Alphonsus Health System">Saint Alphonsus Health System</option>
+            {facilities.map((f) => (
+              <option key={f._id || f.name} value={f.name}>
+                {f.name}
+              </option>
+            ))}
           </select>
         </div>
 

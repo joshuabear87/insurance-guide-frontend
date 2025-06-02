@@ -12,6 +12,9 @@ const Footer = () => {
           <Link to="/terms" className="text-dark mx-2 text-decoration-none">Terms of Use</Link>
           |
           <Link to="/privacy" className="text-dark mx-2 text-decoration-none">Privacy Policy</Link>
+          |
+          <Link to="/cookie-policy" className="text-dark mx-2 text-decoration-none">Cookie Policy</Link>
+
         </small>
       </div>
     </footer>

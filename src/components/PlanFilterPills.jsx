@@ -7,15 +7,10 @@ import { AuthContext } from '../context/AuthContexts';
 const PlanFilterPills = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { facility, setFacility } = useContext(FacilityContext);
+  const { facility, setFacility, facilityTheme, facilities } = useContext(FacilityContext);
   const { user } = useContext(AuthContext);
 
-  const facilityThemes = {
-    'Saint Agnes Medical Center': { primaryColor: '#005b7f' },
-    'Saint Alphonsus Health System': { primaryColor: '#A30D1D' },
-  };
-  
-  const facilityTheme = facilityThemes[facility] || { primaryColor: '#005b7f' };
+  const currentPath = location.pathname;
 
   const filterMap = {
     '/plans': 'All',
@@ -25,12 +20,10 @@ const PlanFilterPills = () => {
     '/plans/bluecard-prefixes': 'Blue Card Prefixes',
   };
 
-  const currentPath = location.pathname;
-
   const handleFacilityChange = (newFacility) => {
     setFacility(newFacility);
     localStorage.setItem('activeFacility', newFacility);
-    window.location.reload(); // or trigger data re-fetch
+    window.location.reload(); // or refetch data if preferred
   };
 
   return (
@@ -42,9 +35,7 @@ const PlanFilterPills = () => {
             key={path}
             type="button"
             className={`btn fw-semibold px-2 py-1 border ${
-              currentPath === path
-                ? 'text-white'
-                : 'text-dark bg-light border-secondary'
+              currentPath === path ? 'text-white' : 'text-dark bg-light border-secondary'
             }`}
             style={{
               backgroundColor: currentPath === path ? facilityTheme.primaryColor : undefined,
@@ -65,11 +56,11 @@ const PlanFilterPills = () => {
         ))}
       </div>
 
-      {/* Facility selector aligned right */}
+      {/* Facility Selector (only if user has multiple access) */}
       {user?.facilityAccess?.length > 1 && (
         <FacilitySelector
           current={facility}
-          available={user.facilityAccess}
+          available={facilities.filter(fac => user.facilityAccess.includes(fac.name))}
           onChange={handleFacilityChange}
         />
       )}

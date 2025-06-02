@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Navbar from './NavBar';
 import Footer from './Footer';
+import CookieConsentBanner from '../pages/CookieConsentBanner';
 
 const Layout = ({ children }) => {
   const navbarRef = useRef(null);
@@ -26,7 +27,7 @@ const Layout = ({ children }) => {
       <div ref={navbarRef}>
         <Navbar onExport={exportHandler} onExportBlueCard={exportHandlerBlueCard} />
       </div>
-
+      <CookieConsentBanner />
       <main
         className="flex-grow-1 container-fluid my-5"
         style={{ paddingTop: `${topPadding}px`, paddingBottom: '60px' }}

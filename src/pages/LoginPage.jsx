@@ -23,42 +23,44 @@ const LoginPage = () => {
     setTimeout(() => setShowCard(true), 100);
   }, []);
 
-  const handleLogin = async (e, selectedFacility) => {
-    e.preventDefault();
+const handleLogin = async (e, selectedFacility) => {
+  e.preventDefault();
 
-    if (!selectedFacility) {
-      enqueueSnackbar('Please select a facility.', { variant: 'warning' });
-      return;
-    }
+  if (!selectedFacility) {
+    enqueueSnackbar('Please select a facility.', { variant: 'warning' });
+    return;
+  }
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      const { data } = await API.post('/auth/login', {
-        email,
-        password,
-        activeFacility: selectedFacility,
-      });
+  try {
+    const { data } = await API.post('/auth/login', {
+      email,
+      password,
+      activeFacility: selectedFacility,
+    });
 
-      localStorage.setItem('accessToken', data.accessToken);
-      localStorage.setItem('activeFacility', selectedFacility);
-      localStorage.setItem('user', JSON.stringify(data));
+    const { accessToken, user } = data;
 
-      setFacility(selectedFacility);
-      login({ accessToken: data.accessToken });
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('activeFacility', selectedFacility);
+    localStorage.setItem('user', JSON.stringify(user));
 
-      enqueueSnackbar('Login successful!', { variant: 'success' });
-      navigate('/');
-    } catch (error) {
-      console.error('Login failed:', error?.response?.data || error);
-      enqueueSnackbar(
-        error?.response?.data?.message || 'Invalid email or password',
-        { variant: 'error' }
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+    setFacility(selectedFacility);
+    login({ accessToken });
+
+    enqueueSnackbar('Login successful!', { variant: 'success' });
+    navigate('/');
+  } catch (error) {
+    console.error('Login failed:', error?.response?.data || error);
+    enqueueSnackbar(
+      error?.response?.data?.message || 'Invalid email or password',
+      { variant: 'error' }
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   const toggleShowPassword = () => setShowPassword((prev) => !prev);
 
@@ -77,7 +79,8 @@ const LoginPage = () => {
           <p className="text-muted mb-0 animate-subtitle" style={{ fontSize: '1rem' }}>Simplifying Coverage. Empowering Care.</p>
         </div>
 
-        <div className={`w-100 d-lg-none ${showCard ? 'fade-in' : 'invisible'}`} style={{ maxWidth: '400px', paddingTop: '2rem', transition: 'opacity 0.5s ease-in-out' }}>
+        <div className={`w-100 d-lg-none ${showCard ? 'fade-in' : 'invisible'}`} style={{ maxWidth: '400px', paddingTop: '2rem', transition: 'opacity 0.5s ease-in-out', marginBottom: '8rem'
+         }}>
           <div className="card shadow-lg border-0 p-4">
             <LoginForm
               email={email}

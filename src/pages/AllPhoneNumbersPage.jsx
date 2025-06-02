@@ -30,7 +30,7 @@ const AllPhoneNumbersPage = () => {
       } catch (err) {
         console.error('Error fetching phone numbers:', err);
       } finally {
-        setTimeout(() => setLoading(false), 400); // ✅ 400ms delay
+        setTimeout(() => setLoading(false), 400); 
       }
     };
 
@@ -85,7 +85,7 @@ const AllPhoneNumbersPage = () => {
                   style={{
                     fontSize: '0.85rem',
                     cursor: 'pointer',
-                    color: '#005b7f',
+                    color: 'black',
                   }}
                 >
                   {plan.descriptiveName}

@@ -137,7 +137,7 @@ const RequestUpdateForm = () => {
         
       {user?.role === 'admin' && (
   <div className="mt-5">
-    <div className="card shadow-lg border-0 p-4" style={{ backgroundColor: '#f0f4f8', borderLeft: '5px solid #005b7f' }}>
+    <div className="card shadow-lg border-0 p-4" style={{ borderLeft: '5px solid #005b7f' }}>
       <h3 className="text-center mb-4 text-brand">📣 Broadcast Message to All Users</h3>
 
       <form

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import API from '../axios';
 import Spinner from '../components/Spinner';
@@ -8,6 +8,7 @@ import InsurancePlanCardView from '../components/home/InsurancePlanCardVIew';
 import columnConfig from '../components/utils/columnConfig';
 import PlanFilterPills from '../components/PlanFilterPills';
 import { exportToExcel } from '../components/utils/exportToExcel';
+import { FacilityContext } from '../context/FacilityContext';
 
 const InsurancePlanMainPage = ({ setExportHandler }) => {
   const [books, setBooks] = useState([]);
@@ -16,6 +17,8 @@ const InsurancePlanMainPage = ({ setExportHandler }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [columnSettingsOpen, setColumnSettingsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const { facilityTheme } = useContext(FacilityContext);
+
   const itemsPerPage = showType === 'table' ? 50 : 24;
 
   const location = useLocation();
@@ -224,17 +227,27 @@ const InsurancePlanMainPage = ({ setExportHandler }) => {
         )}
       </div>
 
-      <nav className="d-flex justify-content-center mt-3">
+      {!loading && totalPages > 1 && (
+        <nav className="d-flex justify-content-center mt-3">
         <ul className="pagination pagination-sm">
           {Array.from({ length: totalPages }, (_, i) => (
-            <li key={i} className={`page-item ${i + 1 === currentPage ? 'active' : ''}`}>
-              <button className="page-link" onClick={() => setCurrentPage(i + 1)}>
-                {i + 1}
-              </button>
-            </li>
+            <li key={i} className="page-item">
+  <button
+    className={`page-link ${i + 1 === currentPage ? 'text-white' : ''}`}
+    style={{
+      backgroundColor: i + 1 === currentPage ? facilityTheme.primaryColor : 'transparent',
+      borderColor: facilityTheme.primaryColor,
+    }}
+    onClick={() => setCurrentPage(i + 1)}
+  >
+    {i + 1}
+  </button>
+</li>
+
           ))}
         </ul>
       </nav>
+      )}
 
       {showToast && (
         <div
