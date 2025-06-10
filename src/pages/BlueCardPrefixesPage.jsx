@@ -23,7 +23,7 @@ const BlueCardPrefixesPage = ({ setExportHandlerBlueCard }) => {
   const [showType, setShowType] = useState('table');
   const [columnSettingsOpen, setColumnSettingsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = showType === 'table' ? 50 : 24;
+  const itemsPerPage = showType === 'table' ? 10 : 8;
   const { facilityTheme } = useContext(FacilityContext);
 
   const isAuthenticated = !!localStorage.getItem('accessToken');
