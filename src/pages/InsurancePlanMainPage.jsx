@@ -25,7 +25,7 @@ const InsurancePlanMainPage = ({ setExportHandler }) => {
   const filterMap = {
     '/plans': 'All',
     '/plans/medicare': 'Medicare',
-    '/plans/medi-cal': 'Medi-Cal',
+    '/plans/medicaid': 'Medicaid',
     '/plans/commercial': 'Commercial',
   };
   const currentPath = location.pathname;
@@ -149,7 +149,7 @@ const InsurancePlanMainPage = ({ setExportHandler }) => {
     return books
       .filter((book) => {
         if (currentFilter === 'Medicare') return book.financialClass === 'Medicare';
-        if (currentFilter === 'Medi-Cal') return book.financialClass === 'Medi-Cal';
+        if (currentFilter === 'Medicaid') return book.financialClass === 'Medicaid';
         if (currentFilter === 'Commercial') return book.financialClass === 'Commercial';
         return true;
       })
