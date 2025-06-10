@@ -227,7 +227,7 @@ const InsurancePlanMainPage = ({ setExportHandler }) => {
         )}
       </div>
 
-      {!loading && totalPages > 1 && (
+      {!loading && filteredBooks.length > itemsPerPage && (
         <nav className="d-flex justify-content-center mt-3">
         <ul className="pagination pagination-sm">
           {Array.from({ length: totalPages }, (_, i) => (
