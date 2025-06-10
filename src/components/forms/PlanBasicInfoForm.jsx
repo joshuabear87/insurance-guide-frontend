@@ -18,7 +18,7 @@ const PlanBasicInfoForm = ({
   ];
 
   const fields = [
-    ['Financial Class', 'financialClass', 'select', ['Commercial', 'Medicare', 'Medicaid']],
+    ['Financial Class', 'financialClass', 'select', ['Commercial', 'Medicare', 'Medicaid/Medi-Cal']],
     ['Descriptive Name', 'descriptiveName'],
     ['Payer Name', 'payerName'],
     ['Payer Code', 'payerCode'],

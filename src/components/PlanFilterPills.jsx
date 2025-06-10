@@ -15,7 +15,7 @@ const PlanFilterPills = () => {
   const filterMap = {
     '/plans': 'All',
     '/plans/medicare': 'Medicare',
-    '/plans/medicaid': 'Medicaid',
+    '/plans/medicaid': 'Medicaid/Medi-Cal',
     '/plans/commercial': 'Commercial',
     '/plans/bluecard-prefixes': 'Blue Card Prefixes',
   };

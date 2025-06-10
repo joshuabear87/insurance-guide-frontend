@@ -188,22 +188,17 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
 
                     <div className="col-6">
                       <h6 className="fw-bold">Phone Numbers</h6>
-                      <p>
-
-                        <ul className="list-unstyled mb-0 mt-2">
+                        <ul className="list-unstyled mb-0">
                           {book.phoneNumbers?.length > 0 ? (
                             book.phoneNumbers.map((phone, idx) => (
                               <li key={idx}>
-                                <p>
                                   <em>{phone.title}:</em> {phone.number}
-                                </p>
                               </li>
                             ))
                           ) : (
                             <li>-</li>
                           )}
                         </ul>
-                      </p>
                     </div>
                   </div>
                 </div>
