@@ -19,7 +19,7 @@ const InsurancePlanMainPage = ({ setExportHandler }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const { facilityTheme } = useContext(FacilityContext);
 
-  const itemsPerPage = showType === 'table' ? 50 : 24;
+  const itemsPerPage = showType === 'table' ? 10 : 8;
 
   const location = useLocation();
   const filterMap = {
