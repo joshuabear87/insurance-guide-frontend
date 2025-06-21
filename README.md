@@ -11,7 +11,7 @@ An Epic-integrated insurance coding platform that helps hospital staff reduce cl
 ## Screenshots
 
 ### Launch Page  
-![Launch Page](https://raw.githubusercontent.com/joshuabear87/insurance-guide-frontend/main/hoken-hub-launch-page.png)
+![Launch Page](https://github.com/joshuabear87/insurance-guide-frontend/blob/main/hoken-hub-home-page.png?raw=true)
 
 ### Insurance Modal  
 ![Insurance Modal](https://raw.githubusercontent.com/joshuabear87/insurance-guide-frontend/main/hoken-hub-home-page.png)
