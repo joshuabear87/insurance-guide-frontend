@@ -1,7 +1,20 @@
-BOOKSTORE Application (Frontend)
+# Hoken Hub
 
-A full-stack MERN application template for managing medical insurance plans, allowing staff to view, add, and update plans efficiently.
+An Epic-integrated insurance coding platform that helps hospital staff reduce claim denials and improve coding accuracy.
 
-🔹 Frontend: React, Next.js, TailwindCSS
-🔹 Backend: Node.js, Express.js
-🔹 Database: MongoDB
+## Features
+- Facility-specific dashboards
+- Insurance card image uploads
+- Epic plan code + RTE mapping
+- Secure admin-only editing with JWT authentication
+
+## Screenshots
+
+![Launch Page](https://raw.githubusercontent.com/YOUR_USERNAME/hoken-hub/main/hokenhub-dashboard.png)
+![Upload Screen](https://raw.githubusercontent.com/YOUR_USERNAME/hoken-hub/main/hokenhub-upload.png)
+![Routing Config](https://raw.githubusercontent.com/YOUR_USERNAME/hoken-hub/main/hokenhub-routing.png)
+
+## Links
+
+- 🔗 [Live Demo](https://hokenhub.com)  
+- 💻 [Visit Portfolio](https://joshuaatendidobear.com/hokenhub)  
