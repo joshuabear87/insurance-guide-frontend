@@ -153,8 +153,8 @@ const columnConfig = [
     },
   },
 
-  { key: 'payerId', label: 'Payer ID' },
-  { key: 'ipaPayerId', label: 'IPA Payer ID' },
+  { key: 'payerId', label: 'Payer ID (HB)' },
+  { key: 'ipaPayerId', label: 'Payer ID (PB)' },
 
   {
     key: 'image',

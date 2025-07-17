@@ -226,13 +226,13 @@ const InsurancePlanModalContent = ({ book, onClose }) => {
             <div className="col-md-6">
               <div className="card bg-light p-3 shadow-sm h-100">
                 <h5 className="fw-bold text-blue text-center mb-2">Eligibility and Coding Notes</h5>
-                <p className="mb-0">{book.notes || '-'}</p>
+                <pre className="mb-0" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{book.notes || '-'}</pre>
               </div>
             </div>
             <div className="col-md-6">
               <div className="card bg-light p-3 shadow-sm h-100">
                 <h5 className="fw-bold text-blue text-center mb-2">Authorization Notes</h5>
-                <p className="mb-0">{book.authorizationNotes || '-'}</p>
+                <pre className="mb-0" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{book.authorizationNotes || '-'}</pre>
               </div>
             </div>
           </div>

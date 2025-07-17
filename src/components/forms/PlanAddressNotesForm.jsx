@@ -70,18 +70,7 @@ const PlanAddressSection = ({ formData, handleAddressChange, handleChange }) => 
           <h5 className="text-center my-2">Electronic Payer IDs</h5>
           <div className="row g-3">
             <div className="col-md-6">
-              <label className="form-label">Payer ID (Professional)</label>
-              <input
-                type="text"
-                className="form-control"
-                name="ipaPayerId"
-                maxLength={5}
-                value={formData.ipaPayerId}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="col-md-6">
-              <label className="form-label">Payer ID (Payer)</label>
+              <label className="form-label">Payer ID (HB)</label>
               <input
                 type="text"
                 className="form-control"
@@ -91,16 +80,27 @@ const PlanAddressSection = ({ formData, handleAddressChange, handleChange }) => 
                 onChange={handleChange}
               />
             </div>
+            <div className="col-md-6">
+              <label className="form-label">Payer ID (PB)</label>
+              <input
+                type="text"
+                className="form-control"
+                name="ipaPayerId"
+                maxLength={5}
+                value={formData.ipaPayerId}
+                onChange={handleChange}
+              />
+            </div>
           </div>
         </div>
       </div>
 
       {/* Two-column layout for addresses */}
       <div className="col-md-6">
-        {renderAddressFields('facilityAddress', 'Claims Address (Facility)')}
+        {renderAddressFields('facilityAddress', 'Claims Address (HB)')}
       </div>
       <div className="col-md-6">
-        {renderAddressFields('providerAddress', 'Claims Address (Professional)')}
+        {renderAddressFields('providerAddress', 'Claims Address (PB)')}
       </div>
     </div>
   );

@@ -7,35 +7,23 @@ import InsurancePlanModalContent from '../InsurancePlanModalContent';
 import { getNestedValue, getContractColor } from '../../components/utils/helpers';
 import { FacilityContext } from '../../context/FacilityContext';
 
-const InsurancePlanTable = ({ books, visibleColumns }) => {
+const InsurancePlanTable = ({ books, visibleColumns, sortConfig, setSortConfig }) => {
   const [selectedBook, setSelectedBook] = useState(null);
-  const [sortColumn, setSortColumn] = useState(null);
-  const [sortDirection, setSortDirection] = useState('asc');
   const admin = isAdmin();
-  const { facility, facilityTheme } = useContext(FacilityContext);
+  const { facilityTheme } = useContext(FacilityContext);
 
   const handleSort = (key) => {
-    if (sortColumn === key) {
-      setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-    } else {
-      setSortColumn(key);
-      setSortDirection('asc');
-    }
+    if (!setSortConfig) return;
+    setSortConfig(prev => {
+      if (prev.key === key) {
+        return {
+          key,
+          direction: prev.direction === 'asc' ? 'desc' : 'asc',
+        };
+      }
+      return { key, direction: 'asc' };
+    });
   };
-
-  const sortedBooks = [...books].sort((a, b) => {
-    if (!sortColumn) return 0;
-    const aVal = getNestedValue(a, sortColumn) ?? '';
-    const bVal = getNestedValue(b, sortColumn) ?? '';
-
-    if (typeof aVal === 'number' && typeof bVal === 'number') {
-      return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
-    }
-
-    return sortDirection === 'asc'
-      ? String(aVal).localeCompare(String(bVal))
-      : String(bVal).localeCompare(String(aVal));
-  });
 
   return (
     <>
@@ -62,14 +50,15 @@ const InsurancePlanTable = ({ books, visibleColumns }) => {
                       maxWidth: '180px',
                     }}
                   >
-                    {label} {sortColumn === key && (sortDirection === 'asc' ? '↑' : '↓')}
+                    {label}
+                    {sortConfig?.key === key && (sortConfig.direction === 'asc' ? ' ↑' : ' ↓')}
                   </th>
                 ) : null
               )}
             </tr>
           </thead>
           <tbody>
-            {sortedBooks.map((book) => (
+            {books.map((book) => (
               <tr key={book._id} onClick={() => setSelectedBook(book)} style={{ cursor: 'pointer' }}>
                 {admin && (
                   <td onClick={(e) => e.stopPropagation()}>

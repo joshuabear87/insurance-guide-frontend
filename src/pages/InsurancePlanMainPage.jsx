@@ -17,19 +17,20 @@ const InsurancePlanMainPage = ({ setExportHandler }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [columnSettingsOpen, setColumnSettingsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showAll, setShowAll] = useState(false);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const { facilityTheme } = useContext(FacilityContext);
-
-  const itemsPerPage = showType === 'table' ? 10 : 8;
-
   const location = useLocation();
+
   const filterMap = {
     '/plans': 'All',
     '/plans/medicare': 'Medicare',
     '/plans/medicaid': 'Medicaid/Medi-Cal',
     '/plans/commercial': 'Commercial',
   };
-  const currentPath = location.pathname;
-  const currentFilter = filterMap[currentPath] || 'All';
+  const currentFilter = filterMap[location.pathname] || 'All';
+
+  const itemsPerPage = showType === 'table' ? 10 : 8;
 
   const [tableColumns, setTableColumns] = useState(() => {
     const saved = localStorage.getItem('visibleTableColumns');
@@ -98,8 +99,8 @@ const InsurancePlanMainPage = ({ setExportHandler }) => {
     };
 
     columnConfig.forEach(col => {
-      if (!defaultTable.hasOwnProperty(col.key)) defaultTable[col.key] = false;
-      if (!defaultCard.hasOwnProperty(col.key)) defaultCard[col.key] = false;
+      if (!(col.key in defaultTable)) defaultTable[col.key] = false;
+      if (!(col.key in defaultCard)) defaultCard[col.key] = false;
     });
 
     if (type === 'table') {
@@ -146,14 +147,15 @@ const InsurancePlanMainPage = ({ setExportHandler }) => {
   }, []);
 
   const filteredBooks = useMemo(() => {
-    return books
-      .filter((book) => {
-        if (currentFilter === 'Medicare') return book.financialClass === 'Medicare';
-        if (currentFilter === 'Medicaid/Medi-cal') return book.financialClass === 'Medicaid/Medi-Cal';
-        if (currentFilter === 'Commercial') return book.financialClass === 'Commercial';
+    let result = books
+      .filter(book => {
+        const fc = book.financialClass?.toLowerCase() || '';
+        if (currentFilter === 'Medicare') return fc.includes('medicare');
+        if (currentFilter === 'Medicaid/Medi-Cal') return fc.includes('medi-cal') || fc.includes('medicaid');
+        if (currentFilter === 'Commercial') return fc.includes('commercial');
         return true;
       })
-      .filter((book) => {
+      .filter(book => {
         const search = searchQuery.toLowerCase();
         const valuesToSearch = [
           ...Object.values(book).map(v => String(v).toLowerCase()),
@@ -170,19 +172,25 @@ const InsurancePlanMainPage = ({ setExportHandler }) => {
           ...(book.phoneNumbers || []).flatMap(p => [p.title?.toLowerCase() || '', p.number?.toLowerCase() || '']),
         ];
         return valuesToSearch.some(value => value.includes(search));
-      })
-      .map(book => ({
-        ...book,
-        facilityContracts: book.facilityContracts || [],
-      }));
-  }, [books, searchQuery, currentFilter]);
+      });
+
+    if (sortConfig.key) {
+      result.sort((a, b) => {
+        const aVal = a[sortConfig.key]?.toString().toLowerCase() || '';
+        const bVal = b[sortConfig.key]?.toString().toLowerCase() || '';
+        if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+
+    return result.map(book => ({ ...book, facilityContracts: book.facilityContracts || [] }));
+  }, [books, searchQuery, currentFilter, sortConfig]);
 
   const paginatedBooks = useMemo(() => {
-    return filteredBooks.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-    );
-  }, [filteredBooks, currentPage, itemsPerPage]);
+    if (showAll) return filteredBooks;
+    return filteredBooks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  }, [filteredBooks, currentPage, itemsPerPage, showAll]);
 
   const totalPages = Math.ceil(filteredBooks.length / itemsPerPage);
 
@@ -190,13 +198,13 @@ const InsurancePlanMainPage = ({ setExportHandler }) => {
     setCurrentPage(1);
   }, [searchQuery, currentFilter, showType]);
 
-  useEffect(() => {
-    if (setExportHandler) {
-      setExportHandler(() =>
-        () => exportToExcel(filteredBooks, columnConfig, 'InsurancePlans.xlsx')
-      );
-    }
-  }, [filteredBooks]);
+useEffect(() => {
+  if (setExportHandler) {
+    setExportHandler(() => () => {
+      exportToExcel(filteredBooks, columnConfig, 'InsurancePlans.xlsx');
+    });
+  }
+}, [filteredBooks]);
 
   return (
     <>
@@ -215,38 +223,43 @@ const InsurancePlanMainPage = ({ setExportHandler }) => {
         restoreAllColumns={restoreAllColumns}
       />
 
+
       <div>
         {loading ? (
           <div className="d-flex justify-content-center py-5">
             <Spinner />
           </div>
         ) : showType === 'table' ? (
-          <InsurancePlanTable books={paginatedBooks} visibleColumns={tableColumns} />
+          <InsurancePlanTable
+            books={paginatedBooks}
+            visibleColumns={tableColumns}
+            sortConfig={sortConfig}
+            setSortConfig={setSortConfig}
+          />
         ) : (
           <InsurancePlanCardView books={paginatedBooks} visibleColumns={cardColumns} />
         )}
       </div>
 
-      {!loading && filteredBooks.length > itemsPerPage && (
+      {!loading && !showAll && filteredBooks.length > itemsPerPage && (
         <nav className="d-flex justify-content-center mt-3">
-        <ul className="pagination pagination-sm">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <li key={i} className="page-item">
-  <button
-    className={`page-link ${i + 1 === currentPage ? 'text-white' : ''}`}
-    style={{
-      backgroundColor: i + 1 === currentPage ? facilityTheme.primaryColor : 'transparent',
-      borderColor: facilityTheme.primaryColor,
-    }}
-    onClick={() => setCurrentPage(i + 1)}
-  >
-    {i + 1}
-  </button>
-</li>
-
-          ))}
-        </ul>
-      </nav>
+          <ul className="pagination pagination-sm">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <li key={i} className="page-item">
+                <button
+                  className={`page-link ${i + 1 === currentPage ? 'text-white' : ''}`}
+                  style={{
+                    backgroundColor: i + 1 === currentPage ? facilityTheme.primaryColor : 'transparent',
+                    borderColor: facilityTheme.primaryColor,
+                  }}
+                  onClick={() => setCurrentPage(i + 1)}
+                >
+                  {i + 1}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
       )}
 
       {showToast && (
@@ -268,15 +281,21 @@ const InsurancePlanMainPage = ({ setExportHandler }) => {
         >
           <div
             className="toast-header text-white justify-content-center"
-            style={{
-              backgroundColor: toastType === 'success' ? '#28a745' : '#005b7f',
-            }}
+            style={{ backgroundColor: toastType === 'success' ? '#28a745' : '#005b7f' }}
           >
             <strong className="me-auto">Settings Updated</strong>
           </div>
           <div className="toast-body text-center">{toastMessage}</div>
         </div>
       )}
+          <div className="text-end m-2">
+            <button
+              className="btn btn-sm btn-outline-secondary"
+              onClick={() => setShowAll(prev => !prev)}
+            >
+              {showAll ? 'Paginate Results' : 'Show All'}
+            </button>
+          </div>
     </>
   );
 };
