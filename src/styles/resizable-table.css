@@ -1,0 +1,35 @@
+/* ---- resizable table columns ---- */
+.th-resizable {
+  position: relative;
+  padding-right: 10px; /* keeps header text from sitting under the handle */
+}
+
+.col-resizer {
+  position: absolute;
+  top: 0;
+  right: -3px;              /* small overlap makes it easier to grab */
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  user-select: none;
+  touch-action: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity .15s;
+  background: linear-gradient(
+    to right,
+    transparent 0,
+    rgba(0,0,0,.15) 50%,
+    transparent 100%
+  );
+}
+.th-resizable:hover .col-resizer {
+  opacity: .6;
+}
+
+/* allow body cells to wrap when columns get narrow */
+.table td {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}

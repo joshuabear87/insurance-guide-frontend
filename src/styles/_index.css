@@ -312,3 +312,10 @@ ul {
   size: auto;
   margin: 0;
 }
+
+mark.hl {
+  background: #cdd0ff; /* soft yellow */
+  padding: 0 .12em;
+  border-radius: .2rem;
+}
+

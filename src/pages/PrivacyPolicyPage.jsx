@@ -1,5 +1,4 @@
-import React from 'react';
-import BackButton from '../components/BackButton';
+import BackButton from '../features/components/common/BackButton';
 
 const PrivacyPolicyPage = () => {
   return (
